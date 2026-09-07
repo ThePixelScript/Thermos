@@ -33,6 +33,11 @@ export interface GeoJSONFeature {
     population_density: number;
     total_population: number;
     vulnerable_ratio: number;
+    temperature?: number;
+    vegetation?: number;
+    imperviousness?: number;
+    building_density?: number;
+    population_exposure?: number;
     risk_score?: number;
     risk_level?: RiskLevel;
   };
@@ -48,13 +53,18 @@ export interface ZoneSummary {
   name: string;
   typology: Typology;
   area_sqkm: number;
+  temperature: number;
+  vegetation: number;
+  imperviousness: number;
+  building_density: number;
+  population_exposure: number;
+  risk_score: number;
+  risk_level: string;
   land_surface_temp_c: number;
   thermal_anomaly_c: number;
   tree_canopy_fraction: number;
   impervious_surface_fraction: number;
   total_population: number;
-  risk_score?: number;
-  risk_level?: RiskLevel;
 }
 
 export interface DriverContribution {
@@ -122,6 +132,11 @@ export interface HotspotSummary {
   zone_id: string;
   zone_name: string;
   typology: string;
+  temperature: number;
+  vegetation: number;
+  imperviousness: number;
+  building_density: number;
+  population_exposure: number;
   risk_score: number;
   risk_level: RiskLevel;
   land_surface_temp_c: number;

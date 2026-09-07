@@ -13,7 +13,12 @@ class HotspotSummary(BaseModel):
     zone_id: str
     zone_name: str
     typology: str
-    risk_score: float = Field(..., ge=0.0, le=100.0)
+    temperature: float = Field(..., description="Land surface temperature in °C")
+    vegetation: float = Field(..., description="Total vegetation fraction (canopy + grass) [0.0, 1.0]")
+    imperviousness: float = Field(..., description="Impervious surface fraction [0.0, 1.0]")
+    building_density: float = Field(..., description="Building footprint density [0.0, 1.0]")
+    population_exposure: float = Field(..., description="Normalized population exposure index [0.0, 100.0]")
+    risk_score: float = Field(..., ge=0.0, le=100.0, description="Composite Heat Risk Index [0.0, 100.0]")
     risk_level: RiskLevel
     land_surface_temp_c: float
     thermal_anomaly_c: float

@@ -1,6 +1,6 @@
 """Zone endpoints: GeoJSON feature collection and individual zone queries."""
-from typing import List, Optional
-from fastapi import APIRouter, HTTPException, Query
+from typing import List
+from fastapi import APIRouter, HTTPException
 from backend.app.schemas.zone import Zone, ZoneSummary
 from backend.app.schemas.common import GeoJSONFeatureCollection
 from backend.app.data.repository import repository
@@ -11,24 +11,32 @@ router = APIRouter(prefix="/zones", tags=["Zones"])
 
 @router.get("", response_model=List[ZoneSummary])
 def get_all_zones() -> List[ZoneSummary]:
-    """Retrieve all urban zones with summary metrics and risk scores."""
+    """Retrieve all urban zones with summary metrics, analytical indicators, and risk scores."""
     zones = repository.list_zones()
     summaries = []
     for zone in zones:
         risk = compute_heat_risk(zone)
+        veg = round(zone.land_cover.tree_canopy_fraction + zone.land_cover.vegetation_grass_fraction, 3)
+        exposure = round(min(100.0, (zone.demographics.population_density_per_sqkm / 50000.0) * 100.0), 1)
+
         summaries.append(
             ZoneSummary(
                 id=zone.id,
                 name=zone.name,
                 typology=zone.typology,
                 area_sqkm=zone.area_sqkm,
+                temperature=zone.thermal_observation.land_surface_temp_c,
+                vegetation=veg,
+                imperviousness=zone.land_cover.impervious_surface_fraction,
+                building_density=zone.land_cover.building_density,
+                population_exposure=exposure,
+                risk_score=risk.score,
+                risk_level=risk.risk_level.value,
                 land_surface_temp_c=zone.thermal_observation.land_surface_temp_c,
                 thermal_anomaly_c=zone.thermal_observation.thermal_anomaly_c,
                 tree_canopy_fraction=zone.land_cover.tree_canopy_fraction,
                 impervious_surface_fraction=zone.land_cover.impervious_surface_fraction,
                 total_population=zone.demographics.total_population,
-                risk_score=risk.score,
-                risk_level=risk.risk_level.value,
             )
         )
     return summaries

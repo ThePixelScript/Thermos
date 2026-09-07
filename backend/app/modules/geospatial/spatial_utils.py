@@ -40,6 +40,11 @@ def zone_to_geojson_feature(zone: Zone, risk_score: float | None = None, risk_le
         "population_density": zone.demographics.population_density_per_sqkm,
         "total_population": zone.demographics.total_population,
         "vulnerable_ratio": zone.demographics.vulnerable_ratio,
+        "temperature": zone.thermal_observation.land_surface_temp_c,
+        "vegetation": round(zone.land_cover.tree_canopy_fraction + zone.land_cover.vegetation_grass_fraction, 3),
+        "imperviousness": zone.land_cover.impervious_surface_fraction,
+        "building_density": zone.land_cover.building_density,
+        "population_exposure": round(min(100.0, (zone.demographics.population_density_per_sqkm / 50000.0) * 100.0), 1),
     }
     if risk_score is not None:
         properties["risk_score"] = round(risk_score, 1)

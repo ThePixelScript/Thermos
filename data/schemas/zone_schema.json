@@ -78,7 +78,8 @@
         "tree_canopy_fraction": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
         "vegetation_grass_fraction": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
         "water_fraction": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
-        "average_albedo": { "type": "number", "minimum": 0.05, "maximum": 0.90 }
+        "average_albedo": { "type": "number", "minimum": 0.05, "maximum": 0.90 },
+        "building_density": { "type": "number", "minimum": 0.0, "maximum": 1.0, "description": "Building footprint density [0.0, 1.0]" }
       }
     },
     "thermal_observation": {

@@ -1,4 +1,4 @@
-"""Urban Zone schemas mapping physical, thermal, and demographic dimensions."""
+"""Urban Zone schemas mapping physical, thermal, demographic, and risk dimensions."""
 from datetime import datetime, timezone
 from typing import Optional, List
 from pydantic import BaseModel, Field
@@ -12,6 +12,7 @@ class LandCover(BaseModel):
     vegetation_grass_fraction: float = Field(..., ge=0.0, le=1.0, description="Fraction covered by turf/grass/shrubs")
     water_fraction: float = Field(..., ge=0.0, le=1.0, description="Fraction covered by water bodies")
     average_albedo: float = Field(..., ge=0.05, le=0.90, description="Solar reflectance fraction (albedo)")
+    building_density: float = Field(default=0.50, ge=0.0, le=1.0, description="Building footprint density [0.0, 1.0]")
 
 
 class ThermalObservation(BaseModel):
@@ -44,6 +45,15 @@ class Zone(BaseModel):
     demographics: Demographics
     provenance: Optional[List[ProvenanceRecord]] = Field(default_factory=list)
 
+    # Core analytical indicators needed for planning queries & simulations
+    temperature: Optional[float] = Field(None, description="Land surface temperature in °C")
+    vegetation: Optional[float] = Field(None, description="Total vegetation fraction (canopy + grass) [0.0, 1.0]")
+    imperviousness: Optional[float] = Field(None, description="Impervious surface fraction [0.0, 1.0]")
+    building_density: Optional[float] = Field(None, description="Building footprint density [0.0, 1.0]")
+    population_exposure: Optional[float] = Field(None, description="Normalized population exposure index [0.0, 100.0]")
+    risk_score: Optional[float] = Field(None, description="Deterministic Composite Heat Risk Index [0.0, 100.0]")
+    risk_level: Optional[str] = Field(None, description="Categorical risk tier (LOW, MODERATE, HIGH, SEVERE, CRITICAL)")
+
 
 class ZoneSummary(BaseModel):
     """Lightweight summary of a zone for list views and map layers."""
@@ -51,10 +61,15 @@ class ZoneSummary(BaseModel):
     name: str
     typology: Typology
     area_sqkm: float
+    temperature: float = Field(..., description="Land surface temperature in °C")
+    vegetation: float = Field(..., description="Total vegetation fraction (canopy + grass) [0.0, 1.0]")
+    imperviousness: float = Field(..., description="Impervious surface fraction [0.0, 1.0]")
+    building_density: float = Field(..., description="Building footprint density [0.0, 1.0]")
+    population_exposure: float = Field(..., description="Normalized population exposure index [0.0, 100.0]")
+    risk_score: float = Field(..., description="Deterministic Composite Heat Risk Index [0.0, 100.0]")
+    risk_level: str = Field(..., description="Categorical risk tier")
     land_surface_temp_c: float
     thermal_anomaly_c: float
     tree_canopy_fraction: float
     impervious_surface_fraction: float
     total_population: int
-    risk_score: Optional[float] = None
-    risk_level: Optional[str] = None

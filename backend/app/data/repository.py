@@ -46,6 +46,15 @@ class ZoneRepository:
         self._zones.clear()
         for raw_zone in data.get("zones", []):
             zone = Zone.model_validate(raw_zone)
+            # Pre-compute analytical metrics for convenient direct access
+            risk = compute_heat_risk(zone)
+            zone.temperature = zone.thermal_observation.land_surface_temp_c
+            zone.vegetation = round(zone.land_cover.tree_canopy_fraction + zone.land_cover.vegetation_grass_fraction, 3)
+            zone.imperviousness = zone.land_cover.impervious_surface_fraction
+            zone.building_density = zone.land_cover.building_density
+            zone.population_exposure = round(min(100.0, (zone.demographics.population_density_per_sqkm / 50000.0) * 100.0), 1)
+            zone.risk_score = risk.score
+            zone.risk_level = risk.risk_level.value
             self._zones[zone.id] = zone
 
     @property
@@ -92,6 +101,11 @@ class ZoneRepository:
                 "zone_id": zone.id,
                 "zone_name": zone.name,
                 "typology": zone.typology.value,
+                "temperature": zone.thermal_observation.land_surface_temp_c,
+                "vegetation": round(zone.land_cover.tree_canopy_fraction + zone.land_cover.vegetation_grass_fraction, 3),
+                "imperviousness": zone.land_cover.impervious_surface_fraction,
+                "building_density": zone.land_cover.building_density,
+                "population_exposure": round(min(100.0, (zone.demographics.population_density_per_sqkm / 50000.0) * 100.0), 1),
                 "risk_score": risk.score,
                 "risk_level": risk.risk_level,
                 "land_surface_temp_c": zone.thermal_observation.land_surface_temp_c,

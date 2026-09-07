@@ -46,7 +46,12 @@ app.add_middleware(
 # Direct health endpoint
 app.include_router(health_router)
 
-# Versioned API routes
+# Base API routes (/api/zones, /api/hotspots, etc.)
+app.include_router(zones_router, prefix="/api")
+app.include_router(hotspots_router, prefix="/api")
+app.include_router(interventions_router, prefix="/api")
+
+# Versioned API routes (/api/v1/zones, /api/v1/hotspots, etc.)
 app.include_router(health_router, prefix=settings.api_prefix)
 app.include_router(zones_router, prefix=settings.api_prefix)
 app.include_router(hotspots_router, prefix=settings.api_prefix)

@@ -9,16 +9,31 @@
       "id": "ZONE-01",
       "name": "Downtown Financial District",
       "typology": "commercial_dense",
-      "area_sqkm": 2.40,
+      "area_sqkm": 2.4,
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [77.210, 28.630],
-            [77.225, 28.630],
-            [77.225, 28.645],
-            [77.210, 28.645],
-            [77.210, 28.630]
+            [
+              77.21,
+              28.63
+            ],
+            [
+              77.225,
+              28.63
+            ],
+            [
+              77.225,
+              28.645
+            ],
+            [
+              77.21,
+              28.645
+            ],
+            [
+              77.21,
+              28.63
+            ]
           ]
         ]
       },
@@ -26,8 +41,9 @@
         "impervious_surface_fraction": 0.88,
         "tree_canopy_fraction": 0.05,
         "vegetation_grass_fraction": 0.04,
-        "water_fraction": 0.00,
-        "average_albedo": 0.12
+        "water_fraction": 0.0,
+        "average_albedo": 0.12,
+        "building_density": 0.72
       },
       "thermal_observation": {
         "land_surface_temp_c": 42.8,
@@ -48,16 +64,31 @@
       "id": "ZONE-02",
       "name": "Riverfront Park & Wetlands",
       "typology": "park_riparian",
-      "area_sqkm": 3.10,
+      "area_sqkm": 3.1,
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [77.230, 28.620],
-            [77.245, 28.620],
-            [77.245, 28.640],
-            [77.230, 28.640],
-            [77.230, 28.620]
+            [
+              77.23,
+              28.62
+            ],
+            [
+              77.245,
+              28.62
+            ],
+            [
+              77.245,
+              28.64
+            ],
+            [
+              77.23,
+              28.64
+            ],
+            [
+              77.23,
+              28.62
+            ]
           ]
         ]
       },
@@ -66,7 +97,8 @@
         "tree_canopy_fraction": 0.52,
         "vegetation_grass_fraction": 0.22,
         "water_fraction": 0.11,
-        "average_albedo": 0.22
+        "average_albedo": 0.22,
+        "building_density": 0.02
       },
       "thermal_observation": {
         "land_surface_temp_c": 28.4,
@@ -87,16 +119,31 @@
       "id": "ZONE-03",
       "name": "Industrial Freight & Logistics Corridor",
       "typology": "industrial_heavy",
-      "area_sqkm": 4.50,
+      "area_sqkm": 4.5,
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [77.185, 28.650],
-            [77.205, 28.650],
-            [77.205, 28.670],
-            [77.185, 28.670],
-            [77.185, 28.650]
+            [
+              77.185,
+              28.65
+            ],
+            [
+              77.205,
+              28.65
+            ],
+            [
+              77.205,
+              28.67
+            ],
+            [
+              77.185,
+              28.67
+            ],
+            [
+              77.185,
+              28.65
+            ]
           ]
         ]
       },
@@ -104,8 +151,9 @@
         "impervious_surface_fraction": 0.94,
         "tree_canopy_fraction": 0.02,
         "vegetation_grass_fraction": 0.03,
-        "water_fraction": 0.00,
-        "average_albedo": 0.10
+        "water_fraction": 0.0,
+        "average_albedo": 0.1,
+        "building_density": 0.68
       },
       "thermal_observation": {
         "land_surface_temp_c": 45.2,
@@ -126,16 +174,31 @@
       "id": "ZONE-04",
       "name": "Old City Market & Historic Quarter",
       "typology": "historic_dense",
-      "area_sqkm": 1.80,
+      "area_sqkm": 1.8,
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [77.220, 28.650],
-            [77.235, 28.650],
-            [77.235, 28.665],
-            [77.220, 28.665],
-            [77.220, 28.650]
+            [
+              77.22,
+              28.65
+            ],
+            [
+              77.235,
+              28.65
+            ],
+            [
+              77.235,
+              28.665
+            ],
+            [
+              77.22,
+              28.665
+            ],
+            [
+              77.22,
+              28.65
+            ]
           ]
         ]
       },
@@ -143,8 +206,9 @@
         "impervious_surface_fraction": 0.82,
         "tree_canopy_fraction": 0.06,
         "vegetation_grass_fraction": 0.02,
-        "water_fraction": 0.00,
-        "average_albedo": 0.15
+        "water_fraction": 0.0,
+        "average_albedo": 0.15,
+        "building_density": 0.78
       },
       "thermal_observation": {
         "land_surface_temp_c": 39.6,
@@ -165,16 +229,31 @@
       "id": "ZONE-05",
       "name": "University Campus & Botanical Enclave",
       "typology": "institutional_campus",
-      "area_sqkm": 2.10,
+      "area_sqkm": 2.1,
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [77.195, 28.625],
-            [77.210, 28.625],
-            [77.210, 28.640],
-            [77.195, 28.640],
-            [77.195, 28.625]
+            [
+              77.195,
+              28.625
+            ],
+            [
+              77.21,
+              28.625
+            ],
+            [
+              77.21,
+              28.64
+            ],
+            [
+              77.195,
+              28.64
+            ],
+            [
+              77.195,
+              28.625
+            ]
           ]
         ]
       },
@@ -183,7 +262,8 @@
         "tree_canopy_fraction": 0.48,
         "vegetation_grass_fraction": 0.14,
         "water_fraction": 0.02,
-        "average_albedo": 0.20
+        "average_albedo": 0.2,
+        "building_density": 0.25
       },
       "thermal_observation": {
         "land_surface_temp_c": 30.1,
@@ -197,23 +277,38 @@
         "total_population": 19950,
         "vulnerable_ratio": 0.08,
         "outdoor_worker_density_per_sqkm": 600,
-        "low_ac_coverage_ratio": 0.20
+        "low_ac_coverage_ratio": 0.2
       }
     },
     {
       "id": "ZONE-06",
       "name": "High-Rise Residential Sector 9",
       "typology": "residential_highrise",
-      "area_sqkm": 2.80,
+      "area_sqkm": 2.8,
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [77.215, 28.605],
-            [77.235, 28.605],
-            [77.235, 28.620],
-            [77.215, 28.620],
-            [77.215, 28.605]
+            [
+              77.215,
+              28.605
+            ],
+            [
+              77.235,
+              28.605
+            ],
+            [
+              77.235,
+              28.62
+            ],
+            [
+              77.215,
+              28.62
+            ],
+            [
+              77.215,
+              28.605
+            ]
           ]
         ]
       },
@@ -221,8 +316,9 @@
         "impervious_surface_fraction": 0.68,
         "tree_canopy_fraction": 0.18,
         "vegetation_grass_fraction": 0.12,
-        "water_fraction": 0.00,
-        "average_albedo": 0.18
+        "water_fraction": 0.0,
+        "average_albedo": 0.18,
+        "building_density": 0.55
       },
       "thermal_observation": {
         "land_surface_temp_c": 36.2,
@@ -243,16 +339,31 @@
       "id": "ZONE-07",
       "name": "Central Railway Terminal & Transit Hub",
       "typology": "transit_hub",
-      "area_sqkm": 1.60,
+      "area_sqkm": 1.6,
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [77.210, 28.645],
-            [77.225, 28.645],
-            [77.225, 28.660],
-            [77.210, 28.660],
-            [77.210, 28.645]
+            [
+              77.21,
+              28.645
+            ],
+            [
+              77.225,
+              28.645
+            ],
+            [
+              77.225,
+              28.66
+            ],
+            [
+              77.21,
+              28.66
+            ],
+            [
+              77.21,
+              28.645
+            ]
           ]
         ]
       },
@@ -260,8 +371,9 @@
         "impervious_surface_fraction": 0.91,
         "tree_canopy_fraction": 0.03,
         "vegetation_grass_fraction": 0.02,
-        "water_fraction": 0.00,
-        "average_albedo": 0.11
+        "water_fraction": 0.0,
+        "average_albedo": 0.11,
+        "building_density": 0.65
       },
       "thermal_observation": {
         "land_surface_temp_c": 43.5,
@@ -275,23 +387,38 @@
         "total_population": 33600,
         "vulnerable_ratio": 0.21,
         "outdoor_worker_density_per_sqkm": 7200,
-        "low_ac_coverage_ratio": 0.70
+        "low_ac_coverage_ratio": 0.7
       }
     },
     {
       "id": "ZONE-08",
       "name": "Greenbelt Suburban Residential",
       "typology": "residential_suburban",
-      "area_sqkm": 3.60,
+      "area_sqkm": 3.6,
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [77.175, 28.620],
-            [77.195, 28.620],
-            [77.195, 28.640],
-            [77.175, 28.640],
-            [77.175, 28.620]
+            [
+              77.175,
+              28.62
+            ],
+            [
+              77.195,
+              28.62
+            ],
+            [
+              77.195,
+              28.64
+            ],
+            [
+              77.175,
+              28.64
+            ],
+            [
+              77.175,
+              28.62
+            ]
           ]
         ]
       },
@@ -299,8 +426,9 @@
         "impervious_surface_fraction": 0.44,
         "tree_canopy_fraction": 0.35,
         "vegetation_grass_fraction": 0.18,
-        "water_fraction": 0.00,
-        "average_albedo": 0.21
+        "water_fraction": 0.0,
+        "average_albedo": 0.21,
+        "building_density": 0.32
       },
       "thermal_observation": {
         "land_surface_temp_c": 32.8,
@@ -314,23 +442,38 @@
         "total_population": 28080,
         "vulnerable_ratio": 0.22,
         "outdoor_worker_density_per_sqkm": 400,
-        "low_ac_coverage_ratio": 0.10
+        "low_ac_coverage_ratio": 0.1
       }
     },
     {
       "id": "ZONE-09",
       "name": "Biotech & Medical District",
       "typology": "mixed_use",
-      "area_sqkm": 2.20,
+      "area_sqkm": 2.2,
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [77.190, 28.600],
-            [77.210, 28.600],
-            [77.210, 28.618],
-            [77.190, 28.618],
-            [77.190, 28.600]
+            [
+              77.19,
+              28.6
+            ],
+            [
+              77.21,
+              28.6
+            ],
+            [
+              77.21,
+              28.618
+            ],
+            [
+              77.19,
+              28.618
+            ],
+            [
+              77.19,
+              28.6
+            ]
           ]
         ]
       },
@@ -338,8 +481,9 @@
         "impervious_surface_fraction": 0.62,
         "tree_canopy_fraction": 0.21,
         "vegetation_grass_fraction": 0.14,
-        "water_fraction": 0.00,
-        "average_albedo": 0.19
+        "water_fraction": 0.0,
+        "average_albedo": 0.19,
+        "building_density": 0.48
       },
       "thermal_observation": {
         "land_surface_temp_c": 35.8,
@@ -360,16 +504,31 @@
       "id": "ZONE-10",
       "name": "Ashray Nagar High-Density Settlement",
       "typology": "informal_settlement",
-      "area_sqkm": 1.40,
+      "area_sqkm": 1.4,
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [77.225, 28.665],
-            [77.240, 28.665],
-            [77.240, 28.680],
-            [77.225, 28.680],
-            [77.225, 28.665]
+            [
+              77.225,
+              28.665
+            ],
+            [
+              77.24,
+              28.665
+            ],
+            [
+              77.24,
+              28.68
+            ],
+            [
+              77.225,
+              28.68
+            ],
+            [
+              77.225,
+              28.665
+            ]
           ]
         ]
       },
@@ -377,8 +536,9 @@
         "impervious_surface_fraction": 0.89,
         "tree_canopy_fraction": 0.02,
         "vegetation_grass_fraction": 0.01,
-        "water_fraction": 0.00,
-        "average_albedo": 0.13
+        "water_fraction": 0.0,
+        "average_albedo": 0.13,
+        "building_density": 0.82
       },
       "thermal_observation": {
         "land_surface_temp_c": 44.6,
