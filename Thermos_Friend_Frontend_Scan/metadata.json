@@ -1,6 +1,0 @@
-{
-  "name": "HeatScape — Urban Heat Reduction Planner",
-  "description": "Data-driven urban heat intelligence platform for municipal resilience planning, hotspot diagnosis, and cooling intervention modeling.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
