@@ -1,0 +1,399 @@
+{
+  "city": "Metropolis Central",
+  "crs": "EPSG:4326",
+  "generated_at": "2026-09-01T12:00:00Z",
+  "data_status": "SYNTHETIC_REALISTIC_SAMPLE",
+  "baseline_citywide_temp_c": 31.5,
+  "zones": [
+    {
+      "id": "ZONE-01",
+      "name": "Downtown Financial District",
+      "typology": "commercial_dense",
+      "area_sqkm": 2.40,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [77.210, 28.630],
+            [77.225, 28.630],
+            [77.225, 28.645],
+            [77.210, 28.645],
+            [77.210, 28.630]
+          ]
+        ]
+      },
+      "land_cover": {
+        "impervious_surface_fraction": 0.88,
+        "tree_canopy_fraction": 0.05,
+        "vegetation_grass_fraction": 0.04,
+        "water_fraction": 0.00,
+        "average_albedo": 0.12
+      },
+      "thermal_observation": {
+        "land_surface_temp_c": 42.8,
+        "baseline_temp_c": 31.5,
+        "thermal_anomaly_c": 11.3,
+        "sensor_source": "Landsat-9 Thermal Infrared Sensor (TIRS)",
+        "observation_time": "2026-08-15T14:30:00Z"
+      },
+      "demographics": {
+        "population_density_per_sqkm": 24000,
+        "total_population": 57600,
+        "vulnerable_ratio": 0.14,
+        "outdoor_worker_density_per_sqkm": 4200,
+        "low_ac_coverage_ratio": 0.15
+      }
+    },
+    {
+      "id": "ZONE-02",
+      "name": "Riverfront Park & Wetlands",
+      "typology": "park_riparian",
+      "area_sqkm": 3.10,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [77.230, 28.620],
+            [77.245, 28.620],
+            [77.245, 28.640],
+            [77.230, 28.640],
+            [77.230, 28.620]
+          ]
+        ]
+      },
+      "land_cover": {
+        "impervious_surface_fraction": 0.15,
+        "tree_canopy_fraction": 0.52,
+        "vegetation_grass_fraction": 0.22,
+        "water_fraction": 0.11,
+        "average_albedo": 0.22
+      },
+      "thermal_observation": {
+        "land_surface_temp_c": 28.4,
+        "baseline_temp_c": 31.5,
+        "thermal_anomaly_c": -3.1,
+        "sensor_source": "Landsat-9 Thermal Infrared Sensor (TIRS)",
+        "observation_time": "2026-08-15T14:30:00Z"
+      },
+      "demographics": {
+        "population_density_per_sqkm": 1200,
+        "total_population": 3720,
+        "vulnerable_ratio": 0.18,
+        "outdoor_worker_density_per_sqkm": 150,
+        "low_ac_coverage_ratio": 0.25
+      }
+    },
+    {
+      "id": "ZONE-03",
+      "name": "Industrial Freight & Logistics Corridor",
+      "typology": "industrial_heavy",
+      "area_sqkm": 4.50,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [77.185, 28.650],
+            [77.205, 28.650],
+            [77.205, 28.670],
+            [77.185, 28.670],
+            [77.185, 28.650]
+          ]
+        ]
+      },
+      "land_cover": {
+        "impervious_surface_fraction": 0.94,
+        "tree_canopy_fraction": 0.02,
+        "vegetation_grass_fraction": 0.03,
+        "water_fraction": 0.00,
+        "average_albedo": 0.10
+      },
+      "thermal_observation": {
+        "land_surface_temp_c": 45.2,
+        "baseline_temp_c": 31.5,
+        "thermal_anomaly_c": 13.7,
+        "sensor_source": "Landsat-9 Thermal Infrared Sensor (TIRS)",
+        "observation_time": "2026-08-15T14:30:00Z"
+      },
+      "demographics": {
+        "population_density_per_sqkm": 6500,
+        "total_population": 29250,
+        "vulnerable_ratio": 0.11,
+        "outdoor_worker_density_per_sqkm": 5800,
+        "low_ac_coverage_ratio": 0.65
+      }
+    },
+    {
+      "id": "ZONE-04",
+      "name": "Old City Market & Historic Quarter",
+      "typology": "historic_dense",
+      "area_sqkm": 1.80,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [77.220, 28.650],
+            [77.235, 28.650],
+            [77.235, 28.665],
+            [77.220, 28.665],
+            [77.220, 28.650]
+          ]
+        ]
+      },
+      "land_cover": {
+        "impervious_surface_fraction": 0.82,
+        "tree_canopy_fraction": 0.06,
+        "vegetation_grass_fraction": 0.02,
+        "water_fraction": 0.00,
+        "average_albedo": 0.15
+      },
+      "thermal_observation": {
+        "land_surface_temp_c": 39.6,
+        "baseline_temp_c": 31.5,
+        "thermal_anomaly_c": 8.1,
+        "sensor_source": "Landsat-9 Thermal Infrared Sensor (TIRS)",
+        "observation_time": "2026-08-15T14:30:00Z"
+      },
+      "demographics": {
+        "population_density_per_sqkm": 32000,
+        "total_population": 57600,
+        "vulnerable_ratio": 0.32,
+        "outdoor_worker_density_per_sqkm": 4900,
+        "low_ac_coverage_ratio": 0.58
+      }
+    },
+    {
+      "id": "ZONE-05",
+      "name": "University Campus & Botanical Enclave",
+      "typology": "institutional_campus",
+      "area_sqkm": 2.10,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [77.195, 28.625],
+            [77.210, 28.625],
+            [77.210, 28.640],
+            [77.195, 28.640],
+            [77.195, 28.625]
+          ]
+        ]
+      },
+      "land_cover": {
+        "impervious_surface_fraction": 0.36,
+        "tree_canopy_fraction": 0.48,
+        "vegetation_grass_fraction": 0.14,
+        "water_fraction": 0.02,
+        "average_albedo": 0.20
+      },
+      "thermal_observation": {
+        "land_surface_temp_c": 30.1,
+        "baseline_temp_c": 31.5,
+        "thermal_anomaly_c": -1.4,
+        "sensor_source": "Landsat-9 Thermal Infrared Sensor (TIRS)",
+        "observation_time": "2026-08-15T14:30:00Z"
+      },
+      "demographics": {
+        "population_density_per_sqkm": 9500,
+        "total_population": 19950,
+        "vulnerable_ratio": 0.08,
+        "outdoor_worker_density_per_sqkm": 600,
+        "low_ac_coverage_ratio": 0.20
+      }
+    },
+    {
+      "id": "ZONE-06",
+      "name": "High-Rise Residential Sector 9",
+      "typology": "residential_highrise",
+      "area_sqkm": 2.80,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [77.215, 28.605],
+            [77.235, 28.605],
+            [77.235, 28.620],
+            [77.215, 28.620],
+            [77.215, 28.605]
+          ]
+        ]
+      },
+      "land_cover": {
+        "impervious_surface_fraction": 0.68,
+        "tree_canopy_fraction": 0.18,
+        "vegetation_grass_fraction": 0.12,
+        "water_fraction": 0.00,
+        "average_albedo": 0.18
+      },
+      "thermal_observation": {
+        "land_surface_temp_c": 36.2,
+        "baseline_temp_c": 31.5,
+        "thermal_anomaly_c": 4.7,
+        "sensor_source": "Landsat-9 Thermal Infrared Sensor (TIRS)",
+        "observation_time": "2026-08-15T14:30:00Z"
+      },
+      "demographics": {
+        "population_density_per_sqkm": 28000,
+        "total_population": 78400,
+        "vulnerable_ratio": 0.24,
+        "outdoor_worker_density_per_sqkm": 1200,
+        "low_ac_coverage_ratio": 0.22
+      }
+    },
+    {
+      "id": "ZONE-07",
+      "name": "Central Railway Terminal & Transit Hub",
+      "typology": "transit_hub",
+      "area_sqkm": 1.60,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [77.210, 28.645],
+            [77.225, 28.645],
+            [77.225, 28.660],
+            [77.210, 28.660],
+            [77.210, 28.645]
+          ]
+        ]
+      },
+      "land_cover": {
+        "impervious_surface_fraction": 0.91,
+        "tree_canopy_fraction": 0.03,
+        "vegetation_grass_fraction": 0.02,
+        "water_fraction": 0.00,
+        "average_albedo": 0.11
+      },
+      "thermal_observation": {
+        "land_surface_temp_c": 43.5,
+        "baseline_temp_c": 31.5,
+        "thermal_anomaly_c": 12.0,
+        "sensor_source": "Landsat-9 Thermal Infrared Sensor (TIRS)",
+        "observation_time": "2026-08-15T14:30:00Z"
+      },
+      "demographics": {
+        "population_density_per_sqkm": 21000,
+        "total_population": 33600,
+        "vulnerable_ratio": 0.21,
+        "outdoor_worker_density_per_sqkm": 7200,
+        "low_ac_coverage_ratio": 0.70
+      }
+    },
+    {
+      "id": "ZONE-08",
+      "name": "Greenbelt Suburban Residential",
+      "typology": "residential_suburban",
+      "area_sqkm": 3.60,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [77.175, 28.620],
+            [77.195, 28.620],
+            [77.195, 28.640],
+            [77.175, 28.640],
+            [77.175, 28.620]
+          ]
+        ]
+      },
+      "land_cover": {
+        "impervious_surface_fraction": 0.44,
+        "tree_canopy_fraction": 0.35,
+        "vegetation_grass_fraction": 0.18,
+        "water_fraction": 0.00,
+        "average_albedo": 0.21
+      },
+      "thermal_observation": {
+        "land_surface_temp_c": 32.8,
+        "baseline_temp_c": 31.5,
+        "thermal_anomaly_c": 1.3,
+        "sensor_source": "Landsat-9 Thermal Infrared Sensor (TIRS)",
+        "observation_time": "2026-08-15T14:30:00Z"
+      },
+      "demographics": {
+        "population_density_per_sqkm": 7800,
+        "total_population": 28080,
+        "vulnerable_ratio": 0.22,
+        "outdoor_worker_density_per_sqkm": 400,
+        "low_ac_coverage_ratio": 0.10
+      }
+    },
+    {
+      "id": "ZONE-09",
+      "name": "Biotech & Medical District",
+      "typology": "mixed_use",
+      "area_sqkm": 2.20,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [77.190, 28.600],
+            [77.210, 28.600],
+            [77.210, 28.618],
+            [77.190, 28.618],
+            [77.190, 28.600]
+          ]
+        ]
+      },
+      "land_cover": {
+        "impervious_surface_fraction": 0.62,
+        "tree_canopy_fraction": 0.21,
+        "vegetation_grass_fraction": 0.14,
+        "water_fraction": 0.00,
+        "average_albedo": 0.19
+      },
+      "thermal_observation": {
+        "land_surface_temp_c": 35.8,
+        "baseline_temp_c": 31.5,
+        "thermal_anomaly_c": 4.3,
+        "sensor_source": "Landsat-9 Thermal Infrared Sensor (TIRS)",
+        "observation_time": "2026-08-15T14:30:00Z"
+      },
+      "demographics": {
+        "population_density_per_sqkm": 14500,
+        "total_population": 31900,
+        "vulnerable_ratio": 0.35,
+        "outdoor_worker_density_per_sqkm": 1600,
+        "low_ac_coverage_ratio": 0.18
+      }
+    },
+    {
+      "id": "ZONE-10",
+      "name": "Ashray Nagar High-Density Settlement",
+      "typology": "informal_settlement",
+      "area_sqkm": 1.40,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [77.225, 28.665],
+            [77.240, 28.665],
+            [77.240, 28.680],
+            [77.225, 28.680],
+            [77.225, 28.665]
+          ]
+        ]
+      },
+      "land_cover": {
+        "impervious_surface_fraction": 0.89,
+        "tree_canopy_fraction": 0.02,
+        "vegetation_grass_fraction": 0.01,
+        "water_fraction": 0.00,
+        "average_albedo": 0.13
+      },
+      "thermal_observation": {
+        "land_surface_temp_c": 44.6,
+        "baseline_temp_c": 31.5,
+        "thermal_anomaly_c": 13.1,
+        "sensor_source": "Landsat-9 Thermal Infrared Sensor (TIRS)",
+        "observation_time": "2026-08-15T14:30:00Z"
+      },
+      "demographics": {
+        "population_density_per_sqkm": 42000,
+        "total_population": 58800,
+        "vulnerable_ratio": 0.38,
+        "outdoor_worker_density_per_sqkm": 8600,
+        "low_ac_coverage_ratio": 0.92
+      }
+    }
+  ]
+}

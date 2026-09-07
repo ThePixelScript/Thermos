@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "UrbanZone",
+  "description": "Schema for an urban planning zone with physical, thermal, and demographic indicators",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "typology",
+    "area_sqkm",
+    "geometry",
+    "land_cover",
+    "thermal_observation",
+    "demographics"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^ZONE-[0-9]{2,4}$",
+      "description": "Unique identifier for the zone"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable name of the urban zone"
+    },
+    "typology": {
+      "type": "string",
+      "enum": [
+        "commercial_dense",
+        "industrial_heavy",
+        "residential_highrise",
+        "residential_suburban",
+        "historic_dense",
+        "informal_settlement",
+        "transit_hub",
+        "park_riparian",
+        "institutional_campus",
+        "mixed_use"
+      ],
+      "description": "Urban form and zoning classification"
+    },
+    "area_sqkm": {
+      "type": "number",
+      "minimum": 0.01,
+      "description": "Total geographic area in square kilometers"
+    },
+    "geometry": {
+      "type": "object",
+      "required": ["type", "coordinates"],
+      "properties": {
+        "type": { "type": "string", "enum": ["Polygon"] },
+        "coordinates": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": { "type": "number" },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "minItems": 4
+          }
+        }
+      }
+    },
+    "land_cover": {
+      "type": "object",
+      "required": [
+        "impervious_surface_fraction",
+        "tree_canopy_fraction",
+        "vegetation_grass_fraction",
+        "water_fraction",
+        "average_albedo"
+      ],
+      "properties": {
+        "impervious_surface_fraction": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "tree_canopy_fraction": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "vegetation_grass_fraction": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "water_fraction": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "average_albedo": { "type": "number", "minimum": 0.05, "maximum": 0.90 }
+      }
+    },
+    "thermal_observation": {
+      "type": "object",
+      "required": [
+        "land_surface_temp_c",
+        "baseline_temp_c",
+        "thermal_anomaly_c",
+        "sensor_source",
+        "observation_time"
+      ],
+      "properties": {
+        "land_surface_temp_c": { "type": "number" },
+        "baseline_temp_c": { "type": "number" },
+        "thermal_anomaly_c": { "type": "number" },
+        "sensor_source": { "type": "string" },
+        "observation_time": { "type": "string", "format": "date-time" }
+      }
+    },
+    "demographics": {
+      "type": "object",
+      "required": [
+        "population_density_per_sqkm",
+        "total_population",
+        "vulnerable_ratio",
+        "outdoor_worker_density_per_sqkm",
+        "low_ac_coverage_ratio"
+      ],
+      "properties": {
+        "population_density_per_sqkm": { "type": "number", "minimum": 0 },
+        "total_population": { "type": "integer", "minimum": 0 },
+        "vulnerable_ratio": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "outdoor_worker_density_per_sqkm": { "type": "number", "minimum": 0 },
+        "low_ac_coverage_ratio": { "type": "number", "minimum": 0.0, "maximum": 1.0 }
+      }
+    }
+  }
+}
