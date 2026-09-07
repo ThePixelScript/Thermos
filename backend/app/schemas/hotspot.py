@@ -28,6 +28,14 @@ class HotspotSummary(BaseModel):
     vulnerable_population: int
     area_sqkm: float
     center_coords: List[float] = Field(..., description="[longitude, latitude] centroid")
+    confidence: float = Field(
+        default=0.95,
+        ge=0.0,
+        le=1.0,
+        description="Overall assessment and data confidence score (reflecting input completeness and proxy validity)",
+    )
+    is_hotspot: bool = Field(default=True, description="Hotspot qualification flag")
+    hotspot_tier: str = Field(default="HIGH_HOTSPOT", description="Categorical hotspot classification tier")
 
 
 class HotspotDetail(BaseModel):
@@ -37,3 +45,10 @@ class HotspotDetail(BaseModel):
     risk_assessment: RiskAssessment
     recommended_interventions: List[InterventionEstimate]
     ai_executive_brief: Optional[str] = Field(None, description="Deterministic factual summary prepared by the AI translation bridge")
+    confidence: float = Field(
+        default=0.95,
+        ge=0.0,
+        le=1.0,
+        description="Overall assessment and data confidence score (reflecting input completeness and proxy validity)",
+    )
+    assumptions: List[str] = Field(default_factory=list, description="Documented planning and model assumptions")

@@ -14,6 +14,7 @@ from backend.app.modules.geospatial.spatial_utils import (
     zones_to_feature_collection,
 )
 from backend.app.modules.risk.risk_engine import compute_heat_risk, evaluate_zone_risk
+from backend.app.modules.heat import is_hotspot, classify_hotspot_tier
 from backend.app.modules.interventions.recommender import recommend_interventions_for_zone
 from backend.app.modules.ai_interface.explainer import generate_executive_brief
 
@@ -96,6 +97,8 @@ class ZoneRepository:
 
             centroid = compute_polygon_centroid(zone.geometry)
             dominant = risk.driver_contributions[0] if risk.driver_contributions else None
+            is_hot = is_hotspot(risk.score, anomaly)
+            tier = classify_hotspot_tier(risk.score, anomaly)
 
             hotspot_candidates.append({
                 "zone_id": zone.id,
@@ -116,6 +119,9 @@ class ZoneRepository:
                 "vulnerable_population": int(zone.demographics.total_population * zone.demographics.vulnerable_ratio),
                 "area_sqkm": zone.area_sqkm,
                 "center_coords": centroid,
+                "confidence": risk.confidence,
+                "is_hotspot": is_hot,
+                "hotspot_tier": tier,
             })
 
         # Rank descending by risk score
@@ -150,6 +156,8 @@ class ZoneRepository:
             risk_assessment=risk_assessment,
             recommended_interventions=interventions,
             ai_executive_brief=ai_brief,
+            confidence=risk_assessment.confidence,
+            assumptions=risk_assessment.assumptions,
         )
 
 
