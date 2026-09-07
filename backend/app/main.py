@@ -11,6 +11,7 @@ from backend.app.api.health import router as health_router
 from backend.app.api.zones import router as zones_router
 from backend.app.api.hotspots import router as hotspots_router
 from backend.app.api.interventions import router as interventions_router
+from backend.app.api.real_data import router as real_data_router
 from backend.app.data.repository import repository
 
 
@@ -50,12 +51,14 @@ app.include_router(health_router)
 app.include_router(zones_router, prefix="/api")
 app.include_router(hotspots_router, prefix="/api")
 app.include_router(interventions_router, prefix="/api")
+app.include_router(real_data_router, prefix="/api")
 
 # Versioned API routes (/api/v1/zones, /api/v1/hotspots, etc.)
 app.include_router(health_router, prefix=settings.api_prefix)
 app.include_router(zones_router, prefix=settings.api_prefix)
 app.include_router(hotspots_router, prefix=settings.api_prefix)
 app.include_router(interventions_router, prefix=settings.api_prefix)
+app.include_router(real_data_router, prefix=settings.api_prefix)
 
 
 @app.get("/")
@@ -70,5 +73,9 @@ def root():
             "zones_geojson": f"{settings.api_prefix}/zones/geojson",
             "hotspots": f"{settings.api_prefix}/hotspots",
             "interventions": f"{settings.api_prefix}/interventions/catalog",
+            "real_data_zones": f"{settings.api_prefix}/real-data/zones",
+            "real_data_geojson": f"{settings.api_prefix}/real-data/zones/geojson",
+            "real_data_hotspots": f"{settings.api_prefix}/real-data/hotspots",
+            "real_data_metadata": f"{settings.api_prefix}/real-data/metadata",
         },
     }

@@ -163,3 +163,10 @@ Thumbs.db
 .vscode/
 .idea/
 
+# External satellite and raster data
+data/external/
+*.TIF
+*.tif
+*.tar.gz
+*.tar
+

@@ -28,6 +28,8 @@ def compute_bounding_box(polygon: GeoJSONPolygon) -> Tuple[float, float, float, 
 
 def zone_to_geojson_feature(zone: Zone, risk_score: float | None = None, risk_level: str | None = None) -> GeoJSONFeature:
     """Transform a Zone domain entity into a standard GeoJSON Feature for MapLibre GL."""
+    lc = zone.land_cover
+    demo = zone.demographics
     properties = {
         "id": zone.id,
         "name": zone.name,
@@ -35,16 +37,16 @@ def zone_to_geojson_feature(zone: Zone, risk_score: float | None = None, risk_le
         "area_sqkm": zone.area_sqkm,
         "land_surface_temp_c": zone.thermal_observation.land_surface_temp_c,
         "thermal_anomaly_c": zone.thermal_observation.thermal_anomaly_c,
-        "tree_canopy_fraction": zone.land_cover.tree_canopy_fraction,
-        "impervious_surface_fraction": zone.land_cover.impervious_surface_fraction,
-        "population_density": zone.demographics.population_density_per_sqkm,
-        "total_population": zone.demographics.total_population,
-        "vulnerable_ratio": zone.demographics.vulnerable_ratio,
+        "tree_canopy_fraction": lc.tree_canopy_fraction if lc else None,
+        "impervious_surface_fraction": lc.impervious_surface_fraction if lc else None,
+        "population_density": demo.population_density_per_sqkm if demo else None,
+        "total_population": demo.total_population if demo else None,
+        "vulnerable_ratio": demo.vulnerable_ratio if demo else None,
         "temperature": zone.thermal_observation.land_surface_temp_c,
-        "vegetation": round(zone.land_cover.tree_canopy_fraction + zone.land_cover.vegetation_grass_fraction, 3),
-        "imperviousness": zone.land_cover.impervious_surface_fraction,
-        "building_density": zone.land_cover.building_density,
-        "population_exposure": round(min(100.0, (zone.demographics.population_density_per_sqkm / 50000.0) * 100.0), 1),
+        "vegetation": round(lc.tree_canopy_fraction + lc.vegetation_grass_fraction, 3) if lc else None,
+        "imperviousness": lc.impervious_surface_fraction if lc else None,
+        "building_density": lc.building_density if lc else None,
+        "population_exposure": round(min(100.0, (demo.population_density_per_sqkm / 50000.0) * 100.0), 1) if demo else None,
     }
     if risk_score is not None:
         properties["risk_score"] = round(risk_score, 1)

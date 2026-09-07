@@ -16,8 +16,10 @@ def get_all_zones() -> List[ZoneSummary]:
     summaries = []
     for zone in zones:
         risk = compute_heat_risk(zone)
-        veg = round(zone.land_cover.tree_canopy_fraction + zone.land_cover.vegetation_grass_fraction, 3)
-        exposure = round(min(100.0, (zone.demographics.population_density_per_sqkm / 50000.0) * 100.0), 1)
+        lc = zone.land_cover
+        demo = zone.demographics
+        veg = round(lc.tree_canopy_fraction + lc.vegetation_grass_fraction, 3) if lc else None
+        exposure = round(min(100.0, (demo.population_density_per_sqkm / 50000.0) * 100.0), 1) if demo else None
 
         summaries.append(
             ZoneSummary(
@@ -27,16 +29,16 @@ def get_all_zones() -> List[ZoneSummary]:
                 area_sqkm=zone.area_sqkm,
                 temperature=zone.thermal_observation.land_surface_temp_c,
                 vegetation=veg,
-                imperviousness=zone.land_cover.impervious_surface_fraction,
-                building_density=zone.land_cover.building_density,
+                imperviousness=lc.impervious_surface_fraction if lc else None,
+                building_density=lc.building_density if lc else None,
                 population_exposure=exposure,
                 risk_score=risk.score,
                 risk_level=risk.risk_level.value,
                 land_surface_temp_c=zone.thermal_observation.land_surface_temp_c,
                 thermal_anomaly_c=zone.thermal_observation.thermal_anomaly_c,
-                tree_canopy_fraction=zone.land_cover.tree_canopy_fraction,
-                impervious_surface_fraction=zone.land_cover.impervious_surface_fraction,
-                total_population=zone.demographics.total_population,
+                tree_canopy_fraction=lc.tree_canopy_fraction if lc else None,
+                impervious_surface_fraction=lc.impervious_surface_fraction if lc else None,
+                total_population=demo.total_population if demo else None,
             )
         )
     return summaries

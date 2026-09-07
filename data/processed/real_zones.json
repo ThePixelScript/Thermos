@@ -1,0 +1,667 @@
+{
+  "city": "Chennai Metropolitan Area",
+  "crs": "EPSG:4326",
+  "generated_at": "2026-09-07T17:02:33.840110+00:00",
+  "data_status": "SYNTHETIC_CALIBRATED_SAMPLE",
+  "is_synthetic": true,
+  "verification_status": "SYNTHETIC_SAMPLE_FOR_PIPELINE_VERIFICATION",
+  "baseline_citywide_temp_c": 36.11,
+  "metadata": {
+    "scene_id": "LC09_L2SP_142051_SYNTHETIC_SAMPLE",
+    "satellite": "Landsat-9",
+    "sensor": "TIRS-2",
+    "acquisition_date": "2026-05-15T05:12:30Z",
+    "crs": "EPSG:4326",
+    "grid_resolution_m": 500.0,
+    "aoi_bbox": [
+      80.124426,
+      12.87252,
+      80.140959,
+      12.88885
+    ],
+    "total_cells": 16,
+    "valid_cells": 8,
+    "baseline_temp_c": 36.11,
+    "mean_lst_c": 36.11,
+    "min_lst_c": 30.0,
+    "max_lst_c": 42.0,
+    "hotspots_count": 3,
+    "data_status": "SYNTHETIC_CALIBRATED_SAMPLE",
+    "is_synthetic": true,
+    "verification_status": "SYNTHETIC_SAMPLE_FOR_PIPELINE_VERIFICATION"
+  },
+  "zones": [
+    {
+      "id": "GRID-0001",
+      "name": "Chennai Metropolitan Area Thermal Cell GRID-0001",
+      "typology": "satellite_grid",
+      "area_sqkm": 0.25,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.128987,
+              12.886098
+            ],
+            [
+              80.128972,
+              12.890619
+            ],
+            [
+              80.124363,
+              12.890604
+            ],
+            [
+              80.124379,
+              12.886083
+            ],
+            [
+              80.128987,
+              12.886098
+            ]
+          ]
+        ]
+      },
+      "land_cover": null,
+      "thermal_observation": {
+        "land_surface_temp_c": 30.0,
+        "baseline_temp_c": 36.11,
+        "thermal_anomaly_c": -6.11,
+        "sensor_source": "Landsat-9 TIRS-2 Level-2 ST",
+        "observation_time": "2026-05-15T05:12:30Z"
+      },
+      "demographics": null,
+      "provenance": [
+        {
+          "field_name": "thermal_observation.land_surface_temp_c",
+          "classification": "DERIVED",
+          "source": "Landsat-9 TIRS-2 C2L2 (LC09_L2SP_142051_SYNTHETIC_SAMPLE) [SYNTHETIC DEMO]",
+          "confidence": 1.0,
+          "notes": "Synthetic demonstration raster calibrated to Landsat-9 radiometric properties (170/170 valid pixels)"
+        },
+        {
+          "field_name": "thermal_observation.thermal_anomaly_c",
+          "classification": "DERIVED",
+          "source": "THERMOS Regional Baseline Subtraction",
+          "confidence": 1.0,
+          "notes": "Delta T relative to AOI baseline 36.11\u00b0C"
+        },
+        {
+          "field_name": "land_cover",
+          "classification": "OBSERVED",
+          "source": "Not Observed",
+          "confidence": 0.0,
+          "notes": "Land cover indicators withheld; unobserved in thermal-only vertical slice to prevent data fabrication"
+        },
+        {
+          "field_name": "demographics",
+          "classification": "OBSERVED",
+          "source": "Not Observed",
+          "confidence": 0.0,
+          "notes": "Demographic indicators withheld; unobserved in thermal-only vertical slice to prevent data fabrication"
+        }
+      ],
+      "temperature": 30.0,
+      "vegetation": null,
+      "imperviousness": null,
+      "building_density": null,
+      "population_exposure": null,
+      "risk_score": 0.0,
+      "risk_level": "NOT_HOTSPOT"
+    },
+    {
+      "id": "GRID-0002",
+      "name": "Chennai Metropolitan Area Thermal Cell GRID-0002",
+      "typology": "satellite_grid",
+      "area_sqkm": 0.25,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.133595,
+              12.886113
+            ],
+            [
+              80.13358,
+              12.890634
+            ],
+            [
+              80.128972,
+              12.890619
+            ],
+            [
+              80.128987,
+              12.886098
+            ],
+            [
+              80.133595,
+              12.886113
+            ]
+          ]
+        ]
+      },
+      "land_cover": null,
+      "thermal_observation": {
+        "land_surface_temp_c": 39.75,
+        "baseline_temp_c": 36.11,
+        "thermal_anomaly_c": 3.64,
+        "sensor_source": "Landsat-9 TIRS-2 Level-2 ST",
+        "observation_time": "2026-05-15T05:12:30Z"
+      },
+      "demographics": null,
+      "provenance": [
+        {
+          "field_name": "thermal_observation.land_surface_temp_c",
+          "classification": "DERIVED",
+          "source": "Landsat-9 TIRS-2 C2L2 (LC09_L2SP_142051_SYNTHETIC_SAMPLE) [SYNTHETIC DEMO]",
+          "confidence": 1.0,
+          "notes": "Synthetic demonstration raster calibrated to Landsat-9 radiometric properties (160/160 valid pixels)"
+        },
+        {
+          "field_name": "thermal_observation.thermal_anomaly_c",
+          "classification": "DERIVED",
+          "source": "THERMOS Regional Baseline Subtraction",
+          "confidence": 1.0,
+          "notes": "Delta T relative to AOI baseline 36.11\u00b0C"
+        },
+        {
+          "field_name": "land_cover",
+          "classification": "OBSERVED",
+          "source": "Not Observed",
+          "confidence": 0.0,
+          "notes": "Land cover indicators withheld; unobserved in thermal-only vertical slice to prevent data fabrication"
+        },
+        {
+          "field_name": "demographics",
+          "classification": "OBSERVED",
+          "source": "Not Observed",
+          "confidence": 0.0,
+          "notes": "Demographic indicators withheld; unobserved in thermal-only vertical slice to prevent data fabrication"
+        }
+      ],
+      "temperature": 39.75,
+      "vegetation": null,
+      "imperviousness": null,
+      "building_density": null,
+      "population_exposure": null,
+      "risk_score": 24.3,
+      "risk_level": "MODERATE_HOTSPOT"
+    },
+    {
+      "id": "GRID-0003",
+      "name": "Chennai Metropolitan Area Thermal Cell GRID-0003",
+      "typology": "satellite_grid",
+      "area_sqkm": 0.25,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.138204,
+              12.886129
+            ],
+            [
+              80.138188,
+              12.89065
+            ],
+            [
+              80.13358,
+              12.890634
+            ],
+            [
+              80.133595,
+              12.886113
+            ],
+            [
+              80.138204,
+              12.886129
+            ]
+          ]
+        ]
+      },
+      "land_cover": null,
+      "thermal_observation": {
+        "land_surface_temp_c": 42.0,
+        "baseline_temp_c": 36.11,
+        "thermal_anomaly_c": 5.89,
+        "sensor_source": "Landsat-9 TIRS-2 Level-2 ST",
+        "observation_time": "2026-05-15T05:12:30Z"
+      },
+      "demographics": null,
+      "provenance": [
+        {
+          "field_name": "thermal_observation.land_surface_temp_c",
+          "classification": "DERIVED",
+          "source": "Landsat-9 TIRS-2 C2L2 (LC09_L2SP_142051_SYNTHETIC_SAMPLE) [SYNTHETIC DEMO]",
+          "confidence": 0.41,
+          "notes": "Synthetic demonstration raster calibrated to Landsat-9 radiometric properties (70/170 valid pixels)"
+        },
+        {
+          "field_name": "thermal_observation.thermal_anomaly_c",
+          "classification": "DERIVED",
+          "source": "THERMOS Regional Baseline Subtraction",
+          "confidence": 0.41,
+          "notes": "Delta T relative to AOI baseline 36.11\u00b0C"
+        },
+        {
+          "field_name": "land_cover",
+          "classification": "OBSERVED",
+          "source": "Not Observed",
+          "confidence": 0.0,
+          "notes": "Land cover indicators withheld; unobserved in thermal-only vertical slice to prevent data fabrication"
+        },
+        {
+          "field_name": "demographics",
+          "classification": "OBSERVED",
+          "source": "Not Observed",
+          "confidence": 0.0,
+          "notes": "Demographic indicators withheld; unobserved in thermal-only vertical slice to prevent data fabrication"
+        }
+      ],
+      "temperature": 42.0,
+      "vegetation": null,
+      "imperviousness": null,
+      "building_density": null,
+      "population_exposure": null,
+      "risk_score": 39.3,
+      "risk_level": "HIGH_HOTSPOT"
+    },
+    {
+      "id": "GRID-0005",
+      "name": "Chennai Metropolitan Area Thermal Cell GRID-0005",
+      "typology": "satellite_grid",
+      "area_sqkm": 0.25,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.129003,
+              12.881577
+            ],
+            [
+              80.128987,
+              12.886098
+            ],
+            [
+              80.124379,
+              12.886083
+            ],
+            [
+              80.124395,
+              12.881562
+            ],
+            [
+              80.129003,
+              12.881577
+            ]
+          ]
+        ]
+      },
+      "land_cover": null,
+      "thermal_observation": {
+        "land_surface_temp_c": 30.0,
+        "baseline_temp_c": 36.11,
+        "thermal_anomaly_c": -6.11,
+        "sensor_source": "Landsat-9 TIRS-2 Level-2 ST",
+        "observation_time": "2026-05-15T05:12:30Z"
+      },
+      "demographics": null,
+      "provenance": [
+        {
+          "field_name": "thermal_observation.land_surface_temp_c",
+          "classification": "DERIVED",
+          "source": "Landsat-9 TIRS-2 C2L2 (LC09_L2SP_142051_SYNTHETIC_SAMPLE) [SYNTHETIC DEMO]",
+          "confidence": 0.59,
+          "notes": "Synthetic demonstration raster calibrated to Landsat-9 radiometric properties (170/289 valid pixels)"
+        },
+        {
+          "field_name": "thermal_observation.thermal_anomaly_c",
+          "classification": "DERIVED",
+          "source": "THERMOS Regional Baseline Subtraction",
+          "confidence": 0.59,
+          "notes": "Delta T relative to AOI baseline 36.11\u00b0C"
+        },
+        {
+          "field_name": "land_cover",
+          "classification": "OBSERVED",
+          "source": "Not Observed",
+          "confidence": 0.0,
+          "notes": "Land cover indicators withheld; unobserved in thermal-only vertical slice to prevent data fabrication"
+        },
+        {
+          "field_name": "demographics",
+          "classification": "OBSERVED",
+          "source": "Not Observed",
+          "confidence": 0.0,
+          "notes": "Demographic indicators withheld; unobserved in thermal-only vertical slice to prevent data fabrication"
+        }
+      ],
+      "temperature": 30.0,
+      "vegetation": null,
+      "imperviousness": null,
+      "building_density": null,
+      "population_exposure": null,
+      "risk_score": 0.0,
+      "risk_level": "NOT_HOTSPOT"
+    },
+    {
+      "id": "GRID-0006",
+      "name": "Chennai Metropolitan Area Thermal Cell GRID-0006",
+      "typology": "satellite_grid",
+      "area_sqkm": 0.25,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.133611,
+              12.881593
+            ],
+            [
+              80.133595,
+              12.886113
+            ],
+            [
+              80.128987,
+              12.886098
+            ],
+            [
+              80.129003,
+              12.881577
+            ],
+            [
+              80.133611,
+              12.881593
+            ]
+          ]
+        ]
+      },
+      "land_cover": null,
+      "thermal_observation": {
+        "land_surface_temp_c": 38.03,
+        "baseline_temp_c": 36.11,
+        "thermal_anomaly_c": 1.92,
+        "sensor_source": "Landsat-9 TIRS-2 Level-2 ST",
+        "observation_time": "2026-05-15T05:12:30Z"
+      },
+      "demographics": null,
+      "provenance": [
+        {
+          "field_name": "thermal_observation.land_surface_temp_c",
+          "classification": "DERIVED",
+          "source": "Landsat-9 TIRS-2 C2L2 (LC09_L2SP_142051_SYNTHETIC_SAMPLE) [SYNTHETIC DEMO]",
+          "confidence": 0.92,
+          "notes": "Synthetic demonstration raster calibrated to Landsat-9 radiometric properties (251/272 valid pixels)"
+        },
+        {
+          "field_name": "thermal_observation.thermal_anomaly_c",
+          "classification": "DERIVED",
+          "source": "THERMOS Regional Baseline Subtraction",
+          "confidence": 0.92,
+          "notes": "Delta T relative to AOI baseline 36.11\u00b0C"
+        },
+        {
+          "field_name": "land_cover",
+          "classification": "OBSERVED",
+          "source": "Not Observed",
+          "confidence": 0.0,
+          "notes": "Land cover indicators withheld; unobserved in thermal-only vertical slice to prevent data fabrication"
+        },
+        {
+          "field_name": "demographics",
+          "classification": "OBSERVED",
+          "source": "Not Observed",
+          "confidence": 0.0,
+          "notes": "Demographic indicators withheld; unobserved in thermal-only vertical slice to prevent data fabrication"
+        }
+      ],
+      "temperature": 38.03,
+      "vegetation": null,
+      "imperviousness": null,
+      "building_density": null,
+      "population_exposure": null,
+      "risk_score": 12.8,
+      "risk_level": "NOT_HOTSPOT"
+    },
+    {
+      "id": "GRID-0007",
+      "name": "Chennai Metropolitan Area Thermal Cell GRID-0007",
+      "typology": "satellite_grid",
+      "area_sqkm": 0.25,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.138219,
+              12.881608
+            ],
+            [
+              80.138204,
+              12.886129
+            ],
+            [
+              80.133595,
+              12.886113
+            ],
+            [
+              80.133611,
+              12.881593
+            ],
+            [
+              80.138219,
+              12.881608
+            ]
+          ]
+        ]
+      },
+      "land_cover": null,
+      "thermal_observation": {
+        "land_surface_temp_c": 39.12,
+        "baseline_temp_c": 36.11,
+        "thermal_anomaly_c": 3.01,
+        "sensor_source": "Landsat-9 TIRS-2 Level-2 ST",
+        "observation_time": "2026-05-15T05:12:30Z"
+      },
+      "demographics": null,
+      "provenance": [
+        {
+          "field_name": "thermal_observation.land_surface_temp_c",
+          "classification": "DERIVED",
+          "source": "Landsat-9 TIRS-2 C2L2 (LC09_L2SP_142051_SYNTHETIC_SAMPLE) [SYNTHETIC DEMO]",
+          "confidence": 0.41,
+          "notes": "Synthetic demonstration raster calibrated to Landsat-9 radiometric properties (119/289 valid pixels)"
+        },
+        {
+          "field_name": "thermal_observation.thermal_anomaly_c",
+          "classification": "DERIVED",
+          "source": "THERMOS Regional Baseline Subtraction",
+          "confidence": 0.41,
+          "notes": "Delta T relative to AOI baseline 36.11\u00b0C"
+        },
+        {
+          "field_name": "land_cover",
+          "classification": "OBSERVED",
+          "source": "Not Observed",
+          "confidence": 0.0,
+          "notes": "Land cover indicators withheld; unobserved in thermal-only vertical slice to prevent data fabrication"
+        },
+        {
+          "field_name": "demographics",
+          "classification": "OBSERVED",
+          "source": "Not Observed",
+          "confidence": 0.0,
+          "notes": "Demographic indicators withheld; unobserved in thermal-only vertical slice to prevent data fabrication"
+        }
+      ],
+      "temperature": 39.12,
+      "vegetation": null,
+      "imperviousness": null,
+      "building_density": null,
+      "population_exposure": null,
+      "risk_score": 20.1,
+      "risk_level": "MODERATE_HOTSPOT"
+    },
+    {
+      "id": "GRID-0010",
+      "name": "Chennai Metropolitan Area Thermal Cell GRID-0010",
+      "typology": "satellite_grid",
+      "area_sqkm": 0.25,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.133626,
+              12.877072
+            ],
+            [
+              80.133611,
+              12.881593
+            ],
+            [
+              80.129003,
+              12.881577
+            ],
+            [
+              80.129018,
+              12.877056
+            ],
+            [
+              80.133626,
+              12.877072
+            ]
+          ]
+        ]
+      },
+      "land_cover": null,
+      "thermal_observation": {
+        "land_surface_temp_c": 35.0,
+        "baseline_temp_c": 36.11,
+        "thermal_anomaly_c": -1.11,
+        "sensor_source": "Landsat-9 TIRS-2 Level-2 ST",
+        "observation_time": "2026-05-15T05:12:30Z"
+      },
+      "demographics": null,
+      "provenance": [
+        {
+          "field_name": "thermal_observation.land_surface_temp_c",
+          "classification": "DERIVED",
+          "source": "Landsat-9 TIRS-2 C2L2 (LC09_L2SP_142051_SYNTHETIC_SAMPLE) [SYNTHETIC DEMO]",
+          "confidence": 0.56,
+          "notes": "Synthetic demonstration raster calibrated to Landsat-9 radiometric properties (143/256 valid pixels)"
+        },
+        {
+          "field_name": "thermal_observation.thermal_anomaly_c",
+          "classification": "DERIVED",
+          "source": "THERMOS Regional Baseline Subtraction",
+          "confidence": 0.56,
+          "notes": "Delta T relative to AOI baseline 36.11\u00b0C"
+        },
+        {
+          "field_name": "land_cover",
+          "classification": "OBSERVED",
+          "source": "Not Observed",
+          "confidence": 0.0,
+          "notes": "Land cover indicators withheld; unobserved in thermal-only vertical slice to prevent data fabrication"
+        },
+        {
+          "field_name": "demographics",
+          "classification": "OBSERVED",
+          "source": "Not Observed",
+          "confidence": 0.0,
+          "notes": "Demographic indicators withheld; unobserved in thermal-only vertical slice to prevent data fabrication"
+        }
+      ],
+      "temperature": 35.0,
+      "vegetation": null,
+      "imperviousness": null,
+      "building_density": null,
+      "population_exposure": null,
+      "risk_score": 0.0,
+      "risk_level": "NOT_HOTSPOT"
+    },
+    {
+      "id": "GRID-0011",
+      "name": "Chennai Metropolitan Area Thermal Cell GRID-0011",
+      "typology": "satellite_grid",
+      "area_sqkm": 0.25,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.138234,
+              12.877087
+            ],
+            [
+              80.138219,
+              12.881608
+            ],
+            [
+              80.133611,
+              12.881593
+            ],
+            [
+              80.133626,
+              12.877072
+            ],
+            [
+              80.138234,
+              12.877087
+            ]
+          ]
+        ]
+      },
+      "land_cover": null,
+      "thermal_observation": {
+        "land_surface_temp_c": 35.0,
+        "baseline_temp_c": 36.11,
+        "thermal_anomaly_c": -1.11,
+        "sensor_source": "Landsat-9 TIRS-2 Level-2 ST",
+        "observation_time": "2026-05-15T05:12:30Z"
+      },
+      "demographics": null,
+      "provenance": [
+        {
+          "field_name": "thermal_observation.land_surface_temp_c",
+          "classification": "DERIVED",
+          "source": "Landsat-9 TIRS-2 C2L2 (LC09_L2SP_142051_SYNTHETIC_SAMPLE) [SYNTHETIC DEMO]",
+          "confidence": 0.28,
+          "notes": "Synthetic demonstration raster calibrated to Landsat-9 radiometric properties (77/272 valid pixels)"
+        },
+        {
+          "field_name": "thermal_observation.thermal_anomaly_c",
+          "classification": "DERIVED",
+          "source": "THERMOS Regional Baseline Subtraction",
+          "confidence": 0.28,
+          "notes": "Delta T relative to AOI baseline 36.11\u00b0C"
+        },
+        {
+          "field_name": "land_cover",
+          "classification": "OBSERVED",
+          "source": "Not Observed",
+          "confidence": 0.0,
+          "notes": "Land cover indicators withheld; unobserved in thermal-only vertical slice to prevent data fabrication"
+        },
+        {
+          "field_name": "demographics",
+          "classification": "OBSERVED",
+          "source": "Not Observed",
+          "confidence": 0.0,
+          "notes": "Demographic indicators withheld; unobserved in thermal-only vertical slice to prevent data fabrication"
+        }
+      ],
+      "temperature": 35.0,
+      "vegetation": null,
+      "imperviousness": null,
+      "building_density": null,
+      "population_exposure": null,
+      "risk_score": 0.0,
+      "risk_level": "NOT_HOTSPOT"
+    }
+  ]
+}

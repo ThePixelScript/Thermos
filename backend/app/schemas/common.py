@@ -34,6 +34,7 @@ class Typology(str, Enum):
     PARK_RIPARIAN = "park_riparian"
     INSTITUTIONAL_CAMPUS = "institutional_campus"
     MIXED_USE = "mixed_use"
+    SATELLITE_GRID = "satellite_grid"
 
 
 class ProvenanceRecord(BaseModel):

@@ -40,9 +40,9 @@ class Zone(BaseModel):
     typology: Typology
     area_sqkm: float = Field(..., gt=0.0)
     geometry: GeoJSONPolygon
-    land_cover: LandCover
+    land_cover: Optional[LandCover] = None
     thermal_observation: ThermalObservation
-    demographics: Demographics
+    demographics: Optional[Demographics] = None
     provenance: Optional[List[ProvenanceRecord]] = Field(default_factory=list)
 
     # Core analytical indicators needed for planning queries & simulations
@@ -62,14 +62,14 @@ class ZoneSummary(BaseModel):
     typology: Typology
     area_sqkm: float
     temperature: float = Field(..., description="Land surface temperature in °C")
-    vegetation: float = Field(..., description="Total vegetation fraction (canopy + grass) [0.0, 1.0]")
-    imperviousness: float = Field(..., description="Impervious surface fraction [0.0, 1.0]")
-    building_density: float = Field(..., description="Building footprint density [0.0, 1.0]")
-    population_exposure: float = Field(..., description="Normalized population exposure index [0.0, 100.0]")
-    risk_score: float = Field(..., description="Deterministic Composite Heat Risk Index [0.0, 100.0]")
-    risk_level: str = Field(..., description="Categorical risk tier")
+    vegetation: Optional[float] = Field(None, description="Total vegetation fraction (canopy + grass) [0.0, 1.0]")
+    imperviousness: Optional[float] = Field(None, description="Impervious surface fraction [0.0, 1.0]")
+    building_density: Optional[float] = Field(None, description="Building footprint density [0.0, 1.0]")
+    population_exposure: Optional[float] = Field(None, description="Normalized population exposure index [0.0, 100.0]")
+    risk_score: Optional[float] = Field(None, description="Deterministic Composite Heat Risk Index [0.0, 100.0]")
+    risk_level: Optional[str] = Field(None, description="Categorical risk tier")
     land_surface_temp_c: float
     thermal_anomaly_c: float
-    tree_canopy_fraction: float
-    impervious_surface_fraction: float
-    total_population: int
+    tree_canopy_fraction: Optional[float] = None
+    impervious_surface_fraction: Optional[float] = None
+    total_population: Optional[int] = None

@@ -66,8 +66,10 @@ def build_hotspot_summary(
     is_hot = is_hotspot(risk.score, anomaly, config)
     tier = classify_hotspot_tier(risk.score, anomaly, config)
 
-    veg = round(zone.land_cover.tree_canopy_fraction + zone.land_cover.vegetation_grass_fraction, 3)
-    exposure = round(min(100.0, (zone.demographics.population_density_per_sqkm / 50000.0) * 100.0), 1)
+    lc = zone.land_cover
+    demo = zone.demographics
+    veg = round(lc.tree_canopy_fraction + lc.vegetation_grass_fraction, 3) if lc else None
+    exposure = round(min(100.0, (demo.population_density_per_sqkm / 50000.0) * 100.0), 1) if demo else None
 
     return HotspotSummary(
         rank=rank,
@@ -76,8 +78,8 @@ def build_hotspot_summary(
         typology=zone.typology.value,
         temperature=zone.thermal_observation.land_surface_temp_c,
         vegetation=veg,
-        imperviousness=zone.land_cover.impervious_surface_fraction,
-        building_density=zone.land_cover.building_density,
+        imperviousness=lc.impervious_surface_fraction if lc else None,
+        building_density=lc.building_density if lc else None,
         population_exposure=exposure,
         risk_score=risk.score,
         risk_level=risk.risk_level,
@@ -85,8 +87,8 @@ def build_hotspot_summary(
         thermal_anomaly_c=anomaly,
         dominant_driver=dominant.name if dominant else "Thermal Anomaly",
         dominant_driver_pct=dominant.contribution_pct if dominant else 0.0,
-        total_population=zone.demographics.total_population,
-        vulnerable_population=int(zone.demographics.total_population * zone.demographics.vulnerable_ratio),
+        total_population=demo.total_population if demo else None,
+        vulnerable_population=int(demo.total_population * demo.vulnerable_ratio) if demo else None,
         area_sqkm=zone.area_sqkm,
         center_coords=centroid,
         confidence=risk.confidence,

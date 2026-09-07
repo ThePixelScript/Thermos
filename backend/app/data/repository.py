@@ -23,7 +23,12 @@ class ZoneRepository:
     """In-memory data store for urban planning zones with PostGIS-compatible querying."""
 
     def __init__(self, data_file_path: Optional[Path] = None):
-        self.data_file_path = data_file_path or settings.sample_data_path
+        if data_file_path is not None:
+            self.data_file_path = data_file_path
+        elif settings.data_mode == "real" and settings.real_data_path.exists():
+            self.data_file_path = settings.real_data_path
+        else:
+            self.data_file_path = settings.sample_data_path
         self._zones: Dict[str, Zone] = {}
         self._city_metadata: dict = {}
         self.load_data()
@@ -31,7 +36,7 @@ class ZoneRepository:
     def load_data(self) -> None:
         """Load and validate sample zones from the processed JSON file."""
         if not self.data_file_path.exists():
-            raise FileNotFoundError(f"Sample data file not found at {self.data_file_path}")
+            raise FileNotFoundError(f"Data file not found at {self.data_file_path}")
 
         with open(self.data_file_path, "r", encoding="utf-8") as f:
             data = json.load(f)
@@ -47,13 +52,15 @@ class ZoneRepository:
         self._zones.clear()
         for raw_zone in data.get("zones", []):
             zone = Zone.model_validate(raw_zone)
+            lc = zone.land_cover
+            demo = zone.demographics
             # Pre-compute analytical metrics for convenient direct access
             risk = compute_heat_risk(zone)
             zone.temperature = zone.thermal_observation.land_surface_temp_c
-            zone.vegetation = round(zone.land_cover.tree_canopy_fraction + zone.land_cover.vegetation_grass_fraction, 3)
-            zone.imperviousness = zone.land_cover.impervious_surface_fraction
-            zone.building_density = zone.land_cover.building_density
-            zone.population_exposure = round(min(100.0, (zone.demographics.population_density_per_sqkm / 50000.0) * 100.0), 1)
+            zone.vegetation = round(lc.tree_canopy_fraction + lc.vegetation_grass_fraction, 3) if lc else None
+            zone.imperviousness = lc.impervious_surface_fraction if lc else None
+            zone.building_density = lc.building_density if lc else None
+            zone.population_exposure = round(min(100.0, (demo.population_density_per_sqkm / 50000.0) * 100.0), 1) if demo else None
             zone.risk_score = risk.score
             zone.risk_level = risk.risk_level.value
             self._zones[zone.id] = zone
@@ -100,23 +107,25 @@ class ZoneRepository:
             is_hot = is_hotspot(risk.score, anomaly)
             tier = classify_hotspot_tier(risk.score, anomaly)
 
+            lc = zone.land_cover
+            demo = zone.demographics
             hotspot_candidates.append({
                 "zone_id": zone.id,
                 "zone_name": zone.name,
                 "typology": zone.typology.value,
                 "temperature": zone.thermal_observation.land_surface_temp_c,
-                "vegetation": round(zone.land_cover.tree_canopy_fraction + zone.land_cover.vegetation_grass_fraction, 3),
-                "imperviousness": zone.land_cover.impervious_surface_fraction,
-                "building_density": zone.land_cover.building_density,
-                "population_exposure": round(min(100.0, (zone.demographics.population_density_per_sqkm / 50000.0) * 100.0), 1),
+                "vegetation": round(lc.tree_canopy_fraction + lc.vegetation_grass_fraction, 3) if lc else None,
+                "imperviousness": lc.impervious_surface_fraction if lc else None,
+                "building_density": lc.building_density if lc else None,
+                "population_exposure": round(min(100.0, (demo.population_density_per_sqkm / 50000.0) * 100.0), 1) if demo else None,
                 "risk_score": risk.score,
                 "risk_level": risk.risk_level,
                 "land_surface_temp_c": zone.thermal_observation.land_surface_temp_c,
                 "thermal_anomaly_c": anomaly,
                 "dominant_driver": dominant.name if dominant else "Thermal Anomaly",
                 "dominant_driver_pct": dominant.contribution_pct if dominant else 0.0,
-                "total_population": zone.demographics.total_population,
-                "vulnerable_population": int(zone.demographics.total_population * zone.demographics.vulnerable_ratio),
+                "total_population": demo.total_population if demo else None,
+                "vulnerable_population": int(demo.total_population * demo.vulnerable_ratio) if demo else None,
                 "area_sqkm": zone.area_sqkm,
                 "center_coords": centroid,
                 "confidence": risk.confidence,

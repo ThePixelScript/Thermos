@@ -26,8 +26,11 @@ class Settings(BaseModel):
     weight_exposure: float = 0.30
     weight_vulnerability: float = 0.25
     
-    # Paths
+    # Paths and Mode
+    data_mode: str = os.getenv("DATA_MODE", "demo").lower()
     sample_data_path: Path = SAMPLE_DATA_FILE
+    real_data_path: Path = DATA_DIR / "processed" / "real_zones.json"
+    external_data_dir: Path = DATA_DIR / "external"
     cors_origins: list[str] = [
         "http://localhost:5173",
         "http://localhost:3000",
