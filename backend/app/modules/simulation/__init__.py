@@ -1,10 +1,4 @@
-"""Scenario simulation module."""
-from backend.app.modules.simulation.simulator import (
-    SimulationScenarioResult,
-    simulate_intervention_scenario,
-)
+"""Simulation module for THERMOS intervention planning."""
+from backend.app.modules.simulation.scenario_engine import simulate_scenario
 
-__all__ = [
-    "SimulationScenarioResult",
-    "simulate_intervention_scenario",
-]
+__all__ = ["simulate_scenario"]

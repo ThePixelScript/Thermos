@@ -20,6 +20,7 @@ import './index.css';
 
 export const App: React.FC = () => {
   const [health, setHealth] = useState<BackendHealth | null>(null);
+  const [isDemoMode, setIsDemoMode] = useState<boolean>(false);
   const [geoJsonData, setGeoJsonData] = useState<GeoJSONFeatureCollection | null>(null);
   const [hotspots, setHotspots] = useState<HotspotSummary[]>([]);
   const [selectedZoneId, setSelectedZoneId] = useState<string | null>(null);
@@ -28,37 +29,7 @@ export const App: React.FC = () => {
   const [detailLoading, setDetailLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const loadAllData = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const [hRes, gRes, hotRes] = await Promise.all([
-        fetchHealth().catch(() => null),
-        fetchZonesGeoJSON(),
-        fetchHotspots(30),
-      ]);
-
-      if (hRes) setHealth(hRes);
-      setGeoJsonData(gRes);
-      setHotspots(hotRes);
-
-      // Auto-select highest risk hotspot initially if none selected
-      if (hotRes.length > 0 && !selectedZoneId) {
-        handleSelectZone(hotRes[0].zone_id);
-      }
-    } catch (err: any) {
-      console.error('Failed to load initial data:', err);
-      setError(err.message || 'Error connecting to backend');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadAllData();
-  }, []);
-
-  const handleSelectZone = async (zoneId: string) => {
+  const handleSelectZone = React.useCallback(async (zoneId: string) => {
     setSelectedZoneId(zoneId);
     setDetailLoading(true);
     try {
@@ -69,7 +40,57 @@ export const App: React.FC = () => {
     } finally {
       setDetailLoading(false);
     }
-  };
+  }, []);
+
+  const [reloadTrigger, setReloadTrigger] = useState(0);
+
+  const handleRefresh = React.useCallback(() => {
+    setLoading(true);
+    setError(null);
+    setReloadTrigger((prev) => prev + 1);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadData() {
+      try {
+        const [hResult, gRes, hotRes] = await Promise.all([
+          fetchHealth(),
+          fetchZonesGeoJSON(),
+          fetchHotspots(30),
+        ]);
+        if (cancelled) return;
+        setHealth(hResult.data);
+        setIsDemoMode(hResult.isFallback);
+        setGeoJsonData(gRes);
+        setHotspots(hotRes);
+
+        if (hotRes.length > 0) {
+          setSelectedZoneId(hotRes[0].zone_id);
+          setDetailLoading(true);
+          try {
+            const detail = await fetchHotspotDetail(hotRes[0].zone_id);
+            if (!cancelled) setSelectedDetail(detail);
+          } catch (detailErr) {
+            console.warn('Initial detail load error:', detailErr);
+          } finally {
+            if (!cancelled) setDetailLoading(false);
+          }
+        }
+      } catch (err: any) {
+        if (!cancelled) {
+          console.error('Failed to load initial data:', err);
+          setError(err.message || 'Error connecting to backend');
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    void loadData();
+    return () => {
+      cancelled = true;
+    };
+  }, [reloadTrigger]);
 
   const handleCloseDetail = () => {
     setSelectedZoneId(null);
@@ -78,7 +99,12 @@ export const App: React.FC = () => {
 
   return (
     <div className="app-container">
-      <Header health={health} loading={loading} onRefresh={loadAllData} />
+      <Header
+        health={health}
+        loading={loading}
+        isDemoMode={isDemoMode}
+        onRefresh={handleRefresh}
+      />
 
       <main className="app-main">
         <SummaryBar
@@ -89,7 +115,7 @@ export const App: React.FC = () => {
         {error && (
           <div className="error-banner">
             <span>⚠️ {error}</span>
-            <button onClick={loadAllData} className="btn-retry">Retry Connection</button>
+            <button onClick={handleRefresh} className="btn-retry">Retry Connection</button>
           </div>
         )}
 
@@ -107,6 +133,7 @@ export const App: React.FC = () => {
           <section className="workbench-map">
             <ZoneMap
               geoJsonData={geoJsonData}
+              hotspots={hotspots}
               selectedZoneId={selectedZoneId}
               onSelectZone={handleSelectZone}
             />

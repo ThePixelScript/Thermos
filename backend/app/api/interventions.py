@@ -1,9 +1,15 @@
 """Interventions endpoints: cooling catalog and zone-specific estimates."""
 from typing import List
 from fastapi import APIRouter, HTTPException
-from backend.app.schemas.intervention import Intervention, InterventionEstimate
+from backend.app.schemas.intervention import (
+    Intervention,
+    InterventionEstimate,
+    SimulationRequest,
+    SimulationResponse,
+)
 from backend.app.modules.interventions.catalog import INTERVENTION_CATALOG, get_intervention_by_id
 from backend.app.modules.interventions.recommender import recommend_interventions_for_zone
+from backend.app.modules.simulation.scenario_engine import simulate_scenario
 from backend.app.modules.risk.risk_engine import compute_heat_risk
 from backend.app.data.repository import repository
 
@@ -34,3 +40,22 @@ def get_recommendations_for_zone(zone_id: str) -> List[InterventionEstimate]:
     
     risk = compute_heat_risk(zone)
     return recommend_interventions_for_zone(zone, risk)
+
+
+@router.post("/simulate", response_model=SimulationResponse)
+def simulate_intervention_scenario(payload: SimulationRequest) -> SimulationResponse:
+    """Simulate cooling impact, budget utilization, and implementation phases for a selected portfolio."""
+    if payload.budget_inr_lakhs <= 0:
+        raise HTTPException(status_code=400, detail="Budget must be greater than zero (₹ Lakhs)")
+
+    zone = repository.get_zone_by_id(payload.zone_id)
+    if not zone:
+        raise HTTPException(status_code=404, detail=f"Zone '{payload.zone_id}' not found")
+
+    # Validate selected intervention IDs
+    for int_id in payload.selected_intervention_ids:
+        if not get_intervention_by_id(int_id):
+            raise HTTPException(status_code=400, detail=f"Unknown intervention ID '{int_id}'")
+
+    return simulate_scenario(zone, payload.selected_intervention_ids, payload.budget_inr_lakhs)
+
