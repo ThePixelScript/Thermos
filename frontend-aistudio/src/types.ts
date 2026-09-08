@@ -546,6 +546,7 @@ export interface SimulationResponse {
 
 export interface GeoJSONFeature {
   type: string;
+  id?: string | number;
   geometry: {
     type: string;
     coordinates: any;
@@ -555,7 +556,7 @@ export interface GeoJSONFeature {
     zone_id?: string;
     name?: string;
     zone_name?: string;
-    risk_level?: BackendRiskLevel;
+    risk_level?: BackendRiskLevel | string;
     land_surface_temp_c?: number;
     temperature?: number;
     [key: string]: any;

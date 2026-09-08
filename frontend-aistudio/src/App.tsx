@@ -8,6 +8,7 @@ import {
   adaptBackendZoneToFrontend,
   adaptBackendInterventionToFrontend 
 } from './services/zoneAdapter';
+import { buildChennaiUrbanGeoJsonCollection } from './data/chennaiGeoJson';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { DashboardView } from './components/DashboardView';
@@ -79,13 +80,14 @@ export default function App() {
     try {
       setIsLoadingInitialData(true);
 
-      const [healthRes, zonesRes, hotspotsRes, geoJsonRes, catalogRes, realMetaRes] = await Promise.allSettled([
+      const [healthRes, zonesRes, hotspotsRes, geoJsonRes, catalogRes, realMetaRes, realGeoJsonRes] = await Promise.allSettled([
         HeatScapeApi.getHealth(),
         HeatScapeApi.getZones(),
         HeatScapeApi.getHotspots(),
         HeatScapeApi.getZonesGeoJson(),
         HeatScapeApi.getInterventionsCatalog(),
-        HeatScapeApi.getRealDataMetadata()
+        HeatScapeApi.getRealDataMetadata(),
+        HeatScapeApi.getRealZonesGeoJson()
       ]);
 
       const isOnline = healthRes.status === 'fulfilled' && 
@@ -95,11 +97,6 @@ export default function App() {
       // Real satellite metadata (Landsat-9 / TIRS-2)
       if (realMetaRes.status === 'fulfilled' && realMetaRes.value?.satellite) {
         setRealDataMeta(realMetaRes.value);
-      }
-
-      // GeoJSON spatial boundary layer
-      if (geoJsonRes.status === 'fulfilled' && geoJsonRes.value) {
-        setZonesGeoJson(geoJsonRes.value);
       }
 
       // Ranked hotspots
@@ -118,8 +115,8 @@ export default function App() {
 
       // Live zones (takes precedence over mock dataset)
       if (zonesRes.status === 'fulfilled' && Array.isArray(zonesRes.value) && zonesRes.value.length > 0) {
-        const geoData = geoJsonRes.status === 'fulfilled' ? geoJsonRes.value : undefined;
-        const adapted = adaptBackendZonesToFrontend(zonesRes.value, geoData);
+        const realGj = realGeoJsonRes.status === 'fulfilled' ? realGeoJsonRes.value : undefined;
+        const adapted = adaptBackendZonesToFrontend(zonesRes.value, realGj);
         if (adapted.length > 0) {
           setZones(adapted);
           setSelectedZone((current) => {
@@ -128,6 +125,9 @@ export default function App() {
             const canonicalDefault = adapted.find(z => z.id === 'ZONE-01' || z.code === 'ZONE-01');
             return canonicalDefault || adapted[0];
           });
+          // Build natural Chennai Urban GeoJSON collection
+          const chennaiGj = buildChennaiUrbanGeoJsonCollection(adapted, realGj);
+          setZonesGeoJson(chennaiGj);
         }
       }
     } catch (err) {

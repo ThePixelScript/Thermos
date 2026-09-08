@@ -72,30 +72,30 @@ export function deriveSvgCoordinates(
     return {
       x: coords.x,
       y: coords.y,
-      lat: coords.lat || 28.6139,
-      lng: coords.lng || 77.2090
+      lat: coords.lat || 12.888351,
+      lng: coords.lng || 80.126675
     };
   }
 
-  // Pre-calibrated spatial distribution for standard ZONE-01 .. ZONE-10 in Delhi grid
+  // Pre-calibrated spatial distribution for standard ZONE-01 .. ZONE-10 across Chennai Urban Anchors
   const standardZonePositions: Record<string, { x: number; y: number; lat: number; lng: number }> = {
-    'ZONE-01': { x: 52, y: 38, lat: 28.6315, lng: 77.2167 }, // Downtown Financial District
-    'ZONE-02': { x: 78, y: 30, lat: 28.6300, lng: 77.2375 }, // Riverfront Park & Wetlands (East, Yamuna)
-    'ZONE-03': { x: 28, y: 22, lat: 28.6600, lng: 77.1950 }, // Industrial Freight Corridor (North-West)
-    'ZONE-04': { x: 60, y: 25, lat: 28.6575, lng: 77.2275 }, // Old City Market (North Central)
-    'ZONE-05': { x: 38, y: 48, lat: 28.6325, lng: 77.2025 }, // University Campus (Central-West)
-    'ZONE-06': { x: 55, y: 62, lat: 28.6125, lng: 77.2250 }, // High-Rise Residential (South Central)
-    'ZONE-07': { x: 54, y: 30, lat: 28.6525, lng: 77.2175 }, // Central Railway Terminal
-    'ZONE-08': { x: 22, y: 50, lat: 28.6300, lng: 77.1850 }, // Greenbelt Suburban (Far West)
-    'ZONE-09': { x: 35, y: 70, lat: 28.6090, lng: 77.2000 }, // Biotech District (South-West)
-    'ZONE-10': { x: 68, y: 18, lat: 28.6725, lng: 77.2325 }, // Ashray Nagar Settlement (North-East)
+    'ZONE-01': { x: 55, y: 35, lat: 13.0625, lng: 80.2585 }, // CBD / Anna Salai
+    'ZONE-02': { x: 50, y: 70, lat: 12.9450, lng: 80.2180 }, // Pallikaranai Wetlands
+    'ZONE-03': { x: 30, y: 20, lat: 13.1080, lng: 80.1620 }, // Ambattur Industrial Estate
+    'ZONE-04': { x: 45, y: 50, lat: 13.0085, lng: 80.2085 }, // Guindy Industrial Core
+    'ZONE-05': { x: 52, y: 55, lat: 12.9910, lng: 80.2330 }, // University & IIT Reserve
+    'ZONE-06': { x: 50, y: 60, lat: 12.9785, lng: 80.2185 }, // Velachery Residential Core
+    'ZONE-07': { x: 60, y: 28, lat: 13.0835, lng: 80.2755 }, // Central Railway Terminus
+    'ZONE-08': { x: 20, y: 85, lat: 12.8880, lng: 80.0860 }, // Greenbelt / Vandalur Periphery
+    'ZONE-09': { x: 55, y: 80, lat: 12.9020, lng: 80.2280 }, // OMR Sholinganallur Tech Corridor
+    'ZONE-10': { x: 56, y: 65, lat: 12.9620, lng: 80.2435 }, // Ashray Nagar / Perungudi
 
-    // Legacy mock ID fallbacks for graceful resilience
-    'ZONE-17': { x: 48, y: 38, lat: 28.6139, lng: 77.2090 },
-    'ZONE-21': { x: 74, y: 64, lat: 28.5910, lng: 77.2450 },
-    'ZONE-25': { x: 62, y: 24, lat: 28.6510, lng: 77.2300 },
-    'ZONE-12': { x: 50, y: 52, lat: 28.6100, lng: 77.2050 },
-    'ZONE-15': { x: 74, y: 28, lat: 28.6410, lng: 77.2510 },
+    // Legacy mock ID fallbacks mapped to Chennai urban anchors
+    'ZONE-17': { x: 55, y: 35, lat: 13.0625, lng: 80.2585 },
+    'ZONE-21': { x: 60, y: 28, lat: 13.0835, lng: 80.2755 },
+    'ZONE-25': { x: 30, y: 20, lat: 13.1080, lng: 80.1620 },
+    'ZONE-12': { x: 45, y: 50, lat: 13.0085, lng: 80.2085 },
+    'ZONE-15': { x: 50, y: 70, lat: 12.9450, lng: 80.2180 },
   };
 
   const cleanId = (zoneId || '').toUpperCase().trim();
@@ -115,8 +115,8 @@ export function deriveSvgCoordinates(
   return {
     x,
     y,
-    lat: coords?.lat || 28.6139,
-    lng: coords?.lng || 77.2090
+    lat: coords?.lat || 12.888351,
+    lng: coords?.lng || 80.126675
   };
 }
 
