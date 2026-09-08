@@ -170,3 +170,9 @@ data/external/
 *.tar.gz
 *.tar
 
+# Generated real satellite data artifacts (regenerate via scripts/ingest_landsat.py)
+data/processed/real_zones.json
+data/processed/real_zones_chennai_genuine.json
+data/processed/*.bak.json
+
+

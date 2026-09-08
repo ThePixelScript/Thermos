@@ -108,11 +108,17 @@ When evaluating satellite-derived grid cells in the absence of micro-demographic
 A standalone CLI utility is provided for ingesting Landsat scenes:
 
 ```bash
-# Ingest downloaded Landsat GeoTIFF:
-python scripts/ingest_landsat.py --st-path data/external/LC09_L2SP_142051_20260515_02_T1_ST_B10.TIF --qa-path data/external/LC09_L2SP_142051_20260515_02_T1_QA_PIXEL.TIF
+# Ingest genuine Chennai Landsat 9 scene (Path 142 / Row 051, acquired 2025-02-19):
+python scripts/ingest_landsat.py \
+  --st-path data/external/LC09_L2SP_142051_20250219_20250220_02_T1_ST_B10.TIF \
+  --qa-path data/external/LC09_L2SP_142051_20250219_20250220_02_T1_QA_PIXEL.TIF \
+  --city "Chennai Metropolitan Area" \
+  --grid-res 500 \
+  --aoi 79.95 12.75 80.45 13.35
 
 # Generate calibrated demonstration scene for Chennai AOI:
 python scripts/ingest_landsat.py --generate-sample
+
 ```
 
 ---

@@ -74,7 +74,7 @@ def main():
 
     aoi_bbox = tuple(args.aoi) if args.aoi else None
 
-    print(f"[*] Ingesting Landsat scene: {scene_meta.get('scene_id')}")
+    print(f"[*] Ingesting Landsat scene: {(scene_meta or {}).get('scene_id') or Path(st_path).stem}")
     print(f"    Grid Resolution: {args.grid_res}m")
     print(f"    Study Area: {args.city}")
 
