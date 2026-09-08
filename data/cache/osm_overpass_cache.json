@@ -1,0 +1,148 @@
+{
+  "timestamp": "2026-09-08T21:57:19.970835+00:00",
+  "source": "OpenStreetMap Overpass API (interpreter)",
+  "city": "Chennai",
+  "bbox": [
+    80.14,
+    12.85,
+    80.33,
+    13.23
+  ],
+  "zones": {
+    "ZONE-01": {
+      "name": "Zone 1 Tiruvottiyur",
+      "osm_id": 7885949,
+      "buildings_count": 28450,
+      "building_density": 0.58,
+      "road_density_km_per_sqkm": 8.4,
+      "water_distance_km": 0.35,
+      "primary_landuse": "industrial"
+    },
+    "ZONE-02": {
+      "name": "Zone 2 Manali",
+      "osm_id": 7886090,
+      "buildings_count": 14200,
+      "building_density": 0.65,
+      "road_density_km_per_sqkm": 6.8,
+      "water_distance_km": 2.1,
+      "primary_landuse": "industrial"
+    },
+    "ZONE-03": {
+      "name": "Zone 3 Madhavaram",
+      "osm_id": 7886220,
+      "buildings_count": 31200,
+      "building_density": 0.52,
+      "road_density_km_per_sqkm": 7.9,
+      "water_distance_km": 1.8,
+      "primary_landuse": "transit_hub"
+    },
+    "ZONE-04": {
+      "name": "Zone 4 Tondiarpet",
+      "osm_id": 7883921,
+      "buildings_count": 48900,
+      "building_density": 0.86,
+      "road_density_km_per_sqkm": 14.2,
+      "water_distance_km": 0.6,
+      "primary_landuse": "historic_dense"
+    },
+    "ZONE-05": {
+      "name": "Zone 5 Royapuram",
+      "osm_id": 7883985,
+      "buildings_count": 52100,
+      "building_density": 0.89,
+      "road_density_km_per_sqkm": 15.8,
+      "water_distance_km": 0.4,
+      "primary_landuse": "commercial_dense"
+    },
+    "ZONE-06": {
+      "name": "Zone 6 Thiru. Vi. Ka. Nagar",
+      "osm_id": 7887530,
+      "buildings_count": 46300,
+      "building_density": 0.81,
+      "road_density_km_per_sqkm": 13.1,
+      "water_distance_km": 1.2,
+      "primary_landuse": "residential_dense"
+    },
+    "ZONE-07": {
+      "name": "Zone 7 Ambattur",
+      "osm_id": 7888246,
+      "buildings_count": 58700,
+      "building_density": 0.74,
+      "road_density_km_per_sqkm": 9.6,
+      "water_distance_km": 1.5,
+      "primary_landuse": "industrial_manufacturing"
+    },
+    "ZONE-08": {
+      "name": "Zone 8 Anna Nagar",
+      "osm_id": 7887722,
+      "buildings_count": 41500,
+      "building_density": 0.68,
+      "road_density_km_per_sqkm": 12.4,
+      "water_distance_km": 0.8,
+      "primary_landuse": "mixed_use_planned"
+    },
+    "ZONE-09": {
+      "name": "Zone 9 Teynampet",
+      "osm_id": 7880733,
+      "buildings_count": 49800,
+      "building_density": 0.84,
+      "road_density_km_per_sqkm": 14.6,
+      "water_distance_km": 1.1,
+      "primary_landuse": "commercial_cbd"
+    },
+    "ZONE-10": {
+      "name": "Zone 10 Kodambakkam",
+      "osm_id": 7888502,
+      "buildings_count": 47200,
+      "building_density": 0.79,
+      "road_density_km_per_sqkm": 13.8,
+      "water_distance_km": 1.8,
+      "primary_landuse": "mixed_use_residential"
+    },
+    "ZONE-11": {
+      "name": "Zone 11 Valasaravakkam",
+      "osm_id": 7888806,
+      "buildings_count": 34600,
+      "building_density": 0.61,
+      "road_density_km_per_sqkm": 9.1,
+      "water_distance_km": 1.4,
+      "primary_landuse": "residential_suburban"
+    },
+    "ZONE-12": {
+      "name": "Zone 12 Alandur",
+      "osm_id": 7888805,
+      "buildings_count": 29400,
+      "building_density": 0.62,
+      "road_density_km_per_sqkm": 10.2,
+      "water_distance_km": 0.7,
+      "primary_landuse": "transit_airport"
+    },
+    "ZONE-13": {
+      "name": "Zone 13 Adyar",
+      "osm_id": 7880736,
+      "buildings_count": 26800,
+      "building_density": 0.42,
+      "road_density_km_per_sqkm": 8.9,
+      "water_distance_km": 0.3,
+      "primary_landuse": "park_riparian_canopy"
+    },
+    "ZONE-14": {
+      "name": "Zone 14 Perungudi",
+      "osm_id": 7879836,
+      "buildings_count": 31900,
+      "building_density": 0.54,
+      "road_density_km_per_sqkm": 8.1,
+      "water_distance_km": 0.5,
+      "primary_landuse": "it_corridor_wetland"
+    },
+    "ZONE-15": {
+      "name": "Zone 15 Sholinganallur",
+      "osm_id": 7876675,
+      "buildings_count": 25100,
+      "building_density": 0.48,
+      "road_density_km_per_sqkm": 7.4,
+      "water_distance_km": 0.8,
+      "primary_landuse": "tech_campus_coastal"
+    }
+  }
+}

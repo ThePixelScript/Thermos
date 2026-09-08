@@ -11,9 +11,11 @@ router = APIRouter(prefix="/hotspots", tags=["Hotspots"])
 def get_all_hotspots(
     min_risk: float = Query(default=30.0, ge=0.0, le=100.0, description="Minimum Composite Heat Risk Index score"),
     min_anomaly: Optional[float] = Query(default=None, description="Minimum thermal anomaly in °C"),
+    lat: Optional[float] = Query(default=None, description="Latitude for location-driven hotspots"),
+    lon: Optional[float] = Query(default=None, description="Longitude for location-driven hotspots"),
 ) -> List[HotspotSummary]:
     """Retrieve ranked urban thermal hotspots prioritized by composite heat risk."""
-    return repository.list_hotspots(min_risk_score=min_risk, min_anomaly_c=min_anomaly)
+    return repository.list_hotspots(min_risk_score=min_risk, min_anomaly_c=min_anomaly, lat=lat, lon=lon)
 
 
 @router.get("/{zone_id}", response_model=HotspotDetail)

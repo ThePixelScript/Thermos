@@ -14,29 +14,62 @@ export const SummaryBar: React.FC<SummaryBarProps> = ({ hotspots, totalZones }) 
 
   return (
     <div className="summary-bar">
+      {/* Card 1: Peak Surface Temp */}
       <div className="summary-card">
-        <span className="summary-label">Monitored Zones</span>
-        <span className="summary-value">{totalZones}</span>
-        <span className="summary-caption">Urban Sectors</span>
+        <div className="summary-card-header">
+          <span className="summary-label">Peak Surface Temp</span>
+          <span className="summary-trend critical">
+            ↑ +{maxAnomaly.toFixed(1)}°C anomaly
+          </span>
+        </div>
+        <div className="summary-value">
+          {maxTemp > 0 ? `${maxTemp.toFixed(1)}°C` : '—'}
+        </div>
+        <div className="summary-caption">Landsat 8/9 Thermal Infrared</div>
       </div>
 
+      {/* Card 2: Priority Hotspots */}
       <div className="summary-card alert">
-        <span className="summary-label">Active Hotspots</span>
-        <span className="summary-value">{hotspots.length}</span>
-        <span className="summary-caption">{criticalCount} Severe / Critical</span>
+        <div className="summary-card-header">
+          <span className="summary-label">Priority Hotspots</span>
+          <span className="summary-trend warning">
+            {criticalCount} Critical / Severe
+          </span>
+        </div>
+        <div className="summary-value">{hotspots.length}</div>
+        <div className="summary-caption">CHRI risk threshold ≥ 30</div>
       </div>
 
+      {/* Card 3: Vulnerable Population */}
       <div className="summary-card">
-        <span className="summary-label">Peak Surface Temp</span>
-        <span className="summary-value">{maxTemp.toFixed(1)}°C</span>
-        <span className="summary-caption">Anomaly: +{maxAnomaly.toFixed(1)}°C</span>
+        <div className="summary-card-header">
+          <span className="summary-label">Vulnerable Population</span>
+          <span className="summary-trend neutral">High exposure</span>
+        </div>
+        <div className="summary-value">{totalPopAtRisk.toLocaleString()}</div>
+        <div className="summary-caption">Infants (&lt;5) &amp; Seniors (&gt;65)</div>
       </div>
 
+      {/* Card 4: Monitored Sectors */}
       <div className="summary-card">
-        <span className="summary-label">Vulnerable Pop. at Risk</span>
-        <span className="summary-value">{totalPopAtRisk.toLocaleString()}</span>
-        <span className="summary-caption">Infants & Seniors</span>
+        <div className="summary-card-header">
+          <span className="summary-label">Monitored Sectors</span>
+          <span className="summary-trend success">Active coverage</span>
+        </div>
+        <div className="summary-value">{totalZones}</div>
+        <div className="summary-caption">Metropolitan urban core</div>
+      </div>
+
+      {/* Card 5: Decision Intelligence */}
+      <div className="summary-card engine-badge-card">
+        <div className="summary-card-header">
+          <span className="summary-label">Analytics Core</span>
+          <span className="summary-trend success">● Online</span>
+        </div>
+        <div className="summary-value small">CHRI-v1.0</div>
+        <div className="summary-caption">Biophysical remote sensing</div>
       </div>
     </div>
   );
 };
+

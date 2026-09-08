@@ -31,6 +31,46 @@ from backend.app.schemas.hotspot import (
     HotspotSummary,
     HotspotDetail,
 )
+from backend.app.schemas.chri import (
+    CHRIScore,
+    HeatHotspot,
+    MitigationAction,
+    ZoneRecommendation,
+    LiveRasterMetrics,
+    LiveCHRIScore,
+    LiveHeatHotspot,
+    HotspotTrendsSummary,
+)
+from backend.app.schemas.raster import (
+    STACScene,
+    TileJSON,
+    NDVIZonalStats,
+    NDVIColormapBreak,
+    LSTZonalStats,
+    LSTColormapBreak,
+)
+from backend.app.schemas.forecast import (
+    ForecastDriverImpact,
+    ForecastPoint,
+    CHRIForecast,
+    ForecastAlert,
+    CitywideForecastSummary,
+)
+from backend.app.schemas.city import (
+    CityCommandOverview,
+    PriorityIntervention,
+    MunicipalAction,
+    ResourcePortfolio,
+    ExecutiveSummary,
+)
+from backend.app.schemas.simulation import (
+    SimulationRequest,
+    SimulationResult,
+    ScenarioComparisonRequest,
+    ScenarioComparisonResponse,
+    CitywideSimulationResult,
+    ZoneSimulationMetadata,
+)
 
 __all__ = [
     "DataClassification",
@@ -55,4 +95,34 @@ __all__ = [
     "PlanningConstraints",
     "HotspotSummary",
     "HotspotDetail",
+    "CHRIScore",
+    "HeatHotspot",
+    "MitigationAction",
+    "ZoneRecommendation",
+    "LiveRasterMetrics",
+    "LiveCHRIScore",
+    "LiveHeatHotspot",
+    "HotspotTrendsSummary",
+    "STACScene",
+    "TileJSON",
+    "NDVIZonalStats",
+    "NDVIColormapBreak",
+    "LSTZonalStats",
+    "LSTColormapBreak",
+    "ForecastDriverImpact",
+    "ForecastPoint",
+    "CHRIForecast",
+    "ForecastAlert",
+    "CitywideForecastSummary",
+    "CityCommandOverview",
+    "PriorityIntervention",
+    "MunicipalAction",
+    "ResourcePortfolio",
+    "ExecutiveSummary",
+    "SimulationRequest",
+    "SimulationResult",
+    "ScenarioComparisonRequest",
+    "ScenarioComparisonResponse",
+    "CitywideSimulationResult",
+    "ZoneSimulationMetadata",
 ]

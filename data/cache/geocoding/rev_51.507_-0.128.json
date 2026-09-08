@@ -1,0 +1,16 @@
+{
+  "cached_at": 1788909185.6136534,
+  "data": {
+    "name": "Mileage Central Point of London Plaque",
+    "display_name": "Mileage Central Point of London Plaque, King Charles I Island, Westminster, Covent Garden, City of Westminster, Greater London, England, WC2N 5DU, United Kingdom",
+    "lat": 51.5074,
+    "lon": -0.1278,
+    "bbox": [
+      51.5073562,
+      51.5074562,
+      -0.1277415,
+      -0.1276415
+    ],
+    "source": "Nominatim OpenStreetMap"
+  }
+}

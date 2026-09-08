@@ -1,0 +1,21 @@
+{
+  "cached_at": 1788909623.6809497,
+  "results": [
+    {
+      "name": "SDAT District Indoor Stadium - Dindigu",
+      "display_name": "SDAT District Indoor Stadium - Dindigu, Srinagar - Kanniyakumari Saalai, Dindigul, Tamil Nadu, 624001, India",
+      "lat": 10.3965098,
+      "lon": 77.9632797,
+      "bbox": [
+        10.3960305,
+        10.3970104,
+        77.9630135,
+        77.9635177
+      ],
+      "type": "sports_centre",
+      "category": "leisure",
+      "importance": 5.052491035320085e-05,
+      "source": "Nominatim OpenStreetMap"
+    }
+  ]
+}

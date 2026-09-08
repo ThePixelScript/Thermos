@@ -1,0 +1,16 @@
+{
+  "cached_at": 1788909152.9163077,
+  "data": {
+    "name": "Tokyo Tower",
+    "display_name": "Tokyo Tower, Minato, Tokyo, Japan",
+    "lat": 35.6586,
+    "lon": 139.7454,
+    "bbox": [
+      35.658,
+      35.659,
+      139.745,
+      139.746
+    ],
+    "source": "Nominatim OpenStreetMap"
+  }
+}

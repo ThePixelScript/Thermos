@@ -1,10 +1,10 @@
-"""Zone endpoints: GeoJSON feature collection and individual zone queries."""
-from typing import List
-from fastapi import APIRouter, HTTPException
+from typing import List, Optional
+from fastapi import APIRouter, HTTPException, Query
 from backend.app.schemas.zone import Zone, ZoneSummary
 from backend.app.schemas.common import GeoJSONFeatureCollection
 from backend.app.data.repository import repository
 from backend.app.modules.risk.risk_engine import compute_heat_risk
+from backend.app.modules.geospatial.pipeline import geospatial_pipeline
 
 router = APIRouter(prefix="/zones", tags=["Zones"])
 
@@ -46,6 +46,20 @@ def get_all_zones() -> List[ZoneSummary]:
 def get_zones_geojson() -> GeoJSONFeatureCollection:
     """Retrieve all zones formatted as an RFC 7946 GeoJSON FeatureCollection for MapLibre GL JS."""
     return repository.get_geojson_feature_collection()
+
+
+@router.get("/hexagons", response_model=GeoJSONFeatureCollection)
+def get_zones_hexagons(
+    resolution_km: float = Query(default=2.5, ge=1.0, le=10.0, description="Hexagonal grid cell diameter in km"),
+    lat: Optional[float] = Query(default=None, description="Latitude for hexagonal grid center"),
+    lon: Optional[float] = Query(default=None, description="Longitude for hexagonal grid center"),
+) -> GeoJSONFeatureCollection:
+    """Dynamically generate H3-style hexagonal grid tessellation globally with real Earth Observation analytics."""
+    if lat is not None and lon is not None:
+        fc_dict = geospatial_pipeline.generate_location_hexagons(lat=lat, lon=lon, step_km=resolution_km)
+    else:
+        fc_dict = geospatial_pipeline.generate_chennai_hexagons(step_km=resolution_km)
+    return GeoJSONFeatureCollection.model_validate(fc_dict)
 
 
 @router.get("/{zone_id}", response_model=Zone)

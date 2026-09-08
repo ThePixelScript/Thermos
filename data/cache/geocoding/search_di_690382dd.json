@@ -1,0 +1,21 @@
+{
+  "cached_at": 1788909620.7116272,
+  "results": [
+    {
+      "name": "Di",
+      "display_name": "Di, Sourou, Boucle du Mouhoun, Burkina Faso",
+      "lat": 13.163633,
+      "lon": -3.3978614,
+      "bbox": [
+        13.0427224,
+        13.288197,
+        -3.4833295,
+        -3.3058067
+      ],
+      "type": "administrative",
+      "category": "boundary",
+      "importance": 0.4467179718188769,
+      "source": "Nominatim OpenStreetMap"
+    }
+  ]
+}

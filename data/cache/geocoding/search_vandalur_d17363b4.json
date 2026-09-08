@@ -1,0 +1,37 @@
+{
+  "cached_at": 1788909651.4595373,
+  "results": [
+    {
+      "name": "Vandalur",
+      "display_name": "Vandalur, Chengalpattu, Tamil Nadu, 603210, India",
+      "lat": 12.8921486,
+      "lon": 80.0829603,
+      "bbox": [
+        12.8721486,
+        12.9121486,
+        80.0629603,
+        80.1029603
+      ],
+      "type": "suburb",
+      "category": "place",
+      "importance": 0.45180049976750014,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "Vandalur",
+      "display_name": "Vandalur, Perungalathur Flyover Ramp, Vandalur, Chengalpattu, Tamil Nadu, 603210, India",
+      "lat": 12.8916061,
+      "lon": 80.084974,
+      "bbox": [
+        12.8866061,
+        12.8966061,
+        80.079974,
+        80.089974
+      ],
+      "type": "station",
+      "category": "railway",
+      "importance": 0.3908938462590478,
+      "source": "Nominatim OpenStreetMap"
+    }
+  ]
+}

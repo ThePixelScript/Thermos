@@ -1,0 +1,100 @@
+{
+  "timestamp": "2026-09-08T21:57:19.971969+00:00",
+  "sensor": "Copernicus Sentinel-2 MSI Level-2A",
+  "observation_date": "2024-05-15",
+  "scene_id": "S2B_MSIL2A_20240515T050649_N0510_R019_T44PMV",
+  "cloud_cover_pct": 1.4,
+  "resolution_m": 10,
+  "zones": {
+    "ZONE-01": {
+      "mean_ndvi": 0.16,
+      "vegetation_deficit": 77.1,
+      "canopy_cover_pct": 10.0,
+      "grass_pct": 12.0
+    },
+    "ZONE-02": {
+      "mean_ndvi": 0.11,
+      "vegetation_deficit": 84.3,
+      "canopy_cover_pct": 6.0,
+      "grass_pct": 8.0
+    },
+    "ZONE-03": {
+      "mean_ndvi": 0.21,
+      "vegetation_deficit": 70.0,
+      "canopy_cover_pct": 13.0,
+      "grass_pct": 15.0
+    },
+    "ZONE-04": {
+      "mean_ndvi": 0.08,
+      "vegetation_deficit": 88.6,
+      "canopy_cover_pct": 4.0,
+      "grass_pct": 6.0
+    },
+    "ZONE-05": {
+      "mean_ndvi": 0.07,
+      "vegetation_deficit": 90.0,
+      "canopy_cover_pct": 3.0,
+      "grass_pct": 5.0
+    },
+    "ZONE-06": {
+      "mean_ndvi": 0.12,
+      "vegetation_deficit": 82.8,
+      "canopy_cover_pct": 7.0,
+      "grass_pct": 9.0
+    },
+    "ZONE-07": {
+      "mean_ndvi": 0.14,
+      "vegetation_deficit": 80.0,
+      "canopy_cover_pct": 8.0,
+      "grass_pct": 11.0
+    },
+    "ZONE-08": {
+      "mean_ndvi": 0.26,
+      "vegetation_deficit": 62.8,
+      "canopy_cover_pct": 19.0,
+      "grass_pct": 14.0
+    },
+    "ZONE-09": {
+      "mean_ndvi": 0.18,
+      "vegetation_deficit": 74.2,
+      "canopy_cover_pct": 12.0,
+      "grass_pct": 11.0
+    },
+    "ZONE-10": {
+      "mean_ndvi": 0.15,
+      "vegetation_deficit": 78.5,
+      "canopy_cover_pct": 10.0,
+      "grass_pct": 10.0
+    },
+    "ZONE-11": {
+      "mean_ndvi": 0.22,
+      "vegetation_deficit": 68.5,
+      "canopy_cover_pct": 15.0,
+      "grass_pct": 14.0
+    },
+    "ZONE-12": {
+      "mean_ndvi": 0.17,
+      "vegetation_deficit": 75.7,
+      "canopy_cover_pct": 11.0,
+      "grass_pct": 12.0
+    },
+    "ZONE-13": {
+      "mean_ndvi": 0.44,
+      "vegetation_deficit": 37.1,
+      "canopy_cover_pct": 34.0,
+      "grass_pct": 20.0
+    },
+    "ZONE-14": {
+      "mean_ndvi": 0.24,
+      "vegetation_deficit": 65.7,
+      "canopy_cover_pct": 16.0,
+      "grass_pct": 16.0
+    },
+    "ZONE-15": {
+      "mean_ndvi": 0.28,
+      "vegetation_deficit": 60.0,
+      "canopy_cover_pct": 18.0,
+      "grass_pct": 19.0
+    }
+  }
+}

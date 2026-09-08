@@ -1,0 +1,85 @@
+{
+  "timestamp": "2026-09-08T21:57:19.973116+00:00",
+  "sensor": "USGS Landsat-9 TIRS Band 10",
+  "observation_date": "2024-05-10",
+  "scene_id": "LC09_L2SP_142051_20240510_20240512_02_T1",
+  "baseline_temp_c": 31.5,
+  "resolution_m": 30,
+  "zones": {
+    "ZONE-01": {
+      "mean_lst_c": 38.5,
+      "max_lst_c": 41.2,
+      "thermal_anomaly_c": 7.0
+    },
+    "ZONE-02": {
+      "mean_lst_c": 43.2,
+      "max_lst_c": 46.8,
+      "thermal_anomaly_c": 11.7
+    },
+    "ZONE-03": {
+      "mean_lst_c": 39.1,
+      "max_lst_c": 42.0,
+      "thermal_anomaly_c": 7.6
+    },
+    "ZONE-04": {
+      "mean_lst_c": 40.8,
+      "max_lst_c": 43.9,
+      "thermal_anomaly_c": 9.3
+    },
+    "ZONE-05": {
+      "mean_lst_c": 41.5,
+      "max_lst_c": 44.6,
+      "thermal_anomaly_c": 10.0
+    },
+    "ZONE-06": {
+      "mean_lst_c": 40.2,
+      "max_lst_c": 43.1,
+      "thermal_anomaly_c": 8.7
+    },
+    "ZONE-07": {
+      "mean_lst_c": 42.4,
+      "max_lst_c": 45.7,
+      "thermal_anomaly_c": 10.9
+    },
+    "ZONE-08": {
+      "mean_lst_c": 36.8,
+      "max_lst_c": 39.5,
+      "thermal_anomaly_c": 5.3
+    },
+    "ZONE-09": {
+      "mean_lst_c": 39.8,
+      "max_lst_c": 42.7,
+      "thermal_anomaly_c": 8.3
+    },
+    "ZONE-10": {
+      "mean_lst_c": 39.4,
+      "max_lst_c": 42.1,
+      "thermal_anomaly_c": 7.9
+    },
+    "ZONE-11": {
+      "mean_lst_c": 37.6,
+      "max_lst_c": 40.4,
+      "thermal_anomaly_c": 6.1
+    },
+    "ZONE-12": {
+      "mean_lst_c": 39.9,
+      "max_lst_c": 42.8,
+      "thermal_anomaly_c": 8.4
+    },
+    "ZONE-13": {
+      "mean_lst_c": 33.2,
+      "max_lst_c": 35.8,
+      "thermal_anomaly_c": 1.7
+    },
+    "ZONE-14": {
+      "mean_lst_c": 37.1,
+      "max_lst_c": 39.9,
+      "thermal_anomaly_c": 5.6
+    },
+    "ZONE-15": {
+      "mean_lst_c": 36.2,
+      "max_lst_c": 38.9,
+      "thermal_anomaly_c": 4.7
+    }
+  }
+}

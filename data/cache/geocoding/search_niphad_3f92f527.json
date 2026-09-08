@@ -1,0 +1,69 @@
+{
+  "cached_at": 1788909506.8450155,
+  "results": [
+    {
+      "name": "Niphad",
+      "display_name": "Niphad, Niphad Taluka, Nashik, Maharashtra, 422230, India",
+      "lat": 20.0796924,
+      "lon": 74.1071124,
+      "bbox": [
+        20.0396924,
+        20.1196924,
+        74.0671124,
+        74.1471124
+      ],
+      "type": "town",
+      "category": "place",
+      "importance": 0.16003469825284197,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "Niphad",
+      "display_name": "Niphad, SH23, Niphad, Niphad Taluka, Nashik, Maharashtra, 422230, India",
+      "lat": 20.0972017,
+      "lon": 74.0800142,
+      "bbox": [
+        20.0922017,
+        20.1022017,
+        74.0750142,
+        74.0850142
+      ],
+      "type": "station",
+      "category": "railway",
+      "importance": 0.09078915819201436,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "Niphad",
+      "display_name": "Niphad, Niphad Taluka, Nashik, Maharashtra, 422230, India",
+      "lat": 20.0774404,
+      "lon": 74.10681,
+      "bbox": [
+        20.0686705,
+        20.0872704,
+        74.0950037,
+        74.1162575
+      ],
+      "type": "residential",
+      "category": "landuse",
+      "importance": 0.08003469825284196,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "Niphad Taluka",
+      "display_name": "Niphad Taluka, Nashik, Maharashtra, India",
+      "lat": 20.0850194,
+      "lon": 74.1077605,
+      "bbox": [
+        19.9283901,
+        20.2418018,
+        73.8913339,
+        74.3305457
+      ],
+      "type": "administrative",
+      "category": "boundary",
+      "importance": 0.24003469825284196,
+      "source": "Nominatim OpenStreetMap"
+    }
+  ]
+}

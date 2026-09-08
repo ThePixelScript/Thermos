@@ -34,7 +34,7 @@ def test_get_api_zone_by_id(client: TestClient):
     assert response.status_code == 200
     zone = response.json()
     assert zone["id"] == "ZONE-01"
-    assert zone["name"] == "Downtown Financial District"
+    assert "Tiruvottiyur" in zone["name"]
     assert "land_cover" in zone
     assert "building_density" in zone["land_cover"]
     assert "thermal_observation" in zone

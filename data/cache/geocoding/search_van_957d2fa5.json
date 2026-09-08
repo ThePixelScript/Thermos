@@ -1,0 +1,69 @@
+{
+  "cached_at": 1788909644.2859335,
+  "results": [
+    {
+      "name": "Van",
+      "display_name": "Van, Do\u011fu Anadolu B\u00f6lgesi, T\u00fcrkiye",
+      "lat": 38.3249599,
+      "lon": 43.6589825,
+      "bbox": [
+        37.7200905,
+        39.3709684,
+        42.6622008,
+        44.5125473
+      ],
+      "type": "administrative",
+      "category": "boundary",
+      "importance": 0.5856465426687308,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "Van",
+      "display_name": "Van, \u0130pekyolu, Van, Do\u011fu Anadolu B\u00f6lgesi, 65030, T\u00fcrkiye",
+      "lat": 38.500875,
+      "lon": 43.3946051,
+      "bbox": [
+        38.340875,
+        38.660875,
+        43.2346051,
+        43.5546051
+      ],
+      "type": "city",
+      "category": "place",
+      "importance": 0.5669713911372656,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "Van Wert County",
+      "display_name": "Van Wert County, Ohio, United States",
+      "lat": 40.8014651,
+      "lon": -84.600988,
+      "bbox": [
+        40.684944,
+        40.9903567,
+        -84.8032698,
+        -84.3400951
+      ],
+      "type": "administrative",
+      "category": "boundary",
+      "importance": 0.549438538261873,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "Van",
+      "display_name": "Van, Van Zandt County, Texas, 75790, United States",
+      "lat": 32.5249071,
+      "lon": -95.63773,
+      "bbox": [
+        32.5049957,
+        32.5391519,
+        -95.654147,
+        -95.6190401
+      ],
+      "type": "administrative",
+      "category": "boundary",
+      "importance": 0.46097369385693177,
+      "source": "Nominatim OpenStreetMap"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "cached_at": 1788909152.517007,
+  "results": [
+    {
+      "name": "Paris",
+      "display_name": "Paris, \u00cele-de-France, France",
+      "lat": 48.8566,
+      "lon": 2.3522,
+      "bbox": [
+        48.8155,
+        48.9021,
+        2.2241,
+        2.4699
+      ],
+      "type": "city",
+      "category": null,
+      "importance": 0.0,
+      "source": "Nominatim OpenStreetMap"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "cached_at": 1788909650.2267733,
+  "results": [
+    {
+      "name": "Vandalu",
+      "display_name": "Vandalu, Diagonal Eva Per\u00f3n, Villa Florida, Barranqueras, Departamento San Fernando, Chaco, H3503, Argentina",
+      "lat": -27.4827767,
+      "lon": -58.9392076,
+      "bbox": [
+        -27.4828267,
+        -27.4827267,
+        -58.9392576,
+        -58.9391576
+      ],
+      "type": "clothes",
+      "category": "shop",
+      "importance": 5.529640650029782e-05,
+      "source": "Nominatim OpenStreetMap"
+    }
+  ]
+}
