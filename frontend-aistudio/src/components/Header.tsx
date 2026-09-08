@@ -9,7 +9,7 @@ import {
   Calendar,
   ChevronDown
 } from 'lucide-react';
-import { Zone, NavigationTab } from '../types';
+import { Zone, NavigationTab, RealDataMetadata } from '../types';
 
 interface HeaderProps {
   title: string;
@@ -24,6 +24,7 @@ interface HeaderProps {
   backendStatus?: 'connected' | 'checking' | 'error';
   backendError?: string | null;
   onRetryConnect?: () => void;
+  realDataMeta?: RealDataMetadata | null;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -38,7 +39,8 @@ export const Header: React.FC<HeaderProps> = ({
   totalCostLakhs,
   backendStatus = 'checking',
   backendError,
-  onRetryConnect
+  onRetryConnect,
+  realDataMeta
 }) => {
   return (
     <header 
@@ -52,7 +54,9 @@ export const Header: React.FC<HeaderProps> = ({
             {title}
           </h1>
           <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono-data bg-slate-100 text-slate-700 border border-slate-200 font-semibold">
-            METRO-NORTH GRID
+            {realDataMeta 
+              ? `${realDataMeta.satellite} ${realDataMeta.sensor} (${realDataMeta.is_synthetic || realDataMeta.scene_id.includes('SYNTHETIC') ? 'Calibrated Sample' : 'Satellite Observed'})` 
+              : 'METRO-NORTH GRID (Calibrated Sample)'}
           </span>
         </div>
         <p className="text-xs text-slate-500 font-medium tracking-wide mt-0.5">

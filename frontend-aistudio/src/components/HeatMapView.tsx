@@ -63,7 +63,7 @@ export const HeatMapView: React.FC<HeatMapViewProps> = ({
           <div className="flex items-center space-x-2 text-xs text-slate-500 mb-0.5 font-medium">
             <span>Spatial Heat GIS</span>
             <span>/</span>
-            <span className="text-emerald-700 font-semibold">Surface Temperature Raster</span>
+            <span className="text-emerald-700 font-semibold">Land Surface Temperature (LST) Raster</span>
           </div>
           <h2 className="font-heading font-extrabold text-2xl text-slate-900 tracking-tight">
             URBAN HEAT SURFACE MAP
@@ -191,7 +191,7 @@ export const HeatMapView: React.FC<HeatMapViewProps> = ({
               {/* Thermal Overview Box */}
               <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-200 space-y-2">
                 <div className="flex items-baseline justify-between">
-                  <span className="text-xs text-slate-500 font-medium">Measured Surface Temp:</span>
+                  <span className="text-xs text-slate-500 font-medium">Observed Land Surface Temp (LST):</span>
                   <span className="font-mono-data text-2xl font-extrabold text-slate-900">
                     {selectedZone.temperature}°C
                   </span>

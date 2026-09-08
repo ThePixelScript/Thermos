@@ -115,9 +115,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div className="flex items-center space-x-2 bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs shadow-xs">
           <Calendar className="w-3.5 h-3.5 text-emerald-700" />
           <span className="text-slate-500">Observation:</span>
-          <span className="text-slate-900 font-semibold">Summer Peak TIR Cycle</span>
-          <span className="text-[10px] font-mono-data bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded border border-emerald-200 font-bold">
-            Validated
+          <span className="text-slate-900 font-semibold">TIR Radiometric Snapshot</span>
+          <span className="text-[10px] font-mono-data bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200 font-bold">
+            Calibrated Sample
           </span>
         </div>
       </div>

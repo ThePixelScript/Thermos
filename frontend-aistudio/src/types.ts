@@ -89,6 +89,26 @@ export interface BackendHealthResponse {
   engine?: string;
 }
 
+export interface RealDataMetadata {
+  scene_id: string;
+  satellite: string;
+  sensor: string;
+  acquisition_date?: string | null;
+  crs: string;
+  grid_resolution_m: number;
+  aoi_bbox: number[];
+  total_cells: number;
+  valid_cells: number;
+  baseline_temp_c: number;
+  mean_lst_c: number;
+  min_lst_c: number;
+  max_lst_c: number;
+  hotspots_count: number;
+  data_status: string;
+  is_synthetic: boolean;
+  verification_status: string;
+}
+
 /**
  * Direct representation of backend ZoneSummary schema from GET /api/v1/zones.
  */

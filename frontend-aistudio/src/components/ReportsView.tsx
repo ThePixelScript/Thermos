@@ -800,7 +800,7 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
                   1. Executive Summary & Thermal Vulnerability
                 </span>
                 <p>
-                  Thermal infrared satellite observation reveals that the metropolitan surveyed area exhibits an average surface temperature of 
+                  Satellite-derived thermal observation (calibrated sample) reveals that the metropolitan surveyed area exhibits an average surface temperature of 
                   <strong> {averageSurfaceTemp}°C</strong> ({tempDiffVsBaseline > 0 ? `+${tempDiffVsBaseline}` : tempDiffVsBaseline}°C relative to {baselineTemp}°C baseline), with <strong>{extremeZonesCount} extreme hotspot zones</strong> and <strong>{highZonesCount} high-risk zones</strong>.
                   Over <strong>{totalPopulationAtRisk.toLocaleString()} vulnerable citizens</strong> reside within these high-risk microclimates, where dark impervious paving and acute canopy deficits exacerbate solar radiation absorption.
                 </p>
@@ -817,7 +817,7 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
                 <p>
                   {simulation ? (
                     <>
-                      Targeted cooling interventions modeled for <strong>{selectedZone.code} ({selectedZone.name})</strong> project an authoritative Land Surface Temperature reduction of <strong>-{simulation.modeled_lst_reduction_c.toFixed(2)}°C</strong> and ambient reduction of <strong>-{simulation.modeled_ambient_reduction_c.toFixed(2)}°C</strong> across {simulation.total_implementation_area_hectares} hectares, protecting {simulation.population_benefited.toLocaleString()} local residents.
+                      Targeted cooling interventions modeled for <strong>{selectedZone.code} ({selectedZone.name})</strong> project a modeled Land Surface Temperature (LST) reduction of <strong>-{simulation.modeled_lst_reduction_c.toFixed(2)}°C</strong> and modeled ambient reduction of <strong>-{simulation.modeled_ambient_reduction_c.toFixed(2)}°C</strong> across {simulation.total_implementation_area_hectares} hectares, protecting {simulation.population_benefited.toLocaleString()} local residents.
                     </>
                   ) : (
                     <>

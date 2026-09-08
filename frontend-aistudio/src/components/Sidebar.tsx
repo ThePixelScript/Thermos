@@ -101,9 +101,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="mt-3.5 pt-3 border-t border-emerald-800/60 flex items-center justify-between text-[11px] text-emerald-200/70">
           <div className="flex items-center space-x-1.5">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span className="text-emerald-100 font-medium">TIR Telemetry Live</span>
+            <span className="text-emerald-100 font-medium">Satellite-Derived LST Live</span>
           </div>
-          <span className="text-[10px] font-mono-data text-emerald-300 bg-emerald-950/80 px-1.5 py-0.5 rounded border border-emerald-700/60">L8/S3</span>
+          <span className="text-[10px] font-mono-data text-emerald-300 bg-emerald-950/80 px-1.5 py-0.5 rounded border border-emerald-700/60">TIRS / Calibrated</span>
         </div>
       </div>
 

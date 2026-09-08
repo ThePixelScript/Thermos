@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { NavigationTab, Zone, HotspotItem, BackendInterventionItem, Intervention } from './types';
+import { NavigationTab, Zone, HotspotItem, BackendInterventionItem, Intervention, RealDataMetadata } from './types';
 import { ZONES } from './data/zones';
 import { INTERVENTIONS } from './data/interventions';
 import { HeatScapeApi } from './services/api';
@@ -59,6 +59,7 @@ export default function App() {
   // Backend Connectivity State
   const [backendOnline, setBackendOnline] = useState<boolean | null>(null);
   const [isLoadingInitialData, setIsLoadingInitialData] = useState<boolean>(true);
+  const [realDataMeta, setRealDataMeta] = useState<RealDataMetadata | null>(null);
 
   // Selected Interventions in Cooling Plan (starts with canonical backend IDs: INT-TREE-CANOPY + INT-COOL-ROOF)
   const [selectedInterventionIds, setSelectedInterventionIds] = useState<string[]>([
@@ -77,17 +78,23 @@ export default function App() {
     try {
       setIsLoadingInitialData(true);
 
-      const [healthRes, zonesRes, hotspotsRes, geoJsonRes, catalogRes] = await Promise.allSettled([
+      const [healthRes, zonesRes, hotspotsRes, geoJsonRes, catalogRes, realMetaRes] = await Promise.allSettled([
         HeatScapeApi.getHealth(),
         HeatScapeApi.getZones(),
         HeatScapeApi.getHotspots(),
         HeatScapeApi.getZonesGeoJson(),
-        HeatScapeApi.getInterventionsCatalog()
+        HeatScapeApi.getInterventionsCatalog(),
+        HeatScapeApi.getRealDataMetadata()
       ]);
 
       const isOnline = healthRes.status === 'fulfilled' && 
         (healthRes.value.status === 'ok' || healthRes.value.status === 'healthy');
       setBackendOnline(isOnline);
+
+      // Real satellite metadata (Landsat-9 / TIRS-2)
+      if (realMetaRes.status === 'fulfilled' && realMetaRes.value?.satellite) {
+        setRealDataMeta(realMetaRes.value);
+      }
 
       // Ranked hotspots
       if (hotspotsRes.status === 'fulfilled' && Array.isArray(hotspotsRes.value)) {
@@ -280,6 +287,7 @@ export default function App() {
           totalCostLakhs={currentTotalCostLakhs}
           backendStatus={backendOnline === true ? 'connected' : backendOnline === false ? 'error' : 'checking'}
           onRetryConnect={initializeBackendData}
+          realDataMeta={realDataMeta}
         />
 
         {/* Primary Page Canvas (Scrollable) */}

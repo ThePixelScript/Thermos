@@ -8,7 +8,8 @@ import {
   HotspotDetail, 
   BackendInterventionItem, 
   SimulationRequest, 
-  SimulationResponse 
+  SimulationResponse,
+  RealDataMetadata
 } from '../types';
 import { adaptSimulationResponse } from './zoneAdapter';
 
@@ -167,6 +168,14 @@ export const HeatScapeApi = {
     });
 
     return adaptSimulationResponse(raw);
+  },
+
+  /**
+   * Real satellite metadata & acquisition details
+   * GET /api/v1/real-data/metadata
+   */
+  async getRealDataMetadata(): Promise<RealDataMetadata> {
+    return request<RealDataMetadata>('/api/v1/real-data/metadata');
   }
 };
 

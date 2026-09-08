@@ -180,10 +180,10 @@ export const InterventionPlannerView: React.FC<InterventionPlannerViewProps> = (
 
   // Direct backend temperature & population impacts
   const coolingLabel = simulation
-    ? `-${simulation.modeled_lst_reduction_c.toFixed(2)}°C`
+    ? `-${simulation.modeled_lst_reduction_c.toFixed(2)}°C (Modeled)`
     : (selectedInterventionIds.length === 0 ? '0.0°C' : 'Simulating...');
   const ambientReductionLabel = simulation?.modeled_ambient_reduction_c
-    ? `-${simulation.modeled_ambient_reduction_c.toFixed(2)}°C Ambient`
+    ? `-${simulation.modeled_ambient_reduction_c.toFixed(2)}°C Modeled Ambient Drop`
     : 'Modeled UHI Reduction';
 
   const populationBenefited = simulation?.population_benefited ?? 0;
@@ -807,11 +807,11 @@ export const InterventionPlannerView: React.FC<InterventionPlannerViewProps> = (
                           <span className="font-mono-data font-bold text-slate-900">₹{item.cost_inr_lakhs.toFixed(1)}L</span>
                         </div>
                         <div>
-                          <span className="text-slate-500 block text-[10px]">LST Drop</span>
+                          <span className="text-slate-500 block text-[10px]">Modeled LST Drop</span>
                           <span className="font-mono-data font-bold text-emerald-600">-{item.estimated_lst_drop_c.toFixed(1)}°C</span>
                         </div>
                         <div>
-                          <span className="text-slate-500 block text-[10px]">Ambient Drop</span>
+                          <span className="text-slate-500 block text-[10px]">Modeled Ambient Drop</span>
                           <span className="font-mono-data text-emerald-700 font-semibold">-{item.estimated_ambient_drop_c.toFixed(1)}°C</span>
                         </div>
                         <div>

@@ -208,7 +208,7 @@ export function adaptBackendZoneToFrontend(
     diffFromSurround: diff,
     risk: mapBackendRiskToPresentation(riskLevel),
     backendRiskLevel: riskLevel,
-    riskScore: item.risk_score ?? Math.round((temp / 50) * 100),
+    riskScore: item.risk_score ?? 0,
     vegetation,
     imperviousSurface: impervious,
     buildingDensity,
@@ -217,7 +217,7 @@ export function adaptBackendZoneToFrontend(
     populationVulnerable: vulnerable,
     elderlyPercent: Math.round((vulnerable / (population || 1)) * 50) || 16,
     outdoorWorkers,
-    hvi: Number(((item.risk_score || 70) / 10).toFixed(1)),
+    hvi: Number(((item.risk_score ?? 50) / 10).toFixed(1)),
     primaryCause: `${impervious}% impervious coverage with low canopy`,
     landUse: normalizeLandUse(typology),
     causes,
@@ -411,12 +411,12 @@ export function adaptSimulationResponse(
     ...res,
     baseline: {
       lst_c: baseTemp,
-      ambient_temp_c: Number((baseTemp - 4.5).toFixed(1)),
+      ambient_temp_c: undefined,
       population_exposed: basePop
     },
     projected: {
       lst_c: projectedTemp,
-      ambient_temp_c: Number((baseTemp - 4.5 - res.modeled_ambient_reduction_c).toFixed(1)),
+      ambient_temp_c: undefined,
       population_exposed: basePop
     },
     delta: {
@@ -461,10 +461,10 @@ export function adaptBackendInterventionToFrontend(item: BackendInterventionItem
     costLakhs,
     costRange: `₹${(costLakhs * 0.9).toFixed(1)}L – ₹${(costLakhs * 1.15).toFixed(1)}L`,
     coolingImpact: cooling,
-    coolingImpactLabel: `-${cooling.toFixed(1)}°C (surface)`,
+    coolingImpactLabel: `-${cooling.toFixed(1)}°C (modeled LST)`,
     feasibility: (item.feasibility as any) || 'High',
-    priority: item.phase?.includes('Phase 1') ? 'Urgent' : 'High',
-    populationBenefit: Math.round(costLakhs * 750),
+    priority: item.phase?.includes('Phase 1') ? 'Urgent' : (item.phase?.includes('Phase 2') ? 'High' : 'Medium'),
+    populationBenefit: item.population_benefit ?? 0,
     implementationAreaKm2: item.typical_area_sqm ? Number((item.typical_area_sqm / 1_000_000).toFixed(2)) : 0.5,
     timeToImpact: item.timeframe || '3 – 6 Months',
     coBenefits: item.co_benefits || ['Thermal relief']
@@ -511,9 +511,7 @@ export function deriveCityMetricsFromBackend(zones: Zone[], hotspots?: HotspotIt
     lowZonesCount: lowCount,
     totalPopulationAtRisk,
     totalSurveyedPopulation,
-    estimatedCoolingPotential: -2.6,
     totalSurveyedAreaKm2: totalArea || 25.1,
-    sensorReadingsCount: total * 142,
     lastUpdated: 'Live Telemetry via FastAPI Backend'
   };
 }

@@ -129,11 +129,11 @@ export const HeatMapCanvas: React.FC<HeatMapCanvasProps> = ({
           <div className="flex items-center space-x-2">
             <span className="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
             <span className="text-xs font-heading font-bold text-slate-900 tracking-tight uppercase">
-              TIR Spatial Surface Analysis
+              Satellite-derived LST Surface Analysis
             </span>
           </div>
           <span className="text-[10px] font-mono-data text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 font-semibold">
-            30m Raster Grid
+            500m Grid (Calibrated Sample)
           </span>
           <span className="text-[11px] text-slate-500 hidden sm:inline font-medium">
             Showing {visibleZones.length} hotspots
