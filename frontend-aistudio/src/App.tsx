@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { NavigationTab, Zone, HotspotItem } from './types';
+import React, { useState, useEffect, useCallback } from 'react';
+import { NavigationTab, Zone, HotspotItem, BackendInterventionItem, Intervention } from './types';
 import { ZONES } from './data/zones';
 import { INTERVENTIONS } from './data/interventions';
 import { HeatScapeApi } from './services/api';
-import { adaptBackendZonesToFrontend } from './services/zoneAdapter';
+import { 
+  adaptBackendZonesToFrontend, 
+  adaptBackendZoneToFrontend,
+  adaptBackendInterventionToFrontend 
+} from './services/zoneAdapter';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { DashboardView } from './components/DashboardView';
@@ -14,27 +18,52 @@ import { InterventionPlannerView } from './components/InterventionPlannerView';
 import { ReportsView } from './components/ReportsView';
 import { Menu } from 'lucide-react';
 
+// Canonical fallback zone representing ZONE-01 in case backend is loading or unreachable
+const initialDefaultZone: Zone = ZONES.find(z => z.id === 'ZONE-01') || adaptBackendZoneToFrontend({
+  id: 'ZONE-01',
+  name: 'Downtown Financial District',
+  typology: 'commercial_dense',
+  land_surface_temp_c: 42.8,
+  baseline_temp_c: 31.5,
+  thermal_anomaly_c: 11.3,
+  risk_level: 'CRITICAL',
+  risk_score: 92,
+  total_population: 57600,
+  vulnerable_population: 8064,
+  vegetation: 0.09,
+  imperviousness: 0.88,
+  building_density: 0.72,
+  area_sqkm: 2.4
+});
+
 export default function App() {
   // Navigation State
   const [activeTab, setActiveTab] = useState<NavigationTab>('dashboard');
   
-  // Zones State (starts with static ZONES fallback, dynamically populated via GET /api/v1/zones)
-  const [zones, setZones] = useState<Zone[]>(ZONES);
+  // Zones State (starts with calibrated fallback, dynamically populated via GET /api/v1/zones)
+  const [zones, setZones] = useState<Zone[]>(() => {
+    const hasZone01 = ZONES.some(z => z.id === 'ZONE-01');
+    return hasZone01 ? ZONES : [initialDefaultZone, ...ZONES];
+  });
 
-  // Selected Zone (default Zone 17 as requested)
-  const [selectedZone, setSelectedZone] = useState<Zone>(ZONES[0]);
+  // Selected Zone (default canonical backend zone ID: ZONE-01)
+  const [selectedZone, setSelectedZone] = useState<Zone>(initialDefaultZone);
 
   // Ranked Hotspots from GET /api/v1/hotspots
   const [hotspots, setHotspots] = useState<HotspotItem[]>([]);
+
+  // Interventions Catalog State (starts with calibrated fallback, dynamically populated via GET /api/v1/interventions/catalog)
+  const [interventionsCatalog, setInterventionsCatalog] = useState<Intervention[]>(INTERVENTIONS);
+  const [backendCatalog, setBackendCatalog] = useState<BackendInterventionItem[]>([]);
 
   // Backend Connectivity State
   const [backendOnline, setBackendOnline] = useState<boolean | null>(null);
   const [isLoadingInitialData, setIsLoadingInitialData] = useState<boolean>(true);
 
-  // Selected Interventions in Cooling Plan (starts with Tree Canopy Expansion + Cool Roof Retrofit)
+  // Selected Interventions in Cooling Plan (starts with canonical backend IDs: INT-TREE-CANOPY + INT-COOL-ROOF)
   const [selectedInterventionIds, setSelectedInterventionIds] = useState<string[]>([
-    'int-tree-canopy',
-    'int-cool-roof'
+    'INT-TREE-CANOPY',
+    'INT-COOL-ROOF'
   ]);
 
   // Municipal Resilience Budget in Lakhs (default ₹30 Lakhs)
@@ -43,51 +72,62 @@ export default function App() {
   // Mobile menu drawer toggle
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
+  // Fetch live backend data
+  const initializeBackendData = useCallback(async () => {
+    try {
+      setIsLoadingInitialData(true);
+
+      const [healthRes, zonesRes, hotspotsRes, geoJsonRes, catalogRes] = await Promise.allSettled([
+        HeatScapeApi.getHealth(),
+        HeatScapeApi.getZones(),
+        HeatScapeApi.getHotspots(),
+        HeatScapeApi.getZonesGeoJson(),
+        HeatScapeApi.getInterventionsCatalog()
+      ]);
+
+      const isOnline = healthRes.status === 'fulfilled' && 
+        (healthRes.value.status === 'ok' || healthRes.value.status === 'healthy');
+      setBackendOnline(isOnline);
+
+      // Ranked hotspots
+      if (hotspotsRes.status === 'fulfilled' && Array.isArray(hotspotsRes.value)) {
+        setHotspots(hotspotsRes.value);
+      }
+
+      // Live intervention catalog (takes precedence over mock dataset)
+      if (catalogRes.status === 'fulfilled' && Array.isArray(catalogRes.value) && catalogRes.value.length > 0) {
+        setBackendCatalog(catalogRes.value);
+        const adaptedCatalog = catalogRes.value.map(adaptBackendInterventionToFrontend);
+        if (adaptedCatalog.length > 0) {
+          setInterventionsCatalog(adaptedCatalog);
+        }
+      }
+
+      // Live zones (takes precedence over mock dataset)
+      if (zonesRes.status === 'fulfilled' && Array.isArray(zonesRes.value) && zonesRes.value.length > 0) {
+        const geoData = geoJsonRes.status === 'fulfilled' ? geoJsonRes.value : undefined;
+        const adapted = adaptBackendZonesToFrontend(zonesRes.value, geoData);
+        if (adapted.length > 0) {
+          setZones(adapted);
+          setSelectedZone((current) => {
+            const matched = adapted.find(z => z.id === current.id || z.code === current.code);
+            if (matched) return matched;
+            const canonicalDefault = adapted.find(z => z.id === 'ZONE-01' || z.code === 'ZONE-01');
+            return canonicalDefault || adapted[0];
+          });
+        }
+      }
+    } catch (err) {
+      console.warn('Backend data initialization failed, using calibrated fallback dataset:', err);
+      setBackendOnline(false);
+    } finally {
+      setIsLoadingInitialData(false);
+    }
+  }, []);
+
   // Fetch live backend data on mount
   useEffect(() => {
     let isMounted = true;
-
-    async function initializeBackendData() {
-      try {
-        setIsLoadingInitialData(true);
-
-        const [healthRes, zonesRes, hotspotsRes, geoJsonRes] = await Promise.allSettled([
-          HeatScapeApi.getHealth(),
-          HeatScapeApi.getZones(),
-          HeatScapeApi.getHotspots(),
-          HeatScapeApi.getZonesGeoJson()
-        ]);
-
-        if (!isMounted) return;
-
-        const isOnline = healthRes.status === 'fulfilled' && 
-          (healthRes.value.status === 'ok' || healthRes.value.status === 'healthy');
-        setBackendOnline(isOnline);
-
-        if (hotspotsRes.status === 'fulfilled' && Array.isArray(hotspotsRes.value)) {
-          setHotspots(hotspotsRes.value);
-        }
-
-        if (zonesRes.status === 'fulfilled' && Array.isArray(zonesRes.value) && zonesRes.value.length > 0) {
-          const geoData = geoJsonRes.status === 'fulfilled' ? geoJsonRes.value : undefined;
-          const adapted = adaptBackendZonesToFrontend(zonesRes.value, geoData);
-          if (adapted.length > 0) {
-            setZones(adapted);
-            setSelectedZone((current) => {
-              const matched = adapted.find(z => z.id === current.id || z.code === current.code);
-              if (matched) return matched;
-              const zone17 = adapted.find(z => z.id.includes('17') || z.code.includes('17'));
-              return zone17 || adapted[0];
-            });
-          }
-        }
-      } catch (err) {
-        console.warn('Backend data initialization failed, using calibrated fallback dataset:', err);
-        if (isMounted) setBackendOnline(false);
-      } finally {
-        if (isMounted) setIsLoadingInitialData(false);
-      }
-    }
 
     initializeBackendData();
 
@@ -107,7 +147,7 @@ export default function App() {
       isMounted = false;
       clearInterval(healthInterval);
     };
-  }, []);
+  }, [initializeBackendData]);
 
   // Toggle intervention in plan
   const handleToggleIntervention = (interventionId: string) => {
@@ -135,9 +175,12 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Calculate current total cost in Lakhs
-  const currentTotalCostLakhs = INTERVENTIONS
-    .filter((int) => selectedInterventionIds.includes(int.id))
+  // Calculate current total cost in Lakhs using active interventions catalog
+  const currentTotalCostLakhs = interventionsCatalog
+    .filter((int) => 
+      selectedInterventionIds.includes(int.id) || 
+      selectedInterventionIds.some(id => id.toUpperCase() === int.id.toUpperCase())
+    )
     .reduce((sum, int) => sum + int.costLakhs, 0);
 
   // Page titles and subtitles
@@ -235,7 +278,8 @@ export default function App() {
           onNavigate={setActiveTab}
           selectedInterventionsCount={selectedInterventionIds.length}
           totalCostLakhs={currentTotalCostLakhs}
-          backendOnline={backendOnline ?? undefined}
+          backendStatus={backendOnline === true ? 'connected' : backendOnline === false ? 'error' : 'checking'}
+          onRetryConnect={initializeBackendData}
         />
 
         {/* Primary Page Canvas (Scrollable) */}

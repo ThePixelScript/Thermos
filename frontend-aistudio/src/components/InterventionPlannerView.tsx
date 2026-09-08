@@ -6,25 +6,19 @@ import {
   Minus, 
   Trash2, 
   AlertTriangle, 
-  TrendingDown, 
   Coins, 
-  Users, 
   MapPin, 
   Layers, 
   Download, 
-  Share2, 
-  Printer, 
   X,
   FileCheck,
-  ShieldAlert,
   ArrowRight,
   TreePine,
   RefreshCw,
   Zap,
-  Info
+  ShieldAlert
 } from 'lucide-react';
-import { Zone, Intervention, getRiskFromTemp, BackendInterventionItem, SimulationResponse } from '../types';
-import { INTERVENTIONS } from '../data/interventions';
+import { Zone, BackendInterventionItem, SimulationResponse } from '../types';
 import { HeatScapeApi } from '../services/api';
 
 interface InterventionPlannerViewProps {
@@ -52,13 +46,14 @@ export const InterventionPlannerView: React.FC<InterventionPlannerViewProps> = (
   const [planGeneratedTime, setPlanGeneratedTime] = useState<string>('');
   const [isDossierDownloaded, setIsDossierDownloaded] = useState<boolean>(false);
 
-  // Backend Catalog & Live Simulation States
+  // Authoritative Backend Catalog, Recommendations & Simulation States
   const [backendCatalog, setBackendCatalog] = useState<BackendInterventionItem[]>([]);
+  const [recommendations, setRecommendations] = useState<Record<string, any>>({});
   const [simulation, setSimulation] = useState<SimulationResponse | null>(null);
   const [isSimulating, setIsSimulating] = useState<boolean>(false);
   const [simulationError, setSimulationError] = useState<string | null>(null);
 
-  // Fetch intervention catalog from backend on mount
+  // 1. Fetch live intervention catalog from backend on mount
   useEffect(() => {
     let isMounted = true;
     async function loadCatalog() {
@@ -67,45 +62,73 @@ export const InterventionPlannerView: React.FC<InterventionPlannerViewProps> = (
         if (isMounted && Array.isArray(cat) && cat.length > 0) {
           setBackendCatalog(cat);
         }
-      } catch {
-        // Fallback to static INTERVENTIONS
+      } catch (err: any) {
+        console.error('Failed to load catalog from backend', err);
       }
     }
     loadCatalog();
     return () => { isMounted = false; };
   }, []);
 
-  // Map available interventions: use backend catalog if present, otherwise static INTERVENTIONS
-  const availableInterventions: Intervention[] = backendCatalog.length > 0
-    ? backendCatalog.map((item, idx) => {
-        const staticMatch = INTERVENTIONS.find((int) => int.id === item.id || int.name.toLowerCase() === item.name.toLowerCase());
-        const costLakhs = item.cost_inr_lakhs ?? staticMatch?.costLakhs ?? 20.0;
-        const cooling = item.cooling_potential_c ?? staticMatch?.coolingImpact ?? 1.5;
-        return {
-          id: item.id || staticMatch?.id || `INT-${idx + 1}`,
-          name: item.name,
-          category: (item.category as any) || staticMatch?.category || 'Nature-Based',
-          description: item.description || staticMatch?.description || '',
-          whyRecommended: staticMatch?.whyRecommended || 'Targeted microclimate cooling mitigation for this urban topology.',
-          coolingImpact: cooling,
-          coolingImpactLabel: staticMatch?.coolingImpactLabel || `-${cooling.toFixed(1)}°C`,
-          costLakhs: costLakhs,
-          priority: staticMatch?.priority || 'High',
-          implementationAreaKm2: item.implementation_area_km2 ?? staticMatch?.implementationAreaKm2 ?? 1.2,
-          populationBenefit: staticMatch?.populationBenefit || 12000,
-          coBenefits: (item.co_benefits && item.co_benefits.length > 0) ? item.co_benefits : (staticMatch?.coBenefits || ['Air Quality', 'Stormwater Buffer']),
-          feasibility: staticMatch?.feasibility || 'High',
-          timeToImpact: staticMatch?.timeToImpact || '3–6 months'
-        };
-      })
-    : INTERVENTIONS;
+  // 2. Fetch site-specific recommendations whenever selectedZone changes
+  useEffect(() => {
+    let isMounted = true;
+    async function loadRecommendations() {
+      try {
+        const recs = await HeatScapeApi.getInterventionRecommendations(selectedZone.id);
+        if (isMounted && Array.isArray(recs)) {
+          const map: Record<string, any> = {};
+          for (const r of recs) {
+            const id = r.intervention_id || r.id;
+            if (id) map[id] = r;
+          }
+          setRecommendations(map);
+        }
+      } catch {
+        if (isMounted) setRecommendations({});
+      }
+    }
+    loadRecommendations();
+    return () => { isMounted = false; };
+  }, [selectedZone.id]);
 
-  // Selected interventions objects
+  // 3. Map available interventions strictly using backend catalog & recommendations
+  const availableInterventions = backendCatalog.map((item, idx) => {
+    const id = item.id || `INT-${idx + 1}`;
+    const rec = recommendations[id];
+    const costLakhs = item.cost_inr_lakhs ?? 0;
+    const cooling = item.cooling_potential_c ?? 0;
+    const suitability = rec?.suitability_score;
+    const priority = suitability !== undefined
+      ? (suitability >= 80 ? 'Urgent' : suitability >= 65 ? 'High' : 'Medium')
+      : 'Standard';
+
+    return {
+      id,
+      name: item.name,
+      category: (item.category || 'nature_based').replace(/_/g, ' '),
+      description: item.description || '',
+      whyRecommended: rec?.rationale || item.why_recommended || '',
+      coolingImpact: cooling,
+      coolingImpactLabel: cooling > 0 ? `-${cooling.toFixed(1)}°C` : 'N/A',
+      costLakhs,
+      priority,
+      isRecommended: Boolean(rec),
+      suitabilityScore: suitability,
+      implementationAreaKm2: item.typical_area_sqm ? Number((item.typical_area_sqm / 1_000_000).toFixed(2)) : 0,
+      populationBenefit: 0,
+      coBenefits: item.co_benefits || [],
+      feasibility: item.feasibility || 'High',
+      timeToImpact: item.timeframe || '3–6 Months'
+    };
+  });
+
+  // Selected interventions list
   const selectedInterventions = availableInterventions.filter((int) =>
     selectedInterventionIds.includes(int.id)
   );
 
-  // Trigger POST /api/v1/interventions/simulate whenever selection or budget changes
+  // 4. Trigger POST /api/v1/interventions/simulate with exact backend payload
   useEffect(() => {
     let isMounted = true;
     if (selectedInterventionIds.length === 0) {
@@ -121,9 +144,7 @@ export const InterventionPlannerView: React.FC<InterventionPlannerViewProps> = (
         const result = await HeatScapeApi.simulateInterventions({
           zone_id: selectedZone.id,
           selected_intervention_ids: selectedInterventionIds,
-          budget_inr_lakhs: budgetLakhs,
-          intervention_ids: selectedInterventionIds,
-          budget_lakhs: budgetLakhs
+          budget_inr_lakhs: budgetLakhs
         });
         if (isMounted) {
           setSimulation(result);
@@ -146,47 +167,29 @@ export const InterventionPlannerView: React.FC<InterventionPlannerViewProps> = (
     };
   }, [selectedZone.id, selectedInterventionIds, budgetLakhs]);
 
-  const derivedRisk = getRiskFromTemp(selectedZone.temperature);
-  const isLowRisk = derivedRisk === 'low';
-  const isExtreme = derivedRisk === 'extreme';
+  // Authoritative Risk Presentation
+  const riskLevel = selectedZone.backendRiskLevel || selectedZone.risk?.toUpperCase() || 'MODERATE';
+  const isLowRisk = riskLevel === 'LOW';
+  const isExtreme = riskLevel === 'CRITICAL' || riskLevel === 'SEVERE' || riskLevel === 'EXTREME';
 
-  // Metrics from Backend Simulation (or fallback if pending)
-  const totalCostLakhs = simulation?.cost_summary?.total_cost_lakhs 
-    ?? simulation?.total_cost_inr_lakhs 
-    ?? selectedInterventions.reduce((sum, item) => sum + item.costLakhs, 0);
+  // Authoritative Metrics directly from Backend SimulationResponse
+  const totalCostLakhs = simulation ? simulation.total_cost_inr_lakhs : selectedInterventions.reduce((s, i) => s + i.costLakhs, 0);
+  const remainingBudget = simulation ? simulation.remaining_budget_inr_lakhs : (budgetLakhs - totalCostLakhs);
+  const isBudgetExceeded = simulation ? simulation.is_budget_exceeded : remainingBudget < 0;
+  const deficitLakhs = simulation?.deficit_inr_lakhs ?? (isBudgetExceeded ? Math.abs(remainingBudget) : 0);
 
-  const remainingBudget = simulation?.cost_summary?.budget_remaining_lakhs 
-    ?? simulation?.remaining_budget_inr_lakhs 
-    ?? (budgetLakhs - totalCostLakhs);
+  // Direct backend temperature & population impacts
+  const coolingLabel = simulation
+    ? `-${simulation.modeled_lst_reduction_c.toFixed(2)}°C`
+    : (selectedInterventionIds.length === 0 ? '0.0°C' : 'Simulating...');
+  const ambientReductionLabel = simulation?.modeled_ambient_reduction_c
+    ? `-${simulation.modeled_ambient_reduction_c.toFixed(2)}°C Ambient`
+    : 'Modeled UHI Reduction';
 
-  const isBudgetExceeded = simulation?.cost_summary
-    ? !simulation.cost_summary.is_within_budget
-    : (simulation?.deficit_inr_lakhs !== undefined
-        ? simulation.deficit_inr_lakhs > 0
-        : remainingBudget < 0);
-
-  // Projected cooling
-  const rawCooling = simulation?.delta?.lst_reduction_c ?? simulation?.modeled_lst_reduction_c;
-  const coolingLabel = rawCooling !== undefined
-    ? `-${rawCooling.toFixed(1)}°C`
-    : (selectedInterventions.length > 0 
-        ? `-${(selectedInterventions.reduce((s, i) => s + i.coolingImpact, 0) * 0.9).toFixed(1)}°C`
-        : '0.0°C');
-
-  // Population benefited
-  const rawPop = simulation?.delta?.population_protected ?? simulation?.population_benefited;
-  const populationBenefited = rawPop !== undefined
-    ? rawPop
-    : (selectedInterventions.length > 0
-        ? Math.min(selectedZone.population, Math.round(selectedInterventions.reduce((s, i) => s + i.populationBenefit, 0) * 0.75))
-        : 0);
-
-  // Total Implementation Area
-  const totalAreaKm2 = simulation?.interventions_applied && simulation.interventions_applied.length > 0
-    ? simulation.interventions_applied.reduce((acc, curr) => acc + (curr.implementation_area_km2 || 0), 0).toFixed(1)
-    : (simulation?.total_implementation_area_hectares !== undefined
-        ? (simulation.total_implementation_area_hectares / 100).toFixed(1)
-        : selectedInterventions.reduce((sum, item) => sum + item.implementationAreaKm2, 0).toFixed(1));
+  const populationBenefited = simulation?.population_benefited ?? 0;
+  const totalAreaKm2 = simulation
+    ? (simulation.total_implementation_area_hectares / 100).toFixed(2)
+    : (selectedInterventionIds.length === 0 ? '0.0' : 'Simulating...');
 
   const handleGeneratePlan = () => {
     setPlanGeneratedTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
@@ -337,23 +340,37 @@ export const InterventionPlannerView: React.FC<InterventionPlannerViewProps> = (
                       <span className="text-[10px] font-mono-data px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 font-semibold">
                         {int.category}
                       </span>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                        int.priority === 'Urgent'
-                          ? 'bg-red-50 text-red-700 border border-red-200'
-                          : 'bg-orange-50 text-orange-700 border border-orange-200'
-                      }`}>
-                        {int.priority} Priority
-                      </span>
+                      {int.isRecommended ? (
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                          int.priority === 'Urgent'
+                            ? 'bg-red-50 text-red-700 border border-red-200'
+                            : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                        }`}>
+                          {int.suitabilityScore !== undefined ? `${int.suitabilityScore}% Match` : 'Recommended'}
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-500 border border-slate-200">
+                          Catalog Option
+                        </span>
+                      )}
                     </div>
 
                     {/* Title & Description */}
                     <div>
-                      <h4 className="font-heading font-bold text-slate-900 text-base tracking-tight">
-                        {int.name}
-                      </h4>
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-heading font-bold text-slate-900 text-base tracking-tight">
+                          {int.name}
+                        </h4>
+                        <span className="text-[10px] font-mono-data text-slate-400 font-semibold">{int.id}</span>
+                      </div>
                       <p className="text-xs text-slate-500 mt-1 leading-relaxed">
                         {int.description}
                       </p>
+                      {int.whyRecommended && (
+                        <div className="text-[11px] text-emerald-800 bg-emerald-50/80 p-2 rounded-lg border border-emerald-100 mt-2">
+                          <strong className="font-semibold">Site Rationale:</strong> {int.whyRecommended}
+                        </div>
+                      )}
                     </div>
 
                     {/* Cost & Cooling Impact Metrics */}
@@ -503,7 +520,7 @@ export const InterventionPlannerView: React.FC<InterventionPlannerViewProps> = (
                   {coolingLabel}
                 </span>
                 <span className="text-[10px] text-emerald-600 block font-medium">
-                  {simulation?.delta?.ambient_reduction_c ? `-${simulation.delta.ambient_reduction_c.toFixed(1)}°C Ambient` : 'Modeled UHI Reduction'}
+                  {ambientReductionLabel}
                 </span>
               </div>
 
@@ -520,19 +537,32 @@ export const InterventionPlannerView: React.FC<InterventionPlannerViewProps> = (
                 <span className="font-mono-data text-lg font-extrabold text-slate-900">
                   {totalAreaKm2} km²
                 </span>
-                <span className="text-[10px] text-slate-400 block">Footprint coverage</span>
+                <span className="text-[10px] text-slate-400 block">
+                  {simulation?.zone_area_coverage_pct ? `${simulation.zone_area_coverage_pct}% zone coverage` : 'Footprint coverage'}
+                </span>
               </div>
             </div>
 
-            {/* Synergy effects callout if returned by simulation */}
-            {simulation?.synergy_effects && (
+            {/* Synergy factor callout if returned by simulation */}
+            {simulation && simulation.synergy_factor_c > 0 && (
               <div className="bg-emerald-50 rounded-xl p-3 border border-emerald-200 text-xs text-emerald-900 flex items-start space-x-2">
                 <Zap className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
                 <div>
                   <span className="font-bold block">Portfolio Synergy Amplification</span>
                   <span className="text-[11px] text-emerald-800">
-                    {Array.isArray(simulation.synergy_effects) ? simulation.synergy_effects.join(' • ') : String(simulation.synergy_effects)}
+                    +{simulation.synergy_factor_c.toFixed(2)}°C coupled cooling amplification modeled from multi-measure portfolio interaction
                   </span>
+                </div>
+              </div>
+            )}
+
+            {/* Simulation Error Alert */}
+            {simulationError && (
+              <div className="p-3 rounded-lg bg-red-50 border border-red-200 flex items-start space-x-2 text-xs text-red-700">
+                <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-600" />
+                <div>
+                  <span className="font-bold block">Simulation Error</span>
+                  <span>{simulationError}</span>
                 </div>
               </div>
             )}
@@ -544,7 +574,7 @@ export const InterventionPlannerView: React.FC<InterventionPlannerViewProps> = (
               </span>
               <div className="space-y-2 text-xs">
                 {selectedInterventions.map((int) => {
-                  const efficiencyRatio = (int.coolingImpact / int.costLakhs) * 100;
+                  const efficiencyRatio = int.costLakhs > 0 ? (int.coolingImpact / int.costLakhs) * 100 : 0;
                   return (
                     <div key={int.id} className="space-y-1">
                       <div className="flex items-center justify-between text-[11px]">
@@ -581,7 +611,7 @@ export const InterventionPlannerView: React.FC<InterventionPlannerViewProps> = (
                     className={`h-full transition-all duration-300 ${
                       isBudgetExceeded ? 'bg-red-500' : 'bg-emerald-600'
                     }`}
-                    style={{ width: `${Math.min(100, (totalCostLakhs / budgetLakhs) * 100)}%` }}
+                    style={{ width: `${Math.min(100, simulation ? simulation.budget_utilization_pct : (budgetLakhs > 0 ? (totalCostLakhs / budgetLakhs) * 100 : 0))}%` }}
                   />
                 </div>
 
@@ -598,7 +628,7 @@ export const InterventionPlannerView: React.FC<InterventionPlannerViewProps> = (
                     <span className={`font-mono-data font-bold ${
                       isBudgetExceeded ? 'text-red-600' : 'text-emerald-700'
                     }`}>
-                      {isBudgetExceeded ? `-₹${Math.abs(remainingBudget).toFixed(1)} Lakhs` : `₹${remainingBudget.toFixed(1)} Lakhs`}
+                      {isBudgetExceeded ? `-₹${deficitLakhs.toFixed(1)} Lakhs` : `₹${remainingBudget.toFixed(1)} Lakhs`}
                     </span>
                   </div>
                 </div>
@@ -613,7 +643,7 @@ export const InterventionPlannerView: React.FC<InterventionPlannerViewProps> = (
                   <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-600" />
                   <div>
                     <span className="font-bold block">Budget Exceeded!</span>
-                    <span>Selected interventions exceed the allocated ₹{budgetLakhs}L ceiling by ₹{Math.abs(remainingBudget).toFixed(1)} Lakhs. Deselect an item or increase the municipal budget cap.</span>
+                    <span>Selected interventions exceed the allocated ₹{budgetLakhs}L ceiling by ₹{deficitLakhs.toFixed(1)} Lakhs. Deselect an item or increase the municipal budget cap.</span>
                   </div>
                 </div>
               )}
@@ -692,7 +722,7 @@ export const InterventionPlannerView: React.FC<InterventionPlannerViewProps> = (
                   {coolingLabel}
                 </span>
                 <span className="text-[10px] text-emerald-600 block font-medium">
-                  {simulation?.delta?.ambient_reduction_c ? `-${simulation.delta.ambient_reduction_c.toFixed(1)}°C Ambient` : 'Net Surface Drop'}
+                  {ambientReductionLabel}
                 </span>
               </div>
 
@@ -709,18 +739,20 @@ export const InterventionPlannerView: React.FC<InterventionPlannerViewProps> = (
                 <span className="font-mono-data text-xl font-extrabold text-slate-900">
                   {totalAreaKm2} km²
                 </span>
-                <span className="text-[10px] text-slate-400 block">Active Corridor</span>
+                <span className="text-[10px] text-slate-400 block">
+                  {simulation?.zone_area_coverage_pct ? `${simulation.zone_area_coverage_pct}% Zone Coverage` : 'Active Corridor'}
+                </span>
               </div>
             </div>
 
-            {/* Baseline vs Projected Thermal Trajectory (from Simulation) */}
+            {/* Baseline vs Projected Thermal Trajectory (from Authoritative Observation & Simulation) */}
             {simulation && (
               <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
                 <div>
                   <span className="text-[10px] uppercase font-bold text-slate-500 block">Baseline Microclimate</span>
                   <span className="font-mono-data font-bold text-slate-800">
-                    {simulation.baseline.lst_c}°C LST
-                    {simulation.baseline.ambient_temp_c !== undefined ? ` • ${simulation.baseline.ambient_temp_c}°C Ambient` : ''}
+                    {selectedZone.temperature}°C LST (Observed)
+                    {selectedZone.baselineTemp ? ` • ${selectedZone.baselineTemp}°C Reference` : ''}
                   </span>
                 </div>
                 <div className="flex items-center space-x-2 text-emerald-600 font-bold">
@@ -730,8 +762,8 @@ export const InterventionPlannerView: React.FC<InterventionPlannerViewProps> = (
                 <div>
                   <span className="text-[10px] uppercase font-bold text-slate-500 block">Projected Post-Intervention</span>
                   <span className="font-mono-data font-bold text-emerald-700">
-                    {simulation.projected.lst_c}°C LST
-                    {simulation.projected.ambient_temp_c !== undefined ? ` • ${simulation.projected.ambient_temp_c}°C Ambient` : ''}
+                    {(selectedZone.temperature - simulation.modeled_lst_reduction_c).toFixed(1)}°C LST (Modelled)
+                    {simulation.modeled_ambient_reduction_c > 0 ? ` • -${simulation.modeled_ambient_reduction_c.toFixed(1)}°C Ambient` : ''}
                   </span>
                 </div>
               </div>
@@ -740,72 +772,177 @@ export const InterventionPlannerView: React.FC<InterventionPlannerViewProps> = (
             {/* Intervention Implementation Schedule */}
             <div className="space-y-3">
               <h4 className="font-heading font-bold text-sm text-slate-900 uppercase tracking-wider">
-                Approved Intervention Measures ({selectedInterventions.length})
+                Approved Intervention Measures ({simulation?.active_interventions?.length || selectedInterventions.length})
               </h4>
               <div className="space-y-2">
-                {selectedInterventions.map((int, i) => (
-                  <div
-                    key={int.id}
-                    className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
-                  >
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px]">
-                          {i + 1}
-                        </span>
-                        <span className="font-bold text-slate-900 text-sm">{int.name}</span>
-                        <span className="text-[10px] font-mono-data px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 font-semibold">
-                          {int.category}
-                        </span>
+                {simulation?.active_interventions && simulation.active_interventions.length > 0 ? (
+                  simulation.active_interventions.map((item, i) => (
+                    <div
+                      key={item.id}
+                      className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                    >
+                      <div>
+                        <div className="flex items-center space-x-2">
+                          <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px]">
+                            {i + 1}
+                          </span>
+                          <span className="font-bold text-slate-900 text-sm">{item.name}</span>
+                          <span className="text-[10px] font-mono-data px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 font-semibold">
+                            {item.category?.replace(/_/g, ' ')}
+                          </span>
+                          {item.phase && (
+                            <span className="text-[10px] font-mono-data px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 font-semibold">
+                              {item.phase}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-slate-600 text-[11px] mt-1">
+                          Target: {item.target_surface || 'Urban surface'} • Implementation Area: {item.implementation_area_hectares} ha ({item.implementation_area_sqm.toLocaleString()} m²)
+                        </p>
                       </div>
-                      <p className="text-slate-600 text-[11px] mt-1">{int.description}</p>
-                    </div>
 
-                    <div className="flex items-center space-x-4 flex-shrink-0 text-right">
-                      <div>
-                        <span className="text-slate-500 block text-[10px]">Cost</span>
-                        <span className="font-mono-data font-bold text-slate-900">₹{int.costLakhs.toFixed(1)}L</span>
-                      </div>
-                      <div>
-                        <span className="text-slate-500 block text-[10px]">Cooling</span>
-                        <span className="font-mono-data font-bold text-emerald-600">{int.coolingImpactLabel}</span>
-                      </div>
-                      <div>
-                        <span className="text-slate-500 block text-[10px]">Lead Time</span>
-                        <span className="font-mono-data text-slate-700 font-medium">{int.timeToImpact}</span>
+                      <div className="flex items-center space-x-4 flex-shrink-0 text-right">
+                        <div>
+                          <span className="text-slate-500 block text-[10px]">Cost</span>
+                          <span className="font-mono-data font-bold text-slate-900">₹{item.cost_inr_lakhs.toFixed(1)}L</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-500 block text-[10px]">LST Drop</span>
+                          <span className="font-mono-data font-bold text-emerald-600">-{item.estimated_lst_drop_c.toFixed(1)}°C</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-500 block text-[10px]">Ambient Drop</span>
+                          <span className="font-mono-data text-emerald-700 font-semibold">-{item.estimated_ambient_drop_c.toFixed(1)}°C</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-500 block text-[10px]">Lead Time</span>
+                          <span className="font-mono-data text-slate-700 font-medium">{item.timeframe}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  selectedInterventions.map((int, i) => (
+                    <div
+                      key={int.id}
+                      className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                    >
+                      <div>
+                        <div className="flex items-center space-x-2">
+                          <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px]">
+                            {i + 1}
+                          </span>
+                          <span className="font-bold text-slate-900 text-sm">{int.name}</span>
+                          <span className="text-[10px] font-mono-data px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 font-semibold">
+                            {int.category}
+                          </span>
+                        </div>
+                        <p className="text-slate-600 text-[11px] mt-1">{int.description}</p>
+                      </div>
+
+                      <div className="flex items-center space-x-4 flex-shrink-0 text-right">
+                        <div>
+                          <span className="text-slate-500 block text-[10px]">Cost</span>
+                          <span className="font-mono-data font-bold text-slate-900">₹{int.costLakhs.toFixed(1)}L</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-500 block text-[10px]">Cooling</span>
+                          <span className="font-mono-data font-bold text-emerald-600">{int.coolingImpactLabel}</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-500 block text-[10px]">Lead Time</span>
+                          <span className="font-mono-data text-slate-700 font-medium">{int.timeToImpact}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 
-            {/* Roadmap Execution Phases */}
-            <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 space-y-2">
+            {/* Phased Roadmap Execution Schedule */}
+            <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 space-y-3">
               <span className="text-xs font-heading font-bold text-slate-800 uppercase tracking-wider block">
                 Phased Deployment Schedule
               </span>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                <div className="p-2.5 rounded-lg bg-white border border-slate-200 shadow-sm">
-                  <span className="text-sky-700 font-bold block">Phase 1: Months 1–3</span>
-                  <p className="text-slate-600 text-[11px] mt-0.5">
-                    Immediate high-albedo cool roof retrofits and shade sail installations at transit hubs.
-                  </p>
+              {simulation?.phased_roadmap && Object.keys(simulation.phased_roadmap).length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                  {Object.entries(simulation.phased_roadmap).map(([phaseTitle, actions], idx) => {
+                    const colors = [
+                      'text-sky-700 border-sky-200 bg-sky-50/50',
+                      'text-emerald-700 border-emerald-200 bg-emerald-50/50',
+                      'text-purple-700 border-purple-200 bg-purple-50/50'
+                    ];
+                    const colorClass = colors[idx % colors.length];
+                    const actionList = Array.isArray(actions) ? actions : [String(actions)];
+                    return (
+                      <div key={phaseTitle} className="p-3 rounded-lg bg-white border border-slate-200 shadow-sm space-y-2">
+                        <span className={`font-bold block px-2 py-1 rounded text-xs border ${colorClass}`}>
+                          {phaseTitle}
+                        </span>
+                        <ul className="space-y-1.5 pl-1">
+                          {actionList.map((action, aIdx) => (
+                            <li key={aIdx} className="text-slate-600 text-[11px] flex items-start space-x-1.5">
+                              <span className="text-slate-400 font-bold">•</span>
+                              <span className="leading-snug">{action}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  })}
                 </div>
-                <div className="p-2.5 rounded-lg bg-white border border-slate-200 shadow-sm">
-                  <span className="text-emerald-700 font-bold block">Phase 2: Months 3–8</span>
-                  <p className="text-slate-600 text-[11px] mt-0.5">
-                    Permeable pavement sealants, sidewalk pit excavations, and pocket park groundwork.
-                  </p>
-                </div>
-                <div className="p-2.5 rounded-lg bg-white border border-slate-200 shadow-sm">
-                  <span className="text-purple-700 font-bold block">Phase 3: Months 8–14</span>
-                  <p className="text-slate-600 text-[11px] mt-0.5">
-                    Mature native tree planting, bio-swales, and satellite thermal sensor re-verification.
-                  </p>
+              ) : (
+                <p className="text-xs text-slate-400">Select interventions to generate authoritative phased deployment schedule.</p>
+              )}
+            </div>
+
+            {/* Model Assumptions & Engine Provenance */}
+            {simulation && (simulation.assumptions || simulation.provenance) && (
+              <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-200 space-y-2 text-xs">
+                <span className="text-[10px] font-heading font-bold uppercase tracking-wider text-slate-500 block">
+                  Model Assumptions & Engine Provenance
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px] text-slate-600">
+                  {simulation.assumptions && (
+                    <div>
+                      <span className="font-semibold text-slate-700 block mb-1">Key Assumptions:</span>
+                      {Array.isArray(simulation.assumptions) ? (
+                        <ul className="space-y-0.5 list-disc list-inside text-slate-500 font-mono-data">
+                          {simulation.assumptions.map((a, i) => (
+                            <li key={i}>{a}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <ul className="space-y-0.5 list-disc list-inside text-slate-500 font-mono-data">
+                          {Object.entries(simulation.assumptions).map(([k, v]) => (
+                            <li key={k}>
+                              <span className="text-slate-700 font-medium">{k.replace(/_/g, ' ')}:</span> {String(v)}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  )}
+                  {simulation.provenance && (
+                    <div>
+                      <span className="font-semibold text-slate-700 block mb-1">Calculation Provenance:</span>
+                      {typeof simulation.provenance === 'string' ? (
+                        <p className="font-mono-data text-slate-500">{simulation.provenance}</p>
+                      ) : (
+                        <ul className="space-y-0.5 list-disc list-inside text-slate-500 font-mono-data">
+                          {Object.entries(simulation.provenance).map(([k, v]) => (
+                            <li key={k}>
+                              <span className="text-slate-700 font-medium">{k.replace(/_/g, ' ')}:</span> {String(v)}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
+            )}
 
             {/* Download Status Notification */}
             {isDossierDownloaded && (

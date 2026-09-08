@@ -1,6 +1,8 @@
 import { 
   BackendHealthResponse, 
   BackendZoneItem, 
+  BackendZoneSummary,
+  BackendZone,
   ZoneGeoJSONCollection, 
   HotspotItem, 
   HotspotDetail, 
@@ -8,6 +10,7 @@ import {
   SimulationRequest, 
   SimulationResponse 
 } from '../types';
+import { adaptSimulationResponse } from './zoneAdapter';
 
 /**
  * Root URL for the FastAPI backend.
@@ -16,7 +19,7 @@ import {
  */
 const BASE_URL = (((import.meta as any).env?.VITE_API_URL as string | undefined) || 'http://localhost:8000').replace(/\/+$/, '');
 
-class ApiServiceError extends Error {
+export class ApiServiceError extends Error {
   status?: number;
   details?: unknown;
 
@@ -99,16 +102,20 @@ export const HeatScapeApi = {
    * Specific zone details
    * GET /api/v1/zones/{zone_id}
    */
-  async getZoneById(zoneId: string): Promise<BackendZoneItem> {
-    return request<BackendZoneItem>(`/api/v1/zones/${encodeURIComponent(zoneId)}`);
+  async getZoneById(zoneId: string): Promise<BackendZone | BackendZoneItem> {
+    return request<BackendZone | BackendZoneItem>(`/api/v1/zones/${encodeURIComponent(zoneId)}`);
   },
 
   /**
    * Ranked municipal hotspot list
    * GET /api/v1/hotspots
    */
-  async getHotspots(): Promise<HotspotItem[]> {
-    return request<HotspotItem[]>('/api/v1/hotspots');
+  async getHotspots(params?: { minRisk?: number; minAnomaly?: number }): Promise<HotspotItem[]> {
+    const query = new URLSearchParams();
+    if (params?.minRisk !== undefined) query.set('min_risk', String(params.minRisk));
+    if (params?.minAnomaly !== undefined) query.set('min_anomaly', String(params.minAnomaly));
+    const qs = query.toString() ? `?${query.toString()}` : '';
+    return request<HotspotItem[]>(`/api/v1/hotspots${qs}`);
   },
 
   /**
@@ -148,10 +155,18 @@ export const HeatScapeApi = {
    * POST /api/v1/interventions/simulate
    */
   async simulateInterventions(payload: SimulationRequest): Promise<SimulationResponse> {
-    return request<SimulationResponse>('/api/v1/interventions/simulate', {
+    const cleanPayload = {
+      zone_id: payload.zone_id,
+      selected_intervention_ids: payload.selected_intervention_ids || payload.intervention_ids || [],
+      budget_inr_lakhs: payload.budget_inr_lakhs ?? payload.budget_lakhs ?? 30.0
+    };
+
+    const raw = await request<SimulationResponse>('/api/v1/interventions/simulate', {
       method: 'POST',
-      body: JSON.stringify(payload)
+      body: JSON.stringify(cleanPayload)
     });
+
+    return adaptSimulationResponse(raw);
   }
 };
 

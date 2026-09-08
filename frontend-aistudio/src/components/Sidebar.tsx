@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, 
   Map as MapIcon, 
@@ -13,40 +13,67 @@ import {
   Activity,
   TreePine
 } from 'lucide-react';
-import { NavigationTab, Zone, getRiskFromTemp } from '../types';
+import { NavigationTab, Zone } from '../types';
+import { HeatScapeApi } from '../services/api';
 
 interface SidebarProps {
   activeTab: NavigationTab;
   onTabChange: (tab: NavigationTab) => void;
   selectedZone: Zone;
+  zones?: Zone[];
+  zonesCount?: number;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   activeTab,
   onTabChange,
-  selectedZone
+  selectedZone,
+  zones,
+  zonesCount: propZonesCount
 }) => {
-  const derivedRisk = getRiskFromTemp(selectedZone.temperature);
-  const isLowRisk = derivedRisk === 'low';
+  // Authoritative backend risk level (server-provided, no frontend temperature calculations)
+  const backendRisk = (selectedZone.backendRiskLevel || (selectedZone.risk ? selectedZone.risk.toUpperCase() : 'MODERATE')).toUpperCase();
+  const isLowRisk = backendRisk === 'LOW';
+
+  // Dynamic loaded zones count
+  const [loadedZonesCount, setLoadedZonesCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    HeatScapeApi.getZones()
+      .then((z) => {
+        if (isMounted && Array.isArray(z) && z.length > 0) {
+          setLoadedZonesCount(z.length);
+        }
+      })
+      .catch(() => {});
+    return () => { isMounted = false; };
+  }, []);
+
+  const totalZonesCount = propZonesCount ?? (zones?.length || loadedZonesCount || 10);
 
   const navItems: { id: NavigationTab; label: string; icon: React.FC<{ className?: string }>; badge?: string }[] = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'heatmap', label: 'Heat Map', icon: MapIcon, badge: 'Raster' },
-    { id: 'hotspots', label: 'Hotspots', icon: Flame, badge: '9 Zones' },
+    { id: 'hotspots', label: 'Hotspots', icon: Flame, badge: `${totalZonesCount} Zones` },
     { id: 'analysis', label: 'Hotspot Analysis', icon: Activity, badge: selectedZone.code },
     { id: 'interventions', label: 'Interventions', icon: Layers },
     { id: 'reports', label: 'Reports', icon: FileText }
   ];
 
-  const getRiskBadgeStyles = () => {
-    switch (derivedRisk) {
-      case 'extreme':
+  const getRiskBadgeStyles = (risk: string) => {
+    switch (risk.toUpperCase()) {
+      case 'CRITICAL':
+      case 'EXTREME':
         return 'bg-red-500/20 text-red-200 border-red-500/40';
-      case 'high':
+      case 'SEVERE':
+        return 'bg-rose-500/20 text-rose-200 border-rose-500/40';
+      case 'HIGH':
         return 'bg-orange-500/20 text-orange-200 border-orange-500/40';
-      case 'moderate':
+      case 'MODERATE':
         return 'bg-amber-500/20 text-amber-200 border-amber-500/40';
-      case 'low':
+      case 'LOW':
+      default:
         return 'bg-emerald-400/25 text-emerald-200 border-emerald-400/40';
     }
   };
@@ -134,8 +161,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <span className="text-[10px] font-heading font-bold uppercase tracking-wider text-emerald-300/70">
                 {isLowRisk ? 'Active Eco Sink' : 'Focus Hotspot'}
               </span>
-              <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold uppercase border ${getRiskBadgeStyles()}`}>
-                {selectedZone.backendRiskLevel || derivedRisk}
+              <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold uppercase border ${getRiskBadgeStyles(backendRisk)}`}>
+                {backendRisk}
               </span>
             </div>
             <div className="flex items-start justify-between">

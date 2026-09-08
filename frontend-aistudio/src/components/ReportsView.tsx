@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   FileText, 
   Download, 
@@ -16,11 +16,11 @@ import {
   Printer,
   Share2,
   X,
-  FileCheck
+  FileCheck,
+  AlertTriangle
 } from 'lucide-react';
-import { Zone, RiskLevel, Intervention } from '../types';
-import { calculateCityMetrics, getRiskLabel } from '../data/zones';
-import { INTERVENTIONS } from '../data/interventions';
+import { Zone, SimulationResponse } from '../types';
+import { HeatScapeApi } from '../services/api';
 import { HeatMapCanvas } from './HeatMapCanvas';
 
 interface ReportsViewProps {
@@ -44,10 +44,66 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
   const [showExecutiveReportModal, setShowExecutiveReportModal] = useState<boolean>(false);
   const [exportNotice, setExportNotice] = useState<string | null>(null);
 
-  // Dynamic city metrics computed from the shared zones dataset
-  const cityMetrics = calculateCityMetrics(zones);
+  // Authoritative simulation state for active portfolio reporting
+  const [simulation, setSimulation] = useState<SimulationResponse | null>(null);
 
-  // Timeframe trend dataset
+  useEffect(() => {
+    let isMounted = true;
+    if (selectedInterventionIds.length === 0) {
+      setSimulation(null);
+      return;
+    }
+
+    async function loadSimulation() {
+      try {
+        const res = await HeatScapeApi.simulateInterventions({
+          zone_id: selectedZone.id,
+          selected_intervention_ids: selectedInterventionIds,
+          budget_inr_lakhs: 30.0
+        });
+        if (isMounted) setSimulation(res);
+      } catch {
+        if (isMounted) setSimulation(null);
+      }
+    }
+
+    loadSimulation();
+    return () => { isMounted = false; };
+  }, [selectedZone.id, selectedInterventionIds]);
+
+  // Authoritative citywide metrics aggregated directly from backend zone data (no analytical formulas)
+  const totalZones = zones.length || 1;
+  const averageSurfaceTemp = Number(
+    (zones.reduce((sum, z) => sum + z.temperature, 0) / totalZones).toFixed(1)
+  );
+  const baselineTemp = 31.5; // Canonical backend default_baseline_temp_c
+  const tempDiffVsBaseline = Number((averageSurfaceTemp - baselineTemp).toFixed(1));
+
+  const extremeZonesCount = zones.filter(
+    (z) => z.backendRiskLevel === 'CRITICAL' || z.backendRiskLevel === 'SEVERE' || z.risk === 'extreme'
+  ).length;
+  const highZonesCount = zones.filter(
+    (z) => z.backendRiskLevel === 'HIGH' || z.risk === 'high'
+  ).length;
+  const moderateZonesCount = zones.filter(
+    (z) => z.backendRiskLevel === 'MODERATE' || z.risk === 'moderate'
+  ).length;
+  const lowZonesCount = zones.filter(
+    (z) => z.backendRiskLevel === 'LOW' || z.risk === 'low'
+  ).length;
+
+  const totalPopulationAtRisk = zones
+    .filter(
+      (z) =>
+        z.backendRiskLevel === 'CRITICAL' ||
+        z.backendRiskLevel === 'SEVERE' ||
+        z.backendRiskLevel === 'HIGH' ||
+        z.risk === 'extreme' ||
+        z.risk === 'high'
+    )
+    .reduce((sum, z) => sum + (z.populationVulnerable || z.population), 0);
+
+  // Demonstration trend dataset (clearly labeled in UI as demonstration curves)
   const trendData = {
     '24h': [
       { label: '00:00', max: 32.5, avg: 29.8, base: 27.2 },
@@ -84,29 +140,17 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
 
   const currentTrend = trendData[timeframe];
 
-  // Risk Distribution counts
+  // Risk Distribution counts using backend risk tier classification
   const riskCounts = {
-    extreme: zones.filter((z) => z.risk === 'extreme').length,
-    high: zones.filter((z) => z.risk === 'high').length,
-    moderate: zones.filter((z) => z.risk === 'moderate').length,
-    low: zones.filter((z) => z.risk === 'low').length
+    extreme: extremeZonesCount,
+    high: highZonesCount,
+    moderate: moderateZonesCount,
+    low: lowZonesCount
   };
-
-  // Planned interventions stats
-  const plannedInterventions = INTERVENTIONS.filter((int) =>
-    selectedInterventionIds.includes(int.id)
-  );
-  const totalAllocatedBudget = plannedInterventions.reduce((sum, item) => sum + item.costLakhs, 0);
-  const totalCoolingAchieved = (
-    plannedInterventions.reduce((sum, item) => sum + item.coolingImpact, 0) +
-    (plannedInterventions.length >= 2 ? 0.4 : 0)
-  ).toFixed(1);
-  const totalPopBenefited = Math.round(
-    plannedInterventions.reduce((sum, item) => sum + item.populationBenefit, 0) * 0.75
-  );
 
   const sortedZones = [...zones].sort((a, b) => b.temperature - a.temperature);
   const hottestZone = sortedZones[0] || zones[0];
+  const coolestZone = sortedZones[sortedZones.length - 1] || zones[0];
 
   const handleExportData = () => {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(zones, null, 2));
@@ -177,14 +221,14 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
           </span>
           <div className="mt-2 flex items-baseline space-x-2">
             <span className="text-3xl font-mono-data font-extrabold text-slate-900">
-              {cityMetrics.averageSurfaceTemp}°C
+              {averageSurfaceTemp}°C
             </span>
-            <span className="text-xs font-semibold text-red-600">
-              +{cityMetrics.tempDiffVsBaseline}°C vs baseline
+            <span className={`text-xs font-semibold ${tempDiffVsBaseline > 0 ? 'text-red-600' : 'text-emerald-700'}`}>
+              {tempDiffVsBaseline > 0 ? `+${tempDiffVsBaseline}` : tempDiffVsBaseline}°C vs baseline
             </span>
           </div>
           <span className="text-[10px] text-slate-400 block mt-2 pt-2 border-t border-slate-100 font-medium">
-            Target Ceiling: 36.0°C
+            Baseline: {baselineTemp}°C (Radiometric)
           </span>
         </div>
 
@@ -194,14 +238,14 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
           </span>
           <div className="mt-2 flex items-baseline space-x-2">
             <span className="text-3xl font-mono-data font-extrabold text-red-600">
-              {cityMetrics.extremeZonesCount}
+              {extremeZonesCount}
             </span>
             <span className="text-xs font-semibold text-orange-600">
-              +{cityMetrics.highZonesCount} High Risk
+              +{highZonesCount} High Risk
             </span>
           </div>
           <span className="text-[10px] text-slate-400 block mt-2 pt-2 border-t border-slate-100 font-medium">
-            Across 9 surveyed zones ({zones.length} total)
+            Across {zones.length} surveyed zones
           </span>
         </div>
 
@@ -211,14 +255,14 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
           </span>
           <div className="mt-2 flex items-baseline space-x-2">
             <span className="text-3xl font-mono-data font-extrabold text-slate-900">
-              {cityMetrics.totalPopulationAtRisk.toLocaleString()}
+              {totalPopulationAtRisk.toLocaleString()}
             </span>
             <span className="text-xs font-semibold text-purple-700 font-medium">
               High & Extreme Risk
             </span>
           </div>
           <span className="text-[10px] text-slate-400 block mt-2 pt-2 border-t border-slate-100 font-medium">
-            In zones exceeding 38.0°C threshold
+            In Critical, Severe & High Risk zones
           </span>
         </div>
 
@@ -228,14 +272,14 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
           </span>
           <div className="mt-2 flex items-baseline space-x-2">
             <span className="text-3xl font-mono-data font-extrabold text-emerald-600">
-              {cityMetrics.estimatedCoolingPotential}°C
+              {simulation ? `-${simulation.modeled_lst_reduction_c.toFixed(1)}°C` : 'N/A'}
             </span>
             <span className="text-xs font-semibold text-emerald-700">
-              City-wide Net
+              {simulation ? `Portfolio (${simulation.zone_id})` : 'City-wide Net'}
             </span>
           </div>
           <span className="text-[10px] text-slate-400 block mt-2 pt-2 border-t border-slate-100 font-medium">
-            Aggregated cooling impact
+            {simulation ? 'Modeled biophysical reduction' : 'Citywide telemetry aggregate: N/A'}
           </span>
         </div>
       </div>
@@ -246,12 +290,17 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
         <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3 border-b border-slate-100">
             <div>
-              <h3 className="font-heading font-extrabold text-base text-slate-900 tracking-tight flex items-center space-x-2">
-                <TrendingUp className="w-4 h-4 text-red-600" />
-                <span>SURFACE TEMPERATURE TREND</span>
-              </h3>
+              <div className="flex items-center space-x-2">
+                <h3 className="font-heading font-extrabold text-base text-slate-900 tracking-tight flex items-center space-x-2">
+                  <TrendingUp className="w-4 h-4 text-orange-600" />
+                  <span>SURFACE TEMPERATURE TREND</span>
+                </h3>
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-50 text-amber-800 border border-amber-200">
+                  Demonstration telemetry — not measured historical data
+                </span>
+              </div>
               <p className="text-xs text-slate-500 mt-0.5">
-                Maximum, average, and baseline diurnal oscillations
+                Synthetic reference curves for UI evaluation • Historical time-series telemetry is unavailable from backend API
               </p>
             </div>
 
@@ -274,25 +323,41 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
             </div>
           </div>
 
+          {/* Telemetry Disclaimer Box */}
+          <div className="bg-amber-50/80 border border-amber-200 rounded-lg p-2.5 text-xs text-amber-900 flex items-start space-x-2">
+            <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <span className="font-bold block text-[11px]">Historical Telemetry Dataset Unavailable</span>
+              <span className="text-[11px] text-amber-800 leading-tight">
+                The current telemetry backend provides single-epoch radiometric observations. Multi-interval historical diurnal and seasonal feeds are not currently recorded or exposed via API. Curves below are rendered for demonstration only.
+              </span>
+            </div>
+          </div>
+
           {/* SVG Comparative Line Chart */}
           <div className="pt-2">
             <div className="flex items-center justify-end space-x-4 text-xs text-slate-500 mb-2">
               <span className="flex items-center space-x-1.5">
                 <span className="w-3 h-0.5 bg-red-600"></span>
-                <span>Max Surface Temp</span>
+                <span>Demo Max Temp</span>
               </span>
               <span className="flex items-center space-x-1.5">
                 <span className="w-3 h-0.5 bg-orange-500"></span>
-                <span>Average Temp</span>
+                <span>Demo Average Temp</span>
               </span>
               <span className="flex items-center space-x-1.5">
                 <span className="w-3 h-0.5 bg-sky-500"></span>
-                <span>Baseline</span>
+                <span>Reference Baseline</span>
               </span>
             </div>
 
             <div className="h-56 w-full relative flex items-end">
               <svg className="w-full h-full overflow-visible" viewBox="0 0 700 200">
+                {/* Watermark indicating demonstration data */}
+                <text x="350" y="105" fill="#94a3b8" fontSize="12" textAnchor="middle" fontWeight="bold" opacity="0.35" letterSpacing="1">
+                  DEMONSTRATION TELEMETRY — NOT MEASURED HISTORICAL DATA
+                </text>
+
                 {/* Horizontal guide lines */}
                 <line x1="0" y1="20" x2="700" y2="20" stroke="#f1f5f9" strokeWidth="1" />
                 <line x1="0" y1="70" x2="700" y2="70" stroke="#f1f5f9" strokeWidth="1" />
@@ -387,7 +452,7 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
               <span>HEAT RISK DISTRIBUTION</span>
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              Breakdown across all 9 surveyed municipal sectors
+              Breakdown across all {zones.length} surveyed municipal sectors
             </p>
           </div>
 
@@ -397,7 +462,7 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
               <div className="flex justify-between text-xs">
                 <span className="font-semibold text-slate-800 flex items-center space-x-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-red-600"></span>
-                  <span>Extreme Risk (≥41°C)</span>
+                  <span>Extreme / Critical Risk</span>
                 </span>
                 <span className="font-mono-data font-bold text-slate-900">
                   {riskCounts.extreme} Zones ({Math.round((riskCounts.extreme / zones.length) * 100)}%)
@@ -415,7 +480,7 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
               <div className="flex justify-between text-xs">
                 <span className="font-semibold text-slate-800 flex items-center space-x-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
-                  <span>High Risk (38–&lt;41°C)</span>
+                  <span>High Risk</span>
                 </span>
                 <span className="font-mono-data font-bold text-slate-900">
                   {riskCounts.high} Zones ({Math.round((riskCounts.high / zones.length) * 100)}%)
@@ -433,7 +498,7 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
               <div className="flex justify-between text-xs">
                 <span className="font-semibold text-slate-800 flex items-center space-x-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-                  <span>Moderate Risk (34–&lt;38°C)</span>
+                  <span>Moderate Risk</span>
                 </span>
                 <span className="font-mono-data font-bold text-slate-900">
                   {riskCounts.moderate} Zones ({Math.round((riskCounts.moderate / zones.length) * 100)}%)
@@ -451,7 +516,7 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
               <div className="flex justify-between text-xs">
                 <span className="font-semibold text-slate-800 flex items-center space-x-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                  <span>Low Risk (&lt;34°C Cooling Sink)</span>
+                  <span>Low Risk (Cooling Sink)</span>
                 </span>
                 <span className="font-mono-data font-bold text-slate-900">
                   {riskCounts.low} Zone ({Math.round((riskCounts.low / zones.length) * 100)}%)
@@ -480,13 +545,13 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
             <div className="flex justify-between">
               <span className="text-slate-600">High Risk Cohort:</span>
               <span className="font-mono-data font-bold text-red-600">
-                {cityMetrics.totalPopulationAtRisk.toLocaleString()}
+                {totalPopulationAtRisk.toLocaleString()}
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-600">Cooling Sink Shelter:</span>
               <span className="font-mono-data font-bold text-emerald-700">
-                {zones.filter((z) => z.risk === 'low').reduce((s, z) => s + z.population, 0).toLocaleString()}
+                {zones.filter((z) => z.backendRiskLevel === 'LOW' || z.risk === 'low').reduce((s, z) => s + z.population, 0).toLocaleString()}
               </span>
             </div>
           </div>
@@ -502,7 +567,7 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
               <span>HOTSPOT PRIORITY & THERMAL RANKING DIRECTORY</span>
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              Ranked from hottest to coolest across all 9 surveyed municipal sectors
+              Ranked from hottest to coolest across all {zones.length} surveyed municipal sectors
             </p>
           </div>
           <span className="text-xs font-mono-data px-2.5 py-1 rounded bg-slate-100 text-slate-700 font-bold border border-slate-200">
@@ -527,6 +592,10 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
             </thead>
             <tbody className="divide-y divide-slate-100">
               {sortedZones.map((zone, idx) => {
+                const isExtreme = zone.backendRiskLevel === 'CRITICAL' || zone.backendRiskLevel === 'SEVERE' || zone.risk === 'extreme';
+                const isHigh = zone.backendRiskLevel === 'HIGH' || zone.risk === 'high';
+                const isModerate = zone.backendRiskLevel === 'MODERATE' || zone.risk === 'moderate';
+
                 return (
                   <tr 
                     key={zone.id} 
@@ -550,15 +619,15 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
                     </td>
                     <td className="py-3 px-4">
                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                        zone.risk === 'extreme' 
+                        isExtreme 
                           ? 'bg-red-50 text-red-700 border border-red-200' 
-                          : zone.risk === 'high'
+                          : isHigh
                           ? 'bg-orange-50 text-orange-700 border border-orange-200'
-                          : zone.risk === 'moderate'
+                          : isModerate
                           ? 'bg-amber-50 text-amber-700 border border-amber-200'
                           : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                       }`}>
-                        {getRiskLabel(zone.risk)}
+                        {zone.backendRiskLevel || (zone.risk?.toUpperCase() + ' RISK')}
                       </span>
                     </td>
                     <td className="py-3 px-4 text-slate-600 text-[11px] max-w-xs">
@@ -569,19 +638,19 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
                     </td>
                     <td className="py-3 px-4">
                       <span className={`text-[11px] font-bold ${
-                        zone.risk === 'extreme' 
+                        isExtreme 
                           ? 'text-red-600' 
-                          : zone.risk === 'high' 
+                          : isHigh 
                             ? 'text-orange-600' 
-                            : zone.risk === 'moderate' 
+                            : isModerate 
                               ? 'text-amber-600' 
                               : 'text-emerald-700'
                       }`}>
-                        {zone.risk === 'extreme' 
+                        {isExtreme 
                           ? 'Urgent (0–3m)' 
-                          : zone.risk === 'high' 
+                          : isHigh 
                             ? 'High (3–6m)' 
-                            : zone.risk === 'moderate' 
+                            : isModerate 
                               ? 'Medium (6–12m)' 
                               : 'Preserve / Monitor'}
                       </span>
@@ -632,7 +701,7 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
             <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
               <span className="text-[11px] text-slate-500 block font-medium">Planned Interventions</span>
               <span className="font-mono-data text-2xl font-extrabold text-slate-900">
-                {plannedInterventions.length} Measures
+                {selectedInterventionIds.length} Measures
               </span>
               <span className="text-[10px] text-slate-400 block">In active portfolio</span>
             </div>
@@ -640,23 +709,27 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
             <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
               <span className="text-[11px] text-slate-500 block font-medium">Budget Allocated</span>
               <span className="font-mono-data text-2xl font-extrabold text-slate-900">
-                ₹{totalAllocatedBudget.toFixed(1)} Lakhs
+                ₹{simulation ? simulation.total_cost_inr_lakhs.toFixed(1) : '0.0'} Lakhs
               </span>
-              <span className="text-[10px] text-slate-400 block">Of ₹30.0L cap</span>
+              <span className="text-[10px] text-slate-400 block">
+                {simulation ? `Cap: ₹${simulation.budget_inr_lakhs}L (${simulation.budget_utilization_pct}%)` : 'Simulation cap: ₹30.0L'}
+              </span>
             </div>
 
             <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
               <span className="text-[11px] text-slate-500 block font-medium">Potential Cooling</span>
               <span className="font-mono-data text-2xl font-extrabold text-emerald-600">
-                -{totalCoolingAchieved}°C
+                {simulation ? `-${simulation.modeled_lst_reduction_c.toFixed(2)}°C` : '0.0°C'}
               </span>
-              <span className="text-[10px] text-emerald-600 block font-medium">Modeled local drop</span>
+              <span className="text-[10px] text-emerald-600 block font-medium">
+                {simulation?.modeled_ambient_reduction_c ? `-${simulation.modeled_ambient_reduction_c.toFixed(2)}°C Ambient` : 'Modeled local drop'}
+              </span>
             </div>
 
             <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
               <span className="text-[11px] text-slate-500 block font-medium">Population Benefited</span>
               <span className="font-mono-data text-2xl font-extrabold text-slate-900">
-                {totalPopBenefited.toLocaleString()}
+                {simulation ? simulation.population_benefited.toLocaleString() : '0'}
               </span>
               <span className="text-[10px] text-slate-400 block">Direct beneficiaries</span>
             </div>
@@ -728,8 +801,8 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
                 </span>
                 <p>
                   Thermal infrared satellite observation reveals that the metropolitan surveyed area exhibits an average surface temperature of 
-                  <strong> {cityMetrics.averageSurfaceTemp}°C</strong> (+{cityMetrics.tempDiffVsBaseline}°C above vegetated baseline), with <strong>{cityMetrics.extremeZonesCount} extreme hotspot zones</strong> (≥41.0°C) and <strong>{cityMetrics.highZonesCount} high-risk zones</strong> (38.0–40.9°C).
-                  Over <strong>{cityMetrics.totalPopulationAtRisk.toLocaleString()} vulnerable citizens</strong> reside within these high-risk microclimates, where dark asphalt paving and acute canopy deficits exacerbate solar radiation storage.
+                  <strong> {averageSurfaceTemp}°C</strong> ({tempDiffVsBaseline > 0 ? `+${tempDiffVsBaseline}` : tempDiffVsBaseline}°C relative to {baselineTemp}°C baseline), with <strong>{extremeZonesCount} extreme hotspot zones</strong> and <strong>{highZonesCount} high-risk zones</strong>.
+                  Over <strong>{totalPopulationAtRisk.toLocaleString()} vulnerable citizens</strong> reside within these high-risk microclimates, where dark impervious paving and acute canopy deficits exacerbate solar radiation absorption.
                 </p>
               </div>
 
@@ -738,12 +811,19 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
                   2. Priority Hotspots Overview & Cooling Benchmarks
                 </span>
                 <p>
-                  <strong>{hottestZone.code} ({hottestZone.name})</strong> represents the highest-severity thermal hotspot at <strong>{hottestZone.temperature}°C</strong> (+{hottestZone.diffFromSurround}°C vs baseline) with {hottestZone.population.toLocaleString()} exposed individuals. 
-                  Conversely, <strong>Zone 15 (North Riverfront Parklands)</strong> serves as the municipal ecological benchmark, registering at <strong>31.5°C</strong> (-4.3°C below baseline) due to its mature 58% tree canopy and water body proximity.
+                  <strong>{hottestZone.code} ({hottestZone.name})</strong> represents the highest-severity thermal hotspot at <strong>{hottestZone.temperature}°C</strong> ({hottestZone.diffFromSurround > 0 ? `+${hottestZone.diffFromSurround}` : hottestZone.diffFromSurround}°C vs baseline) with {hottestZone.population.toLocaleString()} exposed individuals. 
+                  Conversely, <strong>{coolestZone.code} ({coolestZone.name})</strong> serves as the municipal ecological benchmark, registering at <strong>{coolestZone.temperature}°C</strong> ({coolestZone.diffFromSurround > 0 ? `+${coolestZone.diffFromSurround}` : coolestZone.diffFromSurround}°C vs baseline) with {coolestZone.vegetation}% vegetation canopy coverage.
                 </p>
                 <p>
-                  Targeted cooling interventions (such as Tree Canopy Expansion, Cool Roof Retrofits, Cool Pavements, and Transit Shading) project a significant temperature reduction of 
-                  <strong> -{cityMetrics.estimatedCoolingPotential}°C</strong> across high-risk sectors.
+                  {simulation ? (
+                    <>
+                      Targeted cooling interventions modeled for <strong>{selectedZone.code} ({selectedZone.name})</strong> project an authoritative Land Surface Temperature reduction of <strong>-{simulation.modeled_lst_reduction_c.toFixed(2)}°C</strong> and ambient reduction of <strong>-{simulation.modeled_ambient_reduction_c.toFixed(2)}°C</strong> across {simulation.total_implementation_area_hectares} hectares, protecting {simulation.population_benefited.toLocaleString()} local residents.
+                    </>
+                  ) : (
+                    <>
+                      Targeted cooling interventions (including High-Reflectance Cool Roofs, Urban Tree Canopy Expansion, Permeable Pavements, and Transit Shading) can be simulated per zone in the Cooling Intervention Planner to obtain authoritative biophysical cooling projections.
+                    </>
+                  )}
                 </p>
               </div>
 
@@ -751,11 +831,29 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
                 <span className="font-heading font-bold text-sm text-slate-900 uppercase block">
                   3. City-Wide Intervention Roadmap
                 </span>
-                <ul className="list-disc list-inside space-y-1 text-slate-600">
-                  <li>Phase 1: Transit shade structures and reflective cool roofs across 14 commercial blocks.</li>
-                  <li>Phase 2: High-albedo cool asphalt sealants on primary bus avenues and industrial corridors.</li>
-                  <li>Phase 3: Continuous 4.2 km greenway and pocket park revitalization along riverfront corridors.</li>
-                </ul>
+                {simulation?.phased_roadmap && Object.keys(simulation.phased_roadmap).length > 0 ? (
+                  <div className="space-y-2">
+                    {Object.entries(simulation.phased_roadmap).map(([phase, actions]) => {
+                      const actionList = Array.isArray(actions) ? (actions as string[]) : [String(actions)];
+                      return (
+                        <div key={phase} className="text-slate-700">
+                          <span className="font-semibold text-slate-900">{phase}:</span>
+                          <ul className="list-disc list-inside space-y-0.5 mt-0.5 text-slate-600">
+                            {actionList.map((act, i) => (
+                              <li key={i}>{act}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <ul className="list-disc list-inside space-y-1 text-slate-600">
+                    <li>Phase 1: Transit shade structures and reflective cool roofs across municipal and commercial flat rooftops (INT-COOL-ROOF, INT-TRANSIT-SHADE).</li>
+                    <li>Phase 2: High-albedo permeable interlocking pavers and micro-pocket parks (INT-PERM-PAVEMENT, INT-POCKET-PARK).</li>
+                    <li>Phase 3: Urban tree canopy expansion and continuous greenway corridors (INT-TREE-CANOPY, INT-GREEN-CORRIDOR).</li>
+                  </ul>
+                )}
               </div>
             </div>
 

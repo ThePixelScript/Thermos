@@ -54,28 +54,37 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       : [selectedRiskFilter as RiskLevel];
 
   const getRiskBadge = (risk: RiskLevel, backendRiskLevel?: string) => {
-    const label = backendRiskLevel || risk.toUpperCase();
-    switch (risk) {
-      case 'extreme':
+    const raw = backendRiskLevel || risk;
+    const label = (typeof raw === 'string' ? raw : 'MODERATE').toUpperCase();
+    switch (label) {
+      case 'CRITICAL':
+      case 'EXTREME':
         return (
           <span className="px-2 py-0.5 rounded text-[10px] font-black bg-red-50 text-red-700 border border-red-200 flex items-center space-x-1 uppercase">
             <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse"></span>
             <span>{label}</span>
           </span>
         );
-      case 'high':
+      case 'SEVERE':
+        return (
+          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200 uppercase">
+            {label}
+          </span>
+        );
+      case 'HIGH':
         return (
           <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-50 text-orange-700 border border-orange-200 uppercase">
             {label}
           </span>
         );
-      case 'moderate':
+      case 'MODERATE':
         return (
           <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 uppercase">
             {label}
           </span>
         );
-      case 'low':
+      case 'LOW':
+      default:
         return (
           <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase">
             {label || 'LOW / COOL'}
@@ -165,7 +174,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </span>
           </div>
           <div className="mt-3 flex items-center justify-between text-[11px] text-slate-400 pt-2.5 border-t border-slate-100">
-            <span>Thermal Anomaly &gt;40°C</span>
+            <span>Authoritative Hotspot Status</span>
             <span className="font-mono-data text-emerald-700 font-semibold">Focus: {selectedZone?.code || 'ZONE-01'}</span>
           </div>
         </div>
@@ -211,16 +220,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
           <div className="mt-2.5 flex items-baseline space-x-2">
-            <span className="text-3xl font-extrabold font-mono-data text-emerald-700">
-              {cityMetrics.estimatedCoolingPotential}°C
+            <span className="text-3xl font-extrabold font-mono-data text-slate-400">
+              N/A
             </span>
             <span className="text-xs font-bold text-emerald-700">
-              Multi-Tier Plan
+              Simulate in Planner
             </span>
           </div>
           <div className="mt-3 flex items-center justify-between text-[11px] text-slate-400 pt-2.5 border-t border-slate-100">
-            <span>Modelled Portfolio Target</span>
-            <span className="font-mono-data text-emerald-700 font-semibold">Target: {(cityMetrics.averageSurfaceTemp - cityMetrics.estimatedCoolingPotential).toFixed(1)}°C</span>
+            <span>Citywide Target</span>
+            <span className="font-mono-data text-emerald-700 font-semibold">Scenario Engine Ready</span>
           </div>
         </div>
       </div>
@@ -362,25 +371,44 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   <span>Priority Hotspots</span>
                 </h3>
                 <p className="text-[11px] text-slate-500 mt-0.5">
-                  Ranked by thermal severity & vulnerability (8 Active Hotspots)
+                  Ranked by authoritative heat risk ({hotspots.length > 0 ? `${hotspots.length} Active Hotspots` : `${cityMetrics.activeHotspotsCount} Active Hotspots`})
                 </p>
               </div>
               <span className="text-[10px] font-mono-data px-2 py-0.5 rounded bg-red-50 text-red-700 border border-red-200 font-bold">
-                {zones.filter((z) => z.risk !== 'low').length} Hotspots
+                {hotspots.length > 0 ? `${hotspots.length} Hotspots` : `${cityMetrics.activeHotspotsCount} Hotspots`}
               </span>
             </div>
 
             {/* Hotspots Scrollable List */}
             <div className="mt-3 space-y-2.5 overflow-y-auto max-h-[500px] pr-1 flex-1">
-              {zones
-                .filter((z) => z.risk !== 'low')
-                .sort((a, b) => b.temperature - a.temperature)
-                .map((zone, idx) => {
+              {hotspots.length > 0 ? (
+                hotspots.map((hotspot) => {
+                  const zone = zones.find((z) => z.id === hotspot.zone_id) || {
+                    id: hotspot.zone_id,
+                    code: hotspot.zone_id,
+                    name: hotspot.zone_name,
+                    district: hotspot.typology || 'Urban Zone',
+                    temperature: hotspot.temperature ?? hotspot.land_surface_temp_c ?? 40.0,
+                    population: hotspot.total_population ?? 30000,
+                    landUse: hotspot.typology || 'Mixed Urban',
+                    primaryCause: hotspot.dominant_driver 
+                      ? `${hotspot.dominant_driver}${hotspot.dominant_driver_pct ? ` (${hotspot.dominant_driver_pct}%)` : ''}`
+                      : 'Urban heat accumulation',
+                    risk: hotspot.risk_level?.toLowerCase() === 'critical' ? 'extreme' : 'high',
+                    backendRiskLevel: hotspot.risk_level as any,
+                    areaKm2: hotspot.area_sqkm || 2.0
+                  } as Zone;
                   const isSelected = selectedZone.id === zone.id;
+                  const temp = hotspot.temperature ?? hotspot.land_surface_temp_c ?? zone.temperature;
+                  const driver = hotspot.dominant_driver 
+                    ? `${hotspot.dominant_driver}${hotspot.dominant_driver_pct ? ` (${hotspot.dominant_driver_pct}%)` : ''}`
+                    : zone.primaryCause;
+                  const pop = hotspot.total_population ?? zone.population;
+
                   return (
                     <div
-                      key={zone.id}
-                      id={`priority-hotspot-${zone.id}`}
+                      key={hotspot.zone_id}
+                      id={`priority-hotspot-${hotspot.zone_id}`}
                       onClick={() => onSelectZone(zone)}
                       className={`p-3 rounded-lg border transition-all cursor-pointer ${
                         isSelected
@@ -391,39 +419,39 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       <div className="flex items-start justify-between">
                         <div className="flex items-center space-x-2">
                           <span className="text-xs font-mono-data text-slate-400 font-bold">
-                            #{idx + 1}
+                            #{hotspot.rank}
                           </span>
                           <div>
                             <div className="flex items-center space-x-1.5">
                               <span className="font-heading font-bold text-slate-900 text-xs">
-                                {zone.code}
+                                {hotspot.zone_id}
                               </span>
-                              <span className="text-[10px] text-slate-600 truncate max-w-[120px] font-medium">
-                                {zone.name}
+                              <span className="text-[10px] text-slate-600 truncate max-w-[120px] font-medium" title={hotspot.zone_name}>
+                                {hotspot.zone_name}
                               </span>
                             </div>
                             <span className="text-[10px] text-slate-500">
-                              {zone.landUse} • {zone.population.toLocaleString()} exposed
+                              {zone.landUse || hotspot.typology || 'Urban Zone'} • {pop ? pop.toLocaleString() : 'N/A'} exposed
                             </span>
                           </div>
                         </div>
 
                         <div className="text-right flex flex-col items-end">
                           <span className="font-mono-data font-extrabold text-sm text-slate-900">
-                            {zone.temperature}°C
+                            {temp !== undefined ? `${temp}°C` : 'N/A'}
                           </span>
-                          <span className="mt-0.5">{getRiskBadge(zone.risk, zone.backendRiskLevel)}</span>
+                          <span className="mt-0.5">{getRiskBadge(zone.risk, hotspot.risk_level || zone.backendRiskLevel)}</span>
                         </div>
                       </div>
 
                       {/* Primary Driver Bar Preview */}
                       <div className="mt-2.5 pt-2 border-t border-slate-200/70 flex items-center justify-between text-[11px]">
-                        <span className="text-slate-600 truncate text-[10px] max-w-[170px]" title={zone.primaryCause}>
-                          {zone.primaryCause}
+                        <span className="text-slate-600 truncate text-[10px] max-w-[170px]" title={driver}>
+                          {driver}
                         </span>
                         <div className="flex items-center space-x-1.5 flex-shrink-0">
                           <button
-                            id={`analyze-btn-${zone.id}`}
+                            id={`analyze-btn-${hotspot.zone_id}`}
                             onClick={(e) => {
                               e.stopPropagation();
                               onSelectZone(zone);
@@ -438,13 +466,86 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       </div>
                     </div>
                   );
-                })}
+                })
+              ) : (
+                /* Fallback if backend hotspots not available */
+                zones
+                  .filter((z) => z.backendRiskLevel !== 'LOW' && z.risk !== 'low')
+                  .map((zone, idx) => {
+                    const isSelected = selectedZone.id === zone.id;
+                    return (
+                      <div
+                        key={zone.id}
+                        id={`priority-hotspot-${zone.id}`}
+                        onClick={() => onSelectZone(zone)}
+                        className={`p-3 rounded-lg border transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-emerald-50/70 border-emerald-500 shadow-sm'
+                            : 'bg-slate-50/80 hover:bg-slate-100 border-slate-200'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-xs font-mono-data text-slate-400 font-bold">
+                              #{idx + 1}
+                            </span>
+                            <div>
+                              <div className="flex items-center space-x-1.5">
+                                <span className="font-heading font-bold text-slate-900 text-xs">
+                                  {zone.code}
+                                </span>
+                                <span className="text-[10px] text-slate-600 truncate max-w-[120px] font-medium">
+                                  {zone.name}
+                                </span>
+                              </div>
+                              <span className="text-[10px] text-slate-500">
+                                {zone.landUse} • {zone.population.toLocaleString()} exposed
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="text-right flex flex-col items-end">
+                            <span className="font-mono-data font-extrabold text-sm text-slate-900">
+                              {zone.temperature}°C
+                            </span>
+                            <span className="mt-0.5">{getRiskBadge(zone.risk, zone.backendRiskLevel)}</span>
+                          </div>
+                        </div>
+
+                        {/* Primary Driver Bar Preview */}
+                        <div className="mt-2.5 pt-2 border-t border-slate-200/70 flex items-center justify-between text-[11px]">
+                          <span className="text-slate-600 truncate text-[10px] max-w-[170px]" title={zone.primaryCause}>
+                            {zone.primaryCause}
+                          </span>
+                          <div className="flex items-center space-x-1.5 flex-shrink-0">
+                            <button
+                              id={`analyze-btn-${zone.id}`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onSelectZone(zone);
+                                onOpenAnalysis(zone);
+                              }}
+                              className="text-[11px] font-bold text-emerald-700 hover:text-emerald-800 px-2 py-0.5 rounded bg-white hover:bg-slate-100 border border-slate-200 flex items-center space-x-1 transition-all shadow-xs"
+                            >
+                              <span>Analyze</span>
+                              <ChevronRight className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+              )}
 
               {/* Urban Cool Island / Eco Buffer Section */}
               {zones
-                .filter((z) => z.risk === 'low')
+                .filter((z) => z.backendRiskLevel === 'LOW' || z.risk === 'low')
                 .map((zone) => {
                   const isSelected = selectedZone.id === zone.id;
+                  const offsetText = zone.diffFromSurround !== undefined
+                    ? `${zone.diffFromSurround > 0 ? '+' : ''}${zone.diffFromSurround}°C vs baseline (${zone.name})`
+                    : `${zone.district || 'Ecological thermal buffer'}`;
+
                   return (
                     <div
                       key={zone.id}
@@ -487,8 +588,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       </div>
 
                       <div className="mt-2.5 pt-2 border-t border-emerald-200/60 flex items-center justify-between text-[11px]">
-                        <span className="text-emerald-700 truncate text-[10px] max-w-[170px]">
-                          -4.3°C below baseline (Riverfront & Canopy)
+                        <span className="text-emerald-700 truncate text-[10px] max-w-[170px]" title={offsetText}>
+                          {offsetText}
                         </span>
                         <button
                           id={`analyze-eco-btn-${zone.id}`}
