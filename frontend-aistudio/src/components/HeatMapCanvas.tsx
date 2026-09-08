@@ -15,9 +15,45 @@ import {
   ExternalLink,
   ChevronRight,
   Flame,
-  Info
+  Info,
+  Globe,
+  Map as MapIcon,
+  AlertTriangle
 } from 'lucide-react';
-import { Zone, RiskLevel, MapLayerSettings } from '../types';
+import { Zone, RiskLevel, MapLayerSettings, ZoneGeoJSONCollection, HotspotItem } from '../types';
+import { MapLibreHeatMap } from './MapLibreHeatMap';
+
+interface ErrorBoundaryProps {
+  children: React.ReactNode;
+  fallback: (error: Error) => React.ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+class MapErrorBoundary extends (React.Component as any) {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, info: any) {
+    console.error('MapErrorBoundary caught an error:', error, info);
+  }
+
+  render() {
+    if (this.state.hasError && this.state.error) {
+      return this.props.fallback(this.state.error);
+    }
+    return this.props.children;
+  }
+}
 
 interface HeatMapCanvasProps {
   zones: Zone[];
@@ -30,6 +66,8 @@ interface HeatMapCanvasProps {
   minTempFilter?: number;
   maxVegetationFilter?: number;
   landUseFilter?: string;
+  geoJson?: ZoneGeoJSONCollection | null;
+  hotspots?: HotspotItem[];
 }
 
 export const HeatMapCanvas: React.FC<HeatMapCanvasProps> = ({
@@ -42,9 +80,15 @@ export const HeatMapCanvas: React.FC<HeatMapCanvasProps> = ({
   filterRiskLevels,
   minTempFilter = 0,
   maxVegetationFilter = 100,
-  landUseFilter = 'all'
+  landUseFilter = 'all',
+  geoJson,
+  hotspots
 }) => {
-  // Map pan and zoom state
+  // Map Engine: MapLibre Real Geographic Basemap vs Schematic SVG Vector Fallback
+  const [renderEngine, setRenderEngine] = useState<'maplibre' | 'svg'>('maplibre');
+  const [mapLibreError, setMapLibreError] = useState<string | null>(null);
+
+  // Map pan and zoom state (for SVG fallback)
   const [zoom, setZoom] = useState<number>(1);
   const [pan, setPan] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -114,6 +158,66 @@ export const HeatMapCanvas: React.FC<HeatMapCanvasProps> = ({
     }
   };
 
+  // 1. PRIMARY MAP ENGINE: Real Geographic Basemap via MapLibre GL JS
+  if (renderEngine === 'maplibre' && !mapLibreError) {
+    return (
+      <div 
+        id="heat-map-container"
+        className={`relative w-full ${heightClass} bg-slate-100 rounded-xl border border-slate-300 overflow-hidden shadow-inner`}
+      >
+        <MapErrorBoundary
+          fallback={(err) => {
+            return (
+              <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-slate-100">
+                <AlertTriangle className="w-8 h-8 text-amber-600 mb-2" />
+                <p className="text-sm font-bold text-slate-800">Map Rendering Fallback</p>
+                <p className="text-xs text-slate-600 mt-1">{err.message}</p>
+                <button
+                  onClick={() => setRenderEngine('svg')}
+                  className="mt-3 px-3 py-1.5 bg-emerald-800 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700"
+                >
+                  Switch to Schematic Vector Map
+                </button>
+              </div>
+            );
+          }}
+        >
+          <MapLibreHeatMap
+            zones={zones}
+            selectedZone={selectedZone}
+            onSelectZone={onSelectZone}
+            onOpenAnalysis={onOpenAnalysis}
+            hotspots={hotspots}
+            geoJson={geoJson}
+            filterRiskLevels={filterRiskLevels?.map(r => r.toLowerCase())}
+            minTempFilter={minTempFilter}
+            landUseFilter={landUseFilter}
+            onError={(err) => {
+              console.warn('MapLibre error encountered, activating graceful SVG fallback:', err);
+              setMapLibreError(err.message || 'MapLibre WebGL unavailable');
+              setRenderEngine('svg');
+            }}
+            className="w-full h-full"
+          />
+        </MapErrorBoundary>
+
+        {/* Engine Switcher to Schematic Vector */}
+        <div className="absolute top-3 right-3 z-20">
+          <button
+            id="btn-switch-to-svg"
+            onClick={() => setRenderEngine('svg')}
+            className="bg-white/95 backdrop-blur-md px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700 hover:text-slate-900 shadow-sm flex items-center space-x-1.5 transition-all"
+            title="Switch to Schematic Vector Map"
+          >
+            <MapIcon className="w-3.5 h-3.5 text-slate-600" />
+            <span>Schematic Vector View</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. FALLBACK MAP ENGINE: Schematic Vector Map (SVG)
   return (
     <div 
       id="heat-map-container"
@@ -123,6 +227,14 @@ export const HeatMapCanvas: React.FC<HeatMapCanvasProps> = ({
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
+      {/* MapLibre Fallback Alert Banner */}
+      {mapLibreError && (
+        <div className="absolute top-14 left-3 z-20 bg-amber-50 border border-amber-300 text-amber-800 text-xs px-3 py-1.5 rounded-lg shadow-sm flex items-center space-x-2">
+          <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0" />
+          <span>Basemap fallback active: {mapLibreError}</span>
+        </div>
+      )}
+
       {/* Map Header Overlay Bar */}
       <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
         <div className="flex items-center space-x-2 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm pointer-events-auto">
@@ -140,8 +252,18 @@ export const HeatMapCanvas: React.FC<HeatMapCanvasProps> = ({
           </span>
         </div>
 
-        {/* Quick Layer Switchers */}
+        {/* Quick Layer Switchers & Engine Switcher */}
         <div className="flex items-center space-x-2 pointer-events-auto">
+          <button
+            id="btn-switch-to-maplibre"
+            onClick={() => { setMapLibreError(null); setRenderEngine('maplibre'); }}
+            className="bg-emerald-800 text-white px-2.5 py-1.5 rounded-lg border border-emerald-700 text-xs font-semibold shadow-sm flex items-center space-x-1.5 transition-all hover:bg-emerald-700"
+            title="Switch to Real Geographic MapLibre Map"
+          >
+            <Globe className="w-3.5 h-3.5 text-emerald-200" />
+            <span>Real Basemap (MapLibre)</span>
+          </button>
+
           {/* Quick Toggle Buttons */}
           <div className="hidden md:flex items-center bg-white/95 backdrop-blur-md rounded-lg border border-slate-200 p-1 space-x-1 shadow-sm">
             <button

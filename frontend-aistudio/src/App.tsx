@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { NavigationTab, Zone, HotspotItem, BackendInterventionItem, Intervention, RealDataMetadata } from './types';
+import { NavigationTab, Zone, HotspotItem, BackendInterventionItem, Intervention, RealDataMetadata, ZoneGeoJSONCollection } from './types';
 import { ZONES } from './data/zones';
 import { INTERVENTIONS } from './data/interventions';
 import { HeatScapeApi } from './services/api';
@@ -60,6 +60,7 @@ export default function App() {
   const [backendOnline, setBackendOnline] = useState<boolean | null>(null);
   const [isLoadingInitialData, setIsLoadingInitialData] = useState<boolean>(true);
   const [realDataMeta, setRealDataMeta] = useState<RealDataMetadata | null>(null);
+  const [zonesGeoJson, setZonesGeoJson] = useState<ZoneGeoJSONCollection | null>(null);
 
   // Selected Interventions in Cooling Plan (starts with canonical backend IDs: INT-TREE-CANOPY + INT-COOL-ROOF)
   const [selectedInterventionIds, setSelectedInterventionIds] = useState<string[]>([
@@ -94,6 +95,11 @@ export default function App() {
       // Real satellite metadata (Landsat-9 / TIRS-2)
       if (realMetaRes.status === 'fulfilled' && realMetaRes.value?.satellite) {
         setRealDataMeta(realMetaRes.value);
+      }
+
+      // GeoJSON spatial boundary layer
+      if (geoJsonRes.status === 'fulfilled' && geoJsonRes.value) {
+        setZonesGeoJson(geoJsonRes.value);
       }
 
       // Ranked hotspots
@@ -300,6 +306,7 @@ export default function App() {
               onOpenAnalysis={handleOpenAnalysis}
               onOpenPlanner={handleOpenPlanner}
               hotspots={hotspots}
+              geoJson={zonesGeoJson}
             />
           )}
 
@@ -310,6 +317,8 @@ export default function App() {
               onSelectZone={setSelectedZone}
               onOpenAnalysis={handleOpenAnalysis}
               onOpenPlanner={handleOpenPlanner}
+              hotspots={hotspots}
+              geoJson={zonesGeoJson}
             />
           )}
 

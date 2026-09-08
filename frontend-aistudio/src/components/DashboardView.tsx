@@ -15,7 +15,7 @@ import {
   Layers,
   MapPin
 } from 'lucide-react';
-import { Zone, RiskLevel, HotspotItem } from '../types';
+import { Zone, RiskLevel, HotspotItem, ZoneGeoJSONCollection } from '../types';
 import { deriveCityMetricsFromBackend } from '../services/zoneAdapter';
 import { HeatMapCanvas } from './HeatMapCanvas';
 
@@ -26,6 +26,7 @@ interface DashboardViewProps {
   onOpenAnalysis: (zone: Zone) => void;
   onOpenPlanner: (zone: Zone) => void;
   hotspots?: HotspotItem[];
+  geoJson?: ZoneGeoJSONCollection | null;
 }
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
@@ -34,7 +35,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   onSelectZone,
   onOpenAnalysis,
   onOpenPlanner,
-  hotspots = []
+  hotspots = [],
+  geoJson
 }) => {
   // Derive live city metrics from live backend data
   const cityMetrics = deriveCityMetricsFromBackend(zones, hotspots);
@@ -357,6 +359,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             minTempFilter={minTempFilter}
             maxVegetationFilter={vegetationFilter}
             landUseFilter={selectedLandUse}
+            geoJson={geoJson}
+            hotspots={hotspots}
           />
         </div>
 

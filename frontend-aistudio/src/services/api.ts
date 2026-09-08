@@ -176,6 +176,14 @@ export const HeatScapeApi = {
    */
   async getRealDataMetadata(): Promise<RealDataMetadata> {
     return request<RealDataMetadata>('/api/v1/real-data/metadata');
+  },
+
+  /**
+   * Real satellite Landsat grid cells GeoJSON
+   * GET /api/v1/real-data/zones/geojson
+   */
+  async getRealZonesGeoJson(): Promise<ZoneGeoJSONCollection> {
+    return request<ZoneGeoJSONCollection>('/api/v1/real-data/zones/geojson');
   }
 };
 
