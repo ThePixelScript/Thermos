@@ -36,6 +36,7 @@ import { DashboardView } from './components/dashboard/DashboardView';
 import { ThermosMap } from './components/map/ThermosMap';
 import { CityCommandCenter } from './components/analytics/CityCommandCenter';
 import { ScenarioPlanner } from './components/analytics/ScenarioPlanner';
+import { SettingsModal } from './components/settings/SettingsModal';
 import { useLocation } from './context/LocationContext';
 import { PanelRightOpen } from 'lucide-react';
 import './index.css';
@@ -208,6 +209,11 @@ export const App: React.FC = () => {
             handleSelectZone(zoneId);
           }}
         />
+      )}
+
+      {/* Dedicated Workspace Settings & Preferences Modal */}
+      {isSettingsOpen && (
+        <SettingsModal onClose={() => setIsSettingsOpen(false)} />
       )}
     </div>
   );

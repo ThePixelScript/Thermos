@@ -1,35 +1,26 @@
 /**
- * THERMOS Geospatial Platform — Human-Designed Enterprise Left Sidebar
+ * THERMOS Geospatial Platform — Human-Designed Enterprise Left Sidebar V3
  * 
  * - Width: 240px
- * - Navigation: Dashboard, Heat Map, Hotspots, Analysis, Interventions, Reports, Settings
- * - Bottom: Collapsible Settings (Theme, Font Size, Density, Appearance)
- * - Clean flat surface, subtle typography (Inter), 34px item height
- * - Active state: 3px left accent indicator, calm surface, font-weight 600
+ * - Streamlined Navigation: Dashboard, Heat Map, Interventions, Reports, Settings
+ * - Top 5 Priority Zones:
+ *   - Rank 1: Gold accent, subtle highlight
+ *   - Rank 2: Silver accent
+ *   - Rank 3: Bronze accent
+ *   - Rank 4-5: Neutral
+ *   - Displays: [#Rank] Sector Name, CHRI Score, Risk Badge, Temperature Anomaly
+ * - Settings opens dedicated Settings Modal (never hides behind sidebar)
  */
-import React, { useState } from 'react';
+import React from 'react';
 import {
   LayoutDashboard,
   Flame,
-  MapPin,
-  TrendingUp,
   Sliders,
   FileText,
   Settings,
-  ChevronDown,
-  ChevronRight,
-  Sun,
-  Moon,
-  Laptop,
-  Check,
+  FlameKindling,
 } from 'lucide-react';
 import type { HotspotSummary } from '../../types';
-import {
-  useTheme,
-  type ThemePalette,
-  type ThemeDensity,
-  type ThemeFontScale,
-} from '../../context/ThemeContext';
 
 export interface LeftSidebarProps {
   hotspots: HotspotSummary[];
@@ -51,34 +42,11 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
   onOpenCommandCenter,
   activeNav = 'heatmap',
   onNavChange,
-  isSettingsOpen: externalSettingsOpen,
-  onToggleSettings: externalToggleSettings,
+  onToggleSettings,
 }) => {
-  const [internalSettingsOpen, setInternalSettingsOpen] = useState<boolean>(false);
-  const showSettings = externalSettingsOpen !== undefined ? externalSettingsOpen : internalSettingsOpen;
-
-  const toggleSettings = () => {
-    if (externalToggleSettings) {
-      externalToggleSettings();
-    } else {
-      setInternalSettingsOpen((prev) => !prev);
-    }
-  };
-
-  const {
-    mode,
-    theme,
-    density,
-    fontScale,
-    setMode,
-    setTheme,
-    setDensity,
-    setFontScale,
-  } = useTheme();
-
   const handleNavClick = (id: string) => {
     if (id === 'settings') {
-      toggleSettings();
+      if (onToggleSettings) onToggleSettings();
       return;
     }
 
@@ -94,25 +62,57 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'heatmap', label: 'Heat Map', icon: Flame },
-    { id: 'hotspots', label: 'Hotspots', icon: MapPin, count: hotspots.length },
-    { id: 'risk', label: 'Analysis', icon: TrendingUp },
     { id: 'interventions', label: 'Interventions', icon: Sliders },
     { id: 'reports', label: 'Reports', icon: FileText },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
-  const accentOptions: { id: ThemePalette; label: string; color: string }[] = [
-    { id: 'green', label: 'Green', color: '#10B981' },
-    { id: 'blue', label: 'Blue', color: '#2563EB' },
-    { id: 'teal', label: 'Teal', color: '#0D9488' },
-    { id: 'orange', label: 'Orange', color: '#F97316' },
-    { id: 'purple', label: 'Purple', color: '#8B5CF6' },
-  ];
+  // Top 5 Priority Zones ranked by severity/score
+  const top5Hotspots = hotspots.slice(0, 5);
+
+  const getRankStyle = (index: number) => {
+    switch (index) {
+      case 0:
+        return {
+          rankClass: 'rank-gold',
+          badgeText: '#1',
+        };
+      case 1:
+        return {
+          rankClass: 'rank-silver',
+          badgeText: '#2',
+        };
+      case 2:
+        return {
+          rankClass: 'rank-bronze',
+          badgeText: '#3',
+        };
+      default:
+        return {
+          rankClass: 'rank-neutral',
+          badgeText: `#${index + 1}`,
+        };
+    }
+  };
+
+  const getRiskLabel = (level: string) => {
+    switch (level) {
+      case 'CRITICAL':
+      case 'SEVERE':
+        return 'Extreme Risk';
+      case 'HIGH':
+        return 'High Risk';
+      case 'MODERATE':
+        return 'Moderate Risk';
+      default:
+        return 'Low Risk';
+    }
+  };
 
   return (
     <aside className="enterprise-sidebar">
-      {/* Primary Navigation */}
-      <nav className="sidebar-nav-container">
+      {/* 1. Primary Navigation (5 Items) */}
+      <nav className="sidebar-nav-container" aria-label="Main Navigation">
         <div className="nav-group-label">NAVIGATION</div>
         <ul className="sidebar-nav-list">
           {navItems.map((item) => {
@@ -127,9 +127,6 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
                 >
                   <Icon size={15} className="item-icon" />
                   <span className="item-label">{item.label}</span>
-                  {item.count !== undefined && (
-                    <span className="item-badge">{item.count}</span>
-                  )}
                 </button>
               </li>
             );
@@ -137,43 +134,65 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
         </ul>
       </nav>
 
-      {/* Priority Sectors Ranked List (Compact, Clean) */}
+      {/* 2. Top 5 Priority Zones */}
       <div className="sidebar-sectors-wrapper">
         <div className="sectors-header-row">
-          <span className="sectors-header-title">PRIORITY SECTORS</span>
-          <span className="sectors-header-count">{hotspots.length}</span>
+          <div className="flex items-center gap-1.5">
+            <FlameKindling size={12} className="text-amber-500" />
+            <span className="sectors-header-title font-semibold tracking-wider">TOP 5 PRIORITY ZONES</span>
+          </div>
+          <span className="sectors-header-count">5 Active</span>
         </div>
 
         <div className="sectors-scroll-list">
-          {hotspots.length === 0 ? (
-            <div className="sectors-empty-msg">No active sectors resolved</div>
+          {top5Hotspots.length === 0 ? (
+            <div className="sectors-empty-msg">No active priority zones resolved</div>
           ) : (
-            hotspots.map((hotspot) => {
+            top5Hotspots.map((hotspot, idx) => {
               const isSelected = selectedZoneId === hotspot.zone_id;
-              const score = (hotspot.risk_score || 50).toFixed(1);
-              const isCritical = hotspot.risk_level === 'CRITICAL' || hotspot.risk_level === 'SEVERE';
-              const isHigh = hotspot.risk_level === 'HIGH';
+              const score = (hotspot.risk_score || 50).toFixed(0);
+              const rankInfo = getRankStyle(idx);
+              const riskLabel = getRiskLabel(hotspot.risk_level);
+              const anomaly = (hotspot.land_surface_temp_c - 30.0).toFixed(1);
+              const anomalyStr = parseFloat(anomaly) >= 0 ? `+${anomaly}°C` : `${anomaly}°C`;
 
               return (
                 <button
                   key={hotspot.zone_id}
                   type="button"
-                  className={`sector-list-item ${isSelected ? 'selected' : ''}`}
+                  className={`priority-zone-card ${rankInfo.rankClass} ${isSelected ? 'selected' : ''}`}
                   onClick={() => onSelectHotspot(hotspot.zone_id)}
-                  title={`${hotspot.zone_name} (CHRI ${score})`}
+                  title={`${hotspot.zone_name} — CHRI ${score} (${riskLabel})`}
                 >
-                  <span className="sector-rank-num">#{hotspot.rank}</span>
-                  <div className="sector-text-group">
-                    <span className="sector-title-text">{hotspot.zone_name}</span>
-                    <span className="sector-sub-temp">{hotspot.land_surface_temp_c.toFixed(1)}°C</span>
+                  {/* Top Row: Rank Badge + Sector Name */}
+                  <div className="pzone-header-row">
+                    <span className="pzone-rank-badge font-mono">{rankInfo.badgeText}</span>
+                    <span className="pzone-name" title={hotspot.zone_name}>
+                      {hotspot.zone_name}
+                    </span>
                   </div>
-                  <span
-                    className={`sector-risk-pill ${
-                      isCritical ? 'critical' : isHigh ? 'high' : 'moderate'
-                    }`}
-                  >
-                    {score}
-                  </span>
+
+                  {/* Middle Row: CHRI Score & Risk Badge */}
+                  <div className="pzone-metric-row">
+                    <span className="pzone-chri font-mono">CHRI {score}</span>
+                    <span
+                      className={`pzone-risk-pill ${
+                        hotspot.risk_level === 'CRITICAL' || hotspot.risk_level === 'SEVERE'
+                          ? 'extreme'
+                          : hotspot.risk_level === 'HIGH'
+                          ? 'high'
+                          : 'moderate'
+                      }`}
+                    >
+                      {riskLabel}
+                    </span>
+                  </div>
+
+                  {/* Bottom Row: Thermal Anomaly */}
+                  <div className="pzone-footer-row">
+                    <span className="pzone-temp-label">Thermal Anomaly:</span>
+                    <span className="pzone-temp-val font-mono">{anomalyStr}</span>
+                  </div>
                 </button>
               );
             })
@@ -181,110 +200,19 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
         </div>
       </div>
 
-      {/* Collapsible Settings Drawer at Bottom */}
-      <div className="sidebar-settings-accordion">
+      {/* 3. Bottom Settings Trigger */}
+      <div className="sidebar-bottom-bar">
         <button
           type="button"
-          className={`settings-accordion-trigger ${showSettings ? 'open' : ''}`}
-          onClick={toggleSettings}
+          className="sidebar-settings-btn"
+          onClick={() => {
+            if (onToggleSettings) onToggleSettings();
+          }}
+          title="Open Workspace Settings & Preferences"
         >
-          <div className="settings-trigger-label">
-            <Settings size={13} className="mr-2 inline text-slate-500" />
-            <span>Preferences</span>
-          </div>
-          {showSettings ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
+          <Settings size={14} className="mr-2 inline text-slate-400" />
+          <span>Settings & Preferences</span>
         </button>
-
-        {showSettings && (
-          <div className="settings-accordion-body">
-            {/* 1. Theme */}
-            <div className="pref-setting-row">
-              <label className="pref-label">Theme</label>
-              <div className="pref-segmented-control">
-                <button
-                  type="button"
-                  className={`pref-segment-btn ${mode === 'light' ? 'active' : ''}`}
-                  onClick={() => setMode('light')}
-                  title="Light Mode"
-                >
-                  <Sun size={11} />
-                  <span>Light</span>
-                </button>
-                <button
-                  type="button"
-                  className={`pref-segment-btn ${mode === 'dark' ? 'active' : ''}`}
-                  onClick={() => setMode('dark')}
-                  title="Dark Mode"
-                >
-                  <Moon size={11} />
-                  <span>Dark</span>
-                </button>
-                <button
-                  type="button"
-                  className={`pref-segment-btn ${mode === 'system' ? 'active' : ''}`}
-                  onClick={() => setMode('system')}
-                  title="System Mode"
-                >
-                  <Laptop size={11} />
-                  <span>System</span>
-                </button>
-              </div>
-            </div>
-
-            {/* 2. Appearance / Accent Color */}
-            <div className="pref-setting-row">
-              <label className="pref-label">Appearance</label>
-              <div className="pref-colors-palette">
-                {accentOptions.map((opt) => (
-                  <button
-                    key={opt.id}
-                    type="button"
-                    className={`pref-color-dot ${theme === opt.id ? 'active' : ''}`}
-                    style={{ backgroundColor: opt.color }}
-                    onClick={() => setTheme(opt.id)}
-                    title={`${opt.label} Accent`}
-                  >
-                    {theme === opt.id && <Check size={10} color="#FFFFFF" />}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* 3. Font Size */}
-            <div className="pref-setting-row">
-              <label className="pref-label">Font Size</label>
-              <div className="pref-segmented-control">
-                {(['small', 'medium', 'large'] as ThemeFontScale[]).map((scale) => (
-                  <button
-                    key={scale}
-                    type="button"
-                    className={`pref-segment-btn ${fontScale === scale ? 'active' : ''}`}
-                    onClick={() => setFontScale(scale)}
-                  >
-                    {scale.charAt(0).toUpperCase() + scale.slice(1)}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* 4. Density */}
-            <div className="pref-setting-row">
-              <label className="pref-label">Density</label>
-              <div className="pref-segmented-control">
-                {(['compact', 'comfortable', 'spacious'] as ThemeDensity[]).map((d) => (
-                  <button
-                    key={d}
-                    type="button"
-                    className={`pref-segment-btn ${density === d ? 'active' : ''}`}
-                    onClick={() => setDensity(d)}
-                  >
-                    {d.charAt(0).toUpperCase() + d.slice(1)}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </aside>
   );
