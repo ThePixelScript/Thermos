@@ -9,7 +9,18 @@ Urban Heat Intelligence & Climate Risk Analytics Platform
 
 ---
 
-## Features
+## 🌐 Production URLs
+
+| Service | Target URL | Description |
+|---|---|---|
+| **Frontend (Vercel)** | `https://thermos-climate.vercel.app` | Public Enterprise GIS Workbench & Map Canvas |
+| **Backend API (Render)** | `https://thermos-backend.onrender.com` | FastAPI Microclimate Computation & Telemetry Engine |
+| **Interactive API Docs** | `https://thermos-backend.onrender.com/docs` | OpenAPI / Swagger UI Interactive Endpoint Explorer |
+| **Health Monitor** | `https://thermos-backend.onrender.com/health` | Real-time System Health & Data Repository Status |
+
+---
+
+## 🚀 Features
 
 ### Global Location Intelligence
 - **Forward Geocoding:** Search any city, district, ward, locality, or coordinates globally via OpenStreetMap Nominatim.
@@ -42,13 +53,12 @@ Urban Heat Intelligence & Climate Risk Analytics Platform
 - **Intervention Tracking:** Status of municipal urban canopy corridors, cool roof retrofits, and permeable pavement conversions.
 - **Trend Analytics:** 7-day projection combining historical meteorological observations and predictive heat forecasting.
 
-### UI/UX
+### UI/UX & Human-Crafted SaaS Design
 - **Enterprise SaaS Design:** Inspired by ArcGIS, Google Maps, Linear, Stripe, Notion, and Mapbox; clean surfaces, subtle borders, and zero glassmorphic clutter.
-- **Responsive Layout:** 3-column architecture (240px Sidebar, 70–75% Dominant Map Canvas, 320px Progressive Disclosure Inspector).
-- **Theme Customization:** 5 curated enterprise palettes (Emerald, Blue, Teal, Orange, Violet) across Light, Dark, and System modes.
-- **Font Scaling:** Adaptive typography scaling (Small, Medium, Large) for dense operational centers or presentation displays.
-- **Density Controls:** Layout density modes (Compact, Comfortable, Spacious) tailored for command center monitors or tablets.
-- **Persistent Preferences:** Centralized `ThemeContext` persisting user display preferences to `localStorage` across page refreshes.
+- **Global Font Scaling:** Root CSS variable scaling (`--font-scale`: 0.9, 1.0, 1.15, 1.3) universally inherited across all headers, sidebars, tables, and modals.
+- **Top 5 Priority Zones:** Strict visual hierarchy (Gold `#1`, Silver `#2`, Bronze `#3`, Neutral `#4–#5`) with sector names, CHRI scores, risk badges, and thermal anomalies.
+- **Dedicated Settings Modal:** 6 comprehensive tabs (Appearance, Typography, Layout, Map, Accessibility, System) with 16 curated accent colors and 7 theme presets.
+- **Panel Surface Color Customization:** 8 selectable surface tints (Default, Slate, Blue, Teal, Green, Purple, Orange, Gray) with local persistence.
 
 ---
 
@@ -59,7 +69,7 @@ Urban Heat Intelligence & Climate Risk Analytics Platform
 │                 FRONTEND GIS WORKBENCH (React 19 + TypeScript)              │
 │  [TopHeader (50px)] [LeftSidebar (240px)] [MapLibre Canvas] [RightInspector]│
 │  [Floating Search Overlay] [LayerControl] [Dashboard 5-Widgets]             │
-│  [City Command Center] [Digital Twin Scenario Planner]                      │
+│  [City Command Center] [Scenario Planner] [Settings Modal]                  │
 └─────────────────────────────────────────────────────────────────────────────┘
                                        │  HTTP / REST (JSON)
                                        ▼
@@ -91,67 +101,89 @@ Urban Heat Intelligence & Climate Risk Analytics Platform
 
 ---
 
-## 💻 Technology Stack
+## 🛠️ Environment Configuration
 
-* **Backend Framework:** FastAPI 0.115+, Uvicorn 0.30+, Pydantic v2
-* **Frontend Framework:** React 19, TypeScript, Vite 8+, Lucide React
-* **Geospatial & Visualization:** MapLibre GL JS, GeoJSON (RFC 7946), WebGL Wind Vector Particles, H3 Grid
-* **Weather & Remote Sensing:** WeatherAPI.com, NASA FIRMS, OpenStreetMap Nominatim, Sentinel-2 COG, Landsat 8/9 Thermal
-* **Testing & Quality Assurance:** Pytest 8.x (150 tests passing), AnyIO, Starlette TestClient, TypeScript Compiler (`tsc -b`)
+All required environment variables are documented and templated in `.env.example` (backend) and `frontend/.env.example` (frontend).
 
----
+### Backend Variables (`.env` / Render Environment)
 
-## 📁 Repository Structure
+| Variable | Type | Required | Default | Description |
+|---|---|---|---|---|
+| `WEATHERAPI_KEY` | String | **Yes** | — | WeatherAPI.com API token for real-time atmospheric telemetry (temperature, humidity, wind, heat index, UV). |
+| `WEATHER_API_KEY` | String | No | (same as above) | Fallback alias for `WEATHERAPI_KEY`. |
+| `NASA_FIRMS_MAP_KEY` | String | Optional | — | NASA FIRMS MAP Key for satellite thermal anomaly and active fire detections. |
+| `APP_ENV` | String | No | `production` | Environment mode (`production` or `development`). |
+| `PORT` | Integer | No | `8000` | HTTP port assigned automatically by Render / hosting provider via `$PORT`. |
+| `CORS_ORIGINS` | String | No | `*` | Comma-separated list of allowed origins or `*` for public access. |
 
-```
-Thermos/
-├── backend/                  # FastAPI backend application
-│   ├── app/
-│   │   ├── api/              # HTTP Route handlers (location, weather, chri, hotspots, raster...)
-│   │   ├── core/             # Configuration & environment settings (.env)
-│   │   ├── data/             # In-memory spatial data repository & fallback caches
-│   │   ├── modules/          # Pure computational services (weather, location, chri, simulation...)
-│   │   │   ├── weather/      # WeatherAPIService & WeatherProvider with Nominatim geocoding
-│   │   │   ├── chri/         # Deterministic CHRI calculation engine
-│   │   │   └── ...
-│   │   ├── schemas/          # Pydantic v2 domain schemas & DTOs
-│   │   └── main.py           # Application entrypoint & discovery routes
-│   ├── pyproject.toml        # Backend package metadata
-│   └── requirements.txt      # Python runtime dependencies
-├── data/
-│   ├── cache/                # Disk cache for weather & geocoding responses (30-min TTL)
-│   └── processed/            # Baseline urban zones & administrative geometries
-├── docs/                     # Architectural, operational & technical documentation
-├── frontend/                 # React 19 + TypeScript + Vite frontend
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── layout/       # TopHeader, LeftSidebar, RightInsightPanel
-│   │   │   ├── dashboard/    # DashboardView (5 Executive Sections)
-│   │   │   ├── search/       # LocationSearchBar (Forward Geocoding & History)
-│   │   │   ├── map/          # ThermosMap (MapLibre GL JS) & LayerControl
-│   │   │   └── analytics/    # CityCommandCenter & ScenarioPlanner
-│   │   ├── context/          # ThemeContext & LocationContext
-│   │   ├── services/         # Typed API clients
-│   │   ├── types/            # TypeScript domain interfaces
-│   │   ├── App.tsx           # Primary application workbench
-│   │   └── index.css         # Clean enterprise design system
-│   ├── package.json          # Node dependencies
-│   └── vite.config.ts        # Vite bundling configuration
-└── tests/                    # Pytest automated test suite (150 tests passing)
-```
+### Frontend Variables (`frontend/.env` / Vercel Environment)
+
+| Variable | Type | Required | Default | Description |
+|---|---|---|---|---|
+| `VITE_API_URL` | String | **Yes (Prod)** | `https://thermos-backend.onrender.com` | Base URL of the deployed FastAPI backend. In development, defaults to `http://localhost:8000`. |
 
 ---
 
-## ⚡ Quickstart & Local Development
+## 🚢 Production Deployment Guide
+
+### Option 1: Backend Deployment on Render.com
+
+The repository is equipped with a native [`render.yaml`](render.yaml) blueprint and [`Procfile`](Procfile) for zero-friction deployment.
+
+#### Automated Blueprint Method:
+1. Push your code to GitHub.
+2. Log in to [Render.com](https://render.com) and click **New +** → **Blueprint**.
+3. Select your repository. Render automatically reads `render.yaml`.
+4. Fill in the prompted secret environment variables (`WEATHERAPI_KEY`).
+5. Click **Apply**. Render will build and deploy the web service.
+
+#### Manual Web Service Method:
+1. Log in to Render.com → Click **New +** → **Web Service**.
+2. Connect your GitHub repository.
+3. Configure the following settings:
+   - **Name:** `thermos-backend`
+   - **Runtime:** `Python 3`
+   - **Build Command:** `pip install -r backend/requirements.txt`
+   - **Start Command:** `python -m uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT`
+   - **Health Check Path:** `/health`
+4. Under **Environment Variables**, add:
+   - `WEATHERAPI_KEY`: `b2f2b36c93ae426eb3c223122260809`
+   - `NASA_FIRMS_MAP_KEY`: `7858186c9b6a3a6cd7a8e7e625cb5fa2`
+   - `APP_ENV`: `production`
+   - `CORS_ORIGINS`: `*`
+5. Click **Create Web Service**.
+6. Copy your public URL (e.g. `https://thermos-backend.onrender.com`).
+
+---
+
+### Option 2: Frontend Deployment on Vercel
+
+The repository includes both [`vercel.json`](vercel.json) and [`frontend/vercel.json`](frontend/vercel.json) with pre-configured Vite SPA rewrites and caching headers.
+
+#### Deployment Steps:
+1. Log in to [Vercel.com](https://vercel.com) and click **Add New...** → **Project**.
+2. Select your `Thermos` GitHub repository.
+3. Configure Project:
+   - **Framework Preset:** `Vite`
+   - **Root Directory:** Click Edit and select `frontend` (or leave as `.` if using root `vercel.json`).
+   - **Build Command:** `npm run build`
+   - **Output Directory:** `dist`
+4. Under **Environment Variables**, add:
+   - `VITE_API_URL`: Your Render backend URL (e.g. `https://thermos-backend.onrender.com`).
+5. Click **Deploy**.
+6. Vercel will bundle the production build (`dist/`) and provide your live HTTPS domain (e.g. `https://thermos-climate.vercel.app`).
+
+---
+
+## ⚡ Local Development Guide
 
 ### Prerequisites
 * **Python:** 3.11+
 * **Node.js:** 18+ and `npm`
-* **WeatherAPI Key:** Set in `backend/.env` as `WEATHERAPI_KEY=...`
 
 ---
 
-### 1. Running the Backend
+### 1. Running the Backend Locally
 
 ```bash
 # 1. Create and activate virtual environment
@@ -162,19 +194,19 @@ py -m venv .venv
 # 2. Install dependencies
 pip install -r backend/requirements.txt
 
-# 3. Launch FastAPI server
+# 3. Launch development server
 python -m uvicorn backend.app.main:app --reload --port 8000
 ```
 
-The backend services will be live at:
-* **Interactive OpenAPI Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
+Backend services will be live at:
+* **Interactive Swagger UI:** [http://localhost:8000/docs](http://localhost:8000/docs)
 * **System Health Check:** [http://localhost:8000/health](http://localhost:8000/health)
-* **Location Geocoding Search:** [http://localhost:8000/api/location/search?q=Paris](http://localhost:8000/api/location/search?q=Paris)
-* **Current WeatherAPI Telemetry:** [http://localhost:8000/api/weather/current?lat=13.0827&lon=80.2707](http://localhost:8000/api/weather/current?lat=13.0827&lon=80.2707)
+* **Location Search API:** [http://localhost:8000/api/location/search?q=London](http://localhost:8000/api/location/search?q=London)
+* **Current Weather API:** [http://localhost:8000/api/weather/current?lat=13.0827&lon=80.2707](http://localhost:8000/api/weather/current?lat=13.0827&lon=80.2707)
 
 ---
 
-### 2. Running the Frontend
+### 2. Running the Frontend Locally
 
 In a separate terminal:
 

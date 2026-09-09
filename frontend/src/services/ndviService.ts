@@ -34,7 +34,7 @@ export interface NDVITileConfig {
   tileFormat: 'png' | 'webp';
 }
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+import { API_BASE } from './api';
 
 export class NDVIService {
   private defaultSceneId = 'S2B_MSIL2A_20240515T050649_N0510_R019_T44PMV';

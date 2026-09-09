@@ -35,7 +35,25 @@ import type {
   LocationSearchResult,
 } from '../types';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+/**
+ * Production-ready API Base Resolution:
+ * 1. Explicit VITE_API_URL environment variable (from Vercel / production env)
+ * 2. In local development: http://localhost:8000
+ * 3. In production: defaults to live Render backend service
+ */
+export const getApiBase = (): string => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl && typeof envUrl === 'string' && envUrl.trim().length > 0) {
+    return envUrl.trim().replace(/\/+$/, '');
+  }
+  if (import.meta.env.DEV) {
+    return 'http://localhost:8000';
+  }
+  // Production fallback: default to Render backend URL
+  return 'https://thermos-backend.onrender.com';
+};
+
+export const API_BASE = getApiBase();
 
 export async function fetchHealth(): Promise<BackendHealth> {
   const res = await fetch(`${API_BASE}/health`);
