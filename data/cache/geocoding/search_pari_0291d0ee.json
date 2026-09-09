@@ -1,0 +1,53 @@
+{
+  "cached_at": 1788918029.0147336,
+  "results": [
+    {
+      "name": "Paris",
+      "display_name": "Paris, \u00cele-de-France, France m\u00e9tropolitaine, France",
+      "lat": 48.8588897,
+      "lon": 2.320041,
+      "bbox": [
+        48.8155755,
+        48.902156,
+        2.224122,
+        2.4697602
+      ],
+      "type": "administrative",
+      "category": "boundary",
+      "importance": 0.897098092136026,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "Paris",
+      "display_name": "Paris, \u00cele-de-France, France m\u00e9tropolitaine, France",
+      "lat": 48.8534951,
+      "lon": 2.3483915,
+      "bbox": [
+        48.8155755,
+        48.902156,
+        2.224122,
+        2.4697602
+      ],
+      "type": "administrative",
+      "category": "boundary",
+      "importance": 0.897098092136026,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "Bali",
+      "display_name": "Bali, Indonesia",
+      "lat": -8.2271303,
+      "lon": 115.1919203,
+      "bbox": [
+        -9.0502287,
+        -7.4627963,
+        114.4126778,
+        115.8324222
+      ],
+      "type": "administrative",
+      "category": "boundary",
+      "importance": 0.6459385175276573,
+      "source": "Nominatim OpenStreetMap"
+    }
+  ]
+}

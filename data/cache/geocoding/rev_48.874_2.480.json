@@ -1,0 +1,16 @@
+{
+  "cached_at": 1788918152.1632059,
+  "data": {
+    "name": "2",
+    "display_name": "2, Impasse de Nanteuil, Bois Perrier, Rosny-sous-Bois, Le Raincy, Seine-Saint-Denis, \u00cele-de-France, France m\u00e9tropolitaine, 93110, France",
+    "lat": 48.87410402403219,
+    "lon": 2.47958454023032,
+    "bbox": [
+      48.874113,
+      48.874213,
+      2.4796183,
+      2.4797183
+    ],
+    "source": "Nominatim OpenStreetMap"
+  }
+}

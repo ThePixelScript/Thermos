@@ -1,0 +1,16 @@
+{
+  "cached_at": 1788915164.7297873,
+  "data": {
+    "name": "Perungalathur",
+    "display_name": "Perungalathur, Tambaram, Chengalpattu, Tamil Nadu, 600045, India",
+    "lat": 12.922754273835153,
+    "lon": 80.09772689916508,
+    "bbox": [
+      12.9227042,
+      12.922935,
+      80.0976752,
+      80.0980808
+    ],
+    "source": "Nominatim OpenStreetMap"
+  }
+}

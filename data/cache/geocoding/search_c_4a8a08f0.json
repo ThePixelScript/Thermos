@@ -1,0 +1,69 @@
+{
+  "cached_at": 1788919472.5146537,
+  "results": [
+    {
+      "name": "Centre-Val de Loire",
+      "display_name": "Centre-Val de Loire, France m\u00e9tropolitaine, France",
+      "lat": 47.5490251,
+      "lon": 1.7324062,
+      "bbox": [
+        46.3471572,
+        48.9410263,
+        0.0527585,
+        3.1286392
+      ],
+      "type": "administrative",
+      "category": "boundary",
+      "importance": 0.7046535754565001,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "D\u00e9partement du Centre",
+      "display_name": "D\u00e9partement du Centre, Ayiti",
+      "lat": 18.9908235,
+      "lon": -71.9943985,
+      "bbox": [
+        18.6847286,
+        19.3343437,
+        -72.3646613,
+        -71.6217461
+      ],
+      "type": "administrative",
+      "category": "boundary",
+      "importance": 0.4808401287993237,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "Centre",
+      "display_name": "Centre, Burkina Faso",
+      "lat": 12.36732,
+      "lon": -1.5430869,
+      "bbox": [
+        12.0501349,
+        12.68505,
+        -1.82685,
+        -1.06363
+      ],
+      "type": "administrative",
+      "category": "boundary",
+      "importance": 0.45356092873116677,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "wojew\u00f3dztwo kujawsko-pomorskie",
+      "display_name": "wojew\u00f3dztwo kujawsko-pomorskie, Polska",
+      "lat": 53.3139833,
+      "lon": 18.3797516,
+      "bbox": [
+        52.3306357,
+        53.781075,
+        17.2472726,
+        19.7615952
+      ],
+      "type": "administrative",
+      "category": "boundary",
+      "importance": 0.6514705124952225,
+      "source": "Nominatim OpenStreetMap"
+    }
+  ]
+}

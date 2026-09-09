@@ -160,6 +160,38 @@ export const ThermosMap: React.FC<ThermosMapProps> = ({
       });
       map.addControl(navControl, 'top-right');
 
+      // Add Current Location Button (GeolocateControl)
+      const geolocateControl = new maplibregl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true,
+        },
+        trackUserLocation: false,
+      });
+      geolocateControl.on('geolocate', async (e: any) => {
+        const lat = e.coords.latitude;
+        const lon = e.coords.longitude;
+        try {
+          const resolved = await reverseGeocodeLocation(lat, lon);
+          setSelectedLocation({
+            name: resolved.name || `Current Location (${lat.toFixed(3)}°, ${lon.toFixed(3)}°)`,
+            display_name: resolved.display_name || `Coordinates: ${lat.toFixed(4)}, ${lon.toFixed(4)}`,
+            lat,
+            lon,
+            bbox: resolved.bbox,
+            source: 'Device GPS',
+          });
+        } catch {
+          setSelectedLocation({
+            name: `Current Location (${lat.toFixed(3)}°, ${lon.toFixed(3)}°)`,
+            display_name: `Coordinates: ${lat.toFixed(4)}, ${lon.toFixed(4)}`,
+            lat,
+            lon,
+            source: 'Device GPS',
+          });
+        }
+      });
+      map.addControl(geolocateControl, 'top-right');
+
       // Add scale control
       map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-right');
 
@@ -372,16 +404,36 @@ export const ThermosMap: React.FC<ThermosMapProps> = ({
     }
   }, []);
 
-  // Synchronize pulse marker and camera with selectedLocation
+  // Handle container resize cleanly
+  useEffect(() => {
+    if (!mapContainerRef.current) return;
+    const ro = new ResizeObserver(() => {
+      if (mapRef.current) {
+        mapRef.current.resize();
+      }
+    });
+    ro.observe(mapContainerRef.current);
+    return () => ro.disconnect();
+  }, []);
+
+  // Synchronize GIS target pin and camera with selectedLocation
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !selectedLocation) return;
 
     if (!pulseMarkerRef.current) {
       const el = document.createElement('div');
-      el.className = 'location-pulse-marker';
-      el.innerHTML = '<div class="pulse-ring"></div><div class="pulse-dot"></div>';
-      pulseMarkerRef.current = new maplibregl.Marker({ element: el, anchor: 'center' })
+      el.className = 'gis-target-pin';
+      el.innerHTML = `
+        <svg width="26" height="34" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <filter id="gis-pin-shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.35"/>
+          </filter>
+          <path d="M14 0C6.268 0 0 6.268 0 14c0 10.5 14 22 14 22s14-11.5 14-22c0-7.732-6.268-14-14-14z" fill="#DC2626" filter="url(#gis-pin-shadow)"/>
+          <circle cx="14" cy="14" r="5" fill="#FFFFFF"/>
+        </svg>
+      `;
+      pulseMarkerRef.current = new maplibregl.Marker({ element: el, anchor: 'bottom' })
         .setLngLat([selectedLocation.lon, selectedLocation.lat])
         .addTo(map);
     } else {
@@ -422,12 +474,12 @@ export const ThermosMap: React.FC<ThermosMapProps> = ({
           'fill-color': [
             'match',
             ['get', 'risk_level'],
-            'CRITICAL', '#b91c1c',
-            'SEVERE', '#dc2626',
-            'HIGH', '#ea580c',
-            'MODERATE', '#eab308',
-            'LOW', '#16a34a',
-            '#64748b',
+            'CRITICAL', '#EF4444',
+            'SEVERE', '#EF4444',
+            'HIGH', '#F97316',
+            'MODERATE', '#F59E0B',
+            'LOW', '#3B82F6',
+            '#94A3B8',
           ],
           'fill-opacity': 0.65,
         },
@@ -439,9 +491,9 @@ export const ThermosMap: React.FC<ThermosMapProps> = ({
         type: 'line',
         source: 'urban-zones',
         paint: {
-          'line-color': '#0f172a',
-          'line-width': 1.5,
-          'line-opacity': 0.8,
+          'line-color': '#64748b',
+          'line-width': 1.0,
+          'line-opacity': 0.7,
         },
       });
 
@@ -452,8 +504,8 @@ export const ThermosMap: React.FC<ThermosMapProps> = ({
         source: 'urban-zones',
         filter: ['==', 'id', selectedId || ''],
         paint: {
-          'line-color': '#38bdf8',
-          'line-width': 4.0,
+          'line-color': '#2563EB',
+          'line-width': 3.0,
           'line-opacity': 1.0,
         },
       });
@@ -575,8 +627,10 @@ export const ThermosMap: React.FC<ThermosMapProps> = ({
 
   return (
     <div className="thermos-map-wrapper">
-      {/* Global Location Search Bar Overlay */}
-      <LocationSearchBar className="map-search-bar-overlay" />
+      {/* Floating Google Maps / Mapbox style search bar over map (Top-Left) */}
+      <div className="map-search-overlay-container">
+        <LocationSearchBar placeholder="Search city, district, or coordinates..." />
+      </div>
 
       {/* Floating Layer Control UI Panel */}
       <LayerControl

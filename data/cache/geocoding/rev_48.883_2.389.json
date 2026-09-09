@@ -1,0 +1,16 @@
+{
+  "cached_at": 1788918108.4771786,
+  "data": {
+    "name": "30",
+    "display_name": "30, Rue Manin, Quartier d'Am\u00e9rique, Paris 19e Arrondissement, Paris, \u00cele-de-France, France m\u00e9tropolitaine, 75019, France",
+    "lat": 48.88331339103078,
+    "lon": 2.389139331961161,
+    "bbox": [
+      48.8832929,
+      48.8833929,
+      2.388938,
+      2.389038
+    ],
+    "source": "Nominatim OpenStreetMap"
+  }
+}

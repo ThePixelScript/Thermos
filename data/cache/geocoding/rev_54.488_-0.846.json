@@ -1,0 +1,16 @@
+{
+  "cached_at": 1788919466.4036214,
+  "data": {
+    "name": "Black Dike Moor",
+    "display_name": "Black Dike Moor, Glaisdale, North Yorkshire, York and North Yorkshire, England, United Kingdom",
+    "lat": 54.4879447488143,
+    "lon": -0.8456649191980148,
+    "bbox": [
+      54.4749147,
+      54.4949147,
+      -0.8536914,
+      -0.8336914
+    ],
+    "source": "Nominatim OpenStreetMap"
+  }
+}

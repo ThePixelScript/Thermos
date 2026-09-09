@@ -1,0 +1,37 @@
+{
+  "cached_at": 1788919472.7809508,
+  "results": [
+    {
+      "name": "Chemin",
+      "display_name": "Chemin, Dole, Jura, Bourgogne-Franche-Comt\u00e9, France m\u00e9tropolitaine, 39120, France",
+      "lat": 46.9797328,
+      "lon": 5.3163113,
+      "bbox": [
+        46.9550492,
+        46.9962888,
+        5.2915094,
+        5.3427329
+      ],
+      "type": "administrative",
+      "category": "boundary",
+      "importance": 0.5607909304788332,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "\u0427\u0435\u043b\u044f\u0431\u0438\u043d\u0441\u043a",
+      "display_name": "\u0427\u0435\u043b\u044f\u0431\u0438\u043d\u0441\u043a, \u0427\u0435\u043b\u044f\u0431\u0438\u043d\u0441\u043a\u0438\u0439 \u0433\u043e\u0440\u043e\u0434\u0441\u043a\u043e\u0439 \u043e\u043a\u0440\u0443\u0433, \u0427\u0435\u043b\u044f\u0431\u0438\u043d\u0441\u043a\u0430\u044f \u043e\u0431\u043b\u0430\u0441\u0442\u044c, \u0423\u0440\u0430\u043b\u044c\u0441\u043a\u0438\u0439 \u0444\u0435\u0434\u0435\u0440\u0430\u043b\u044c\u043d\u044b\u0439 \u043e\u043a\u0440\u0443\u0433, \u0420\u043e\u0441\u0441\u0438\u044f",
+      "lat": 55.1598408,
+      "lon": 61.4025547,
+      "bbox": [
+        54.9909963,
+        55.3209835,
+        61.1435957,
+        61.5920596
+      ],
+      "type": "city",
+      "category": "place",
+      "importance": 0.6405209353714135,
+      "source": "Nominatim OpenStreetMap"
+    }
+  ]
+}

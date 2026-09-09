@@ -74,11 +74,10 @@ export const DEFAULT_PLATFORM_LAYERS: LayerMetadata[] = [
     legend: {
       type: 'categorical',
       items: [
-        { label: 'Critical (≥85)', color: '#b91c1c' },
-        { label: 'Severe (70–84.9)', color: '#dc2626' },
-        { label: 'High (50–69.9)', color: '#ea580c' },
-        { label: 'Moderate (30–49.9)', color: '#eab308' },
-        { label: 'Low (<30)', color: '#16a34a' },
+        { label: 'Extreme / Critical (≥85)', color: '#EF4444' },
+        { label: 'High (65–84.9)', color: '#F97316' },
+        { label: 'Moderate (40–64.9)', color: '#F59E0B' },
+        { label: 'Low (<40)', color: '#3B82F6' },
       ],
     },
   },

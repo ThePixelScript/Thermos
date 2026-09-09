@@ -14,8 +14,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 export type ThemeMode = 'dark' | 'light' | 'system';
-export type ThemePalette = 'emerald' | 'blue' | 'amber' | 'violet' | 'slate';
-export type ThemeDensity = 'comfortable' | 'compact';
+export type ThemePalette = 'green' | 'blue' | 'teal' | 'orange' | 'purple' | 'emerald' | 'amber' | 'violet' | 'slate';
+export type ThemeDensity = 'compact' | 'comfortable' | 'spacious';
 export type ThemeMotion = 'standard' | 'reduced';
 export type ThemeFontScale = 'small' | 'medium' | 'large';
 
@@ -46,19 +46,19 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [mode, setModeState] = useState<ThemeMode>(() => {
     const saved = localStorage.getItem(STORAGE_KEYS.MODE) as ThemeMode;
-    return saved === 'dark' || saved === 'light' || saved === 'system' ? saved : 'dark';
+    return saved === 'dark' || saved === 'light' || saved === 'system' ? saved : 'light';
   });
 
   const [theme, setThemeState] = useState<ThemePalette>(() => {
     const saved = localStorage.getItem(STORAGE_KEYS.THEME) as ThemePalette;
-    return saved && ['emerald', 'blue', 'amber', 'violet', 'slate'].includes(saved)
+    return saved && ['green', 'blue', 'teal', 'orange', 'purple', 'emerald', 'amber', 'violet', 'slate'].includes(saved)
       ? saved
-      : 'blue';
+      : 'green';
   });
 
   const [density, setDensityState] = useState<ThemeDensity>(() => {
     const saved = localStorage.getItem(STORAGE_KEYS.DENSITY) as ThemeDensity;
-    return saved === 'compact' || saved === 'comfortable' ? saved : 'comfortable';
+    return saved === 'compact' || saved === 'comfortable' || saved === 'spacious' ? saved : 'comfortable';
   });
 
   const [motion, setMotionState] = useState<ThemeMotion>(() => {

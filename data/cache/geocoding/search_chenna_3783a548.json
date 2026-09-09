@@ -1,0 +1,53 @@
+{
+  "cached_at": 1788919473.877683,
+  "results": [
+    {
+      "name": "Chenna",
+      "display_name": "Chenna, Kafa, \u12e8\u12f0\u1261\u1265 \u121d\u12d5\u122b\u1265 \u12a2\u1275\u12ee\u1335\u12eb \u1205\u12dd\u1266\u127d \u12ad\u120d\u120d South West Ethiopia Peoples' Region \u0625\u0642\u0644\u064a\u0645 \u0634\u0639\u0648\u0628 \u062c\u0646\u0648\u0628 \u063a\u0631\u0628 \u0625\u062b\u064a\u0648\u0628\u064a\u0627, \u12a2\u1275\u12ee\u1335\u12eb",
+      "lat": 7.1314381,
+      "lon": 35.8848637,
+      "bbox": [
+        7.1114381,
+        7.1514381,
+        35.8648637,
+        35.9048637
+      ],
+      "type": "village",
+      "category": "place",
+      "importance": 0.14670416800183103,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "Chenna",
+      "display_name": "Chenna, High Street, Lower High Street, Wymans Brook, St Paul\u2019s, Cheltenham, Gloucestershire, England, GL50 3HT, United Kingdom",
+      "lat": 51.9043748,
+      "lon": -2.0820621,
+      "bbox": [
+        51.9043248,
+        51.9044248,
+        -2.0821121,
+        -2.0820121
+      ],
+      "type": "fast_food",
+      "category": "amenity",
+      "importance": 6.323109788657996e-05,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "\u0637\u0631\u0641 \u0627\u0644\u0634\u0646\u0627\u0621",
+      "display_name": "\u0637\u0631\u0641 \u0627\u0644\u0634\u0646\u0627\u0621, \u0645\u0639\u062a\u0645\u062f\u064a\u0629 \u0628\u0648\u0639\u0631\u0627\u062f\u0629, \u0648\u0644\u0627\u064a\u0629 \u0633\u0644\u064a\u0627\u0646\u0629, \u062a\u0648\u0646\u0633",
+      "lat": 36.3239818,
+      "lon": 9.6659678,
+      "bbox": [
+        36.2886197,
+        36.3576472,
+        9.6074516,
+        9.7546218
+      ],
+      "type": "administrative",
+      "category": "boundary",
+      "importance": 0.24000999999999997,
+      "source": "Nominatim OpenStreetMap"
+    }
+  ]
+}

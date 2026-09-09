@@ -1,0 +1,16 @@
+{
+  "cached_at": 1788915155.1437137,
+  "data": {
+    "name": "Vandalur",
+    "display_name": "Vandalur, Chengalpattu, Tamil Nadu, 603210, India",
+    "lat": 12.8910609318134,
+    "lon": 80.08211590158254,
+    "bbox": [
+      12.8907491,
+      12.8912312,
+      80.0815646,
+      80.082886
+    ],
+    "source": "Nominatim OpenStreetMap"
+  }
+}

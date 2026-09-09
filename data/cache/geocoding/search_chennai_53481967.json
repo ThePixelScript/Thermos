@@ -1,0 +1,37 @@
+{
+  "cached_at": 1788919448.2152035,
+  "results": [
+    {
+      "name": "Chennai Corporation",
+      "display_name": "Chennai Corporation, Chennai, Tamil Nadu, India",
+      "lat": 13.0836939,
+      "lon": 80.270186,
+      "bbox": [
+        12.8519771,
+        13.235158,
+        80.1401875,
+        80.3328982
+      ],
+      "type": "administrative",
+      "category": "boundary",
+      "importance": 0.6796065306212251,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "Chennai",
+      "display_name": "Chennai, Tamil Nadu, India",
+      "lat": 13.0008413,
+      "lon": 80.2023035,
+      "bbox": [
+        12.8514482,
+        13.1502817,
+        80.1182821,
+        80.3069299
+      ],
+      "type": "administrative",
+      "category": "boundary",
+      "importance": 0.5143622024538567,
+      "source": "Nominatim OpenStreetMap"
+    }
+  ]
+}

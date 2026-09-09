@@ -1,0 +1,16 @@
+{
+  "cached_at": 1788918192.0913875,
+  "data": {
+    "name": "D 53",
+    "display_name": "D 53, Pinson, Illiers-l'\u00c9v\u00eaque, \u00c9vreux, Eure, Normandie, France m\u00e9tropolitaine, 27770, France",
+    "lat": 48.81695304015781,
+    "lon": 1.2189587496334582,
+    "bbox": [
+      48.8147015,
+      48.8394086,
+      1.2163591,
+      1.2391712
+    ],
+    "source": "Nominatim OpenStreetMap"
+  }
+}
