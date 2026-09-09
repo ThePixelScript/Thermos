@@ -1,0 +1,16 @@
+{
+  "cached_at": 1788928983.0097864,
+  "data": {
+    "name": "Ward 2",
+    "display_name": "Ward 2, Zone 1 Tiruvottiyur, Chennai Corporation, Madhavaram, Thiruvallur, Tamil Nadu, 600057, India, CMWSSB Division 2",
+    "lat": 13.210416880134261,
+    "lon": 80.32594763162649,
+    "bbox": [
+      13.2097526,
+      13.2121849,
+      80.3224779,
+      80.324515
+    ],
+    "source": "Nominatim OpenStreetMap"
+  }
+}

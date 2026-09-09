@@ -1,0 +1,85 @@
+{
+  "cached_at": 1788929342.747303,
+  "results": [
+    {
+      "name": "Vellore Institute of Technology - Chennai",
+      "display_name": "Vellore Institute of Technology - Chennai, Vandalur - Mambakkam - Kelambakkam Road, Pudupakkam, Chennai Corporation, Tiruporur, Chengalpattu, Tamil Nadu, 600127, India",
+      "lat": 12.8429461,
+      "lon": 80.15541,
+      "bbox": [
+        12.8385517,
+        12.8475158,
+        80.1507363,
+        80.1621227
+      ],
+      "type": "university",
+      "category": "amenity",
+      "importance": 0.42397855970078896,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "VIT Academic Block 1",
+      "display_name": "VIT Academic Block 1, Vandalur - Mambakkam - Kelambakkam Road, Keezhakottaiyur, Chennai Corporation, Tiruporur, Chengalpattu, Tamil Nadu, 600127, India",
+      "lat": 12.843666,
+      "lon": 80.1534422,
+      "bbox": [
+        12.8430964,
+        12.8442566,
+        80.1529352,
+        80.1540912
+      ],
+      "type": "university",
+      "category": "building",
+      "importance": 5.509498741126142e-05,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "VIT Academic Block 3",
+      "display_name": "VIT Academic Block 3, Vandalur - Mambakkam - Kelambakkam Road, Keezhakottaiyur, Chennai Corporation, Tiruporur, Chengalpattu, Tamil Nadu, 600127, India",
+      "lat": 12.8438682,
+      "lon": 80.1548591,
+      "bbox": [
+        12.8432412,
+        12.8443842,
+        80.1542745,
+        80.1553613
+      ],
+      "type": "university",
+      "category": "building",
+      "importance": 5.509498741126142e-05,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "VIT Chennai Administrative Block",
+      "display_name": "VIT Chennai Administrative Block, Vandalur - Mambakkam - Kelambakkam Road, Keezhakottaiyur, Chennai Corporation, Tiruporur, Chengalpattu, Tamil Nadu, 600127, India",
+      "lat": 12.8406291,
+      "lon": 80.1539745,
+      "bbox": [
+        12.8403796,
+        12.8408411,
+        80.1537231,
+        80.1542193
+      ],
+      "type": "university",
+      "category": "building",
+      "importance": 5.509498741126142e-05,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "VIT Chennai library Block",
+      "display_name": "VIT Chennai library Block, Vandalur - Mambakkam - Kelambakkam Road, Keezhakottaiyur, Chennai Corporation, Tiruporur, Chengalpattu, Tamil Nadu, 600127, India",
+      "lat": 12.8410462,
+      "lon": 80.1540384,
+      "bbox": [
+        12.8407884,
+        12.8412568,
+        80.153796,
+        80.1542613
+      ],
+      "type": "university",
+      "category": "building",
+      "importance": 5.509498741126142e-05,
+      "source": "Nominatim OpenStreetMap"
+    }
+  ]
+}

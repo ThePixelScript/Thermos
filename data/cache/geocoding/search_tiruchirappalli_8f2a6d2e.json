@@ -1,0 +1,37 @@
+{
+  "cached_at": 1788929405.128906,
+  "results": [
+    {
+      "name": "Tiruchirappalli",
+      "display_name": "Tiruchirappalli, Tamil Nadu, India",
+      "lat": 10.8071144,
+      "lon": 78.6880939,
+      "bbox": [
+        10.7273005,
+        10.8457612,
+        78.6461234,
+        78.7426615
+      ],
+      "type": "administrative",
+      "category": "boundary",
+      "importance": 0.5421586885764348,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "Tiruchirappalli",
+      "display_name": "Tiruchirappalli, Tamil Nadu, India",
+      "lat": 10.8504608,
+      "lon": 78.724533,
+      "bbox": [
+        10.293593,
+        11.4087294,
+        78.163197,
+        79.0122127
+      ],
+      "type": "administrative",
+      "category": "boundary",
+      "importance": 0.5187618325919438,
+      "source": "Nominatim OpenStreetMap"
+    }
+  ]
+}

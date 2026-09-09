@@ -1,0 +1,85 @@
+{
+  "cached_at": 1788929412.8740923,
+  "results": [
+    {
+      "name": "Afore Airstrip",
+      "display_name": "Afore Airstrip, Koeokoeo, Afore, Ijivitari District, Oro, Southern Region, Papua Niugini",
+      "lat": -9.1383448,
+      "lon": 148.3909714,
+      "bbox": [
+        -9.1425262,
+        -9.1348995,
+        148.3882357,
+        148.3931494
+      ],
+      "type": "aerodrome",
+      "category": "aeroway",
+      "importance": 0.11734328469919902,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "AFR",
+      "display_name": "AFR, Century Freeway, Los Angeles, Los Angeles County, California, 90009, United States",
+      "lat": 33.9319416,
+      "lon": -118.3801705,
+      "bbox": [
+        33.9316596,
+        33.9322236,
+        -118.3807844,
+        -118.3792166
+      ],
+      "type": "warehouse",
+      "category": "aeroway",
+      "importance": 8.738155184248139e-05,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "AFR",
+      "display_name": "AFR, 201, Rue de Carri\u00e8re Vieille, ZAC de Carri\u00e8re Vieille, Saint-Chaptes, N\u00eemes, Gard, Occitanie, France m\u00e9tropolitaine, 30190, France",
+      "lat": 43.9671377,
+      "lon": 4.2780116,
+      "bbox": [
+        43.9670877,
+        43.9671877,
+        4.2779616,
+        4.2780616
+      ],
+      "type": "driving_school",
+      "category": "amenity",
+      "importance": 6.167772945749626e-05,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "Afr",
+      "display_name": "Afr, 27, Boulevard Carnot, Carri\u00e8res-sur-Seine, Saint-Germain-en-Laye, Yvelines, \u00cele-de-France, France m\u00e9tropolitaine, 78420, France",
+      "lat": 48.9097294,
+      "lon": 2.179621,
+      "bbox": [
+        48.9096794,
+        48.9097794,
+        2.179571,
+        2.179671
+      ],
+      "type": "estate_agent",
+      "category": "shop",
+      "importance": 5.91172655832306e-05,
+      "source": "Nominatim OpenStreetMap"
+    },
+    {
+      "name": "Ant\u00f3nio Fernandes Ramalho & Filhos",
+      "display_name": "Ant\u00f3nio Fernandes Ramalho & Filhos, Rua do Bairro Social, Gondesende, Esmoriz, Ovar, Aveiro, 3885-523, Portugal",
+      "lat": 40.9596786,
+      "lon": -8.6140955,
+      "bbox": [
+        40.9594753,
+        40.9599022,
+        -8.6143923,
+        -8.6138081
+      ],
+      "type": "company",
+      "category": "office",
+      "importance": 5.404364080257904e-05,
+      "source": "Nominatim OpenStreetMap"
+    }
+  ]
+}
